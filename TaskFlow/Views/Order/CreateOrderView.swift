@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct CreateOrderView: View {
+    
+    @Environment(\.modelContext) private var modelContext
+    
+    var student: Student
+    var order: Order? = nil
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        OrderForm(
+            order: order,
+            titleForm: "Create Order",
+            captionButtonSuccess: "Create",
+            action: {order in
+                student.orders?.append(order)
+            }
+        )
     }
 }
 
-#Preview {
-    CreateOrderView()
-}

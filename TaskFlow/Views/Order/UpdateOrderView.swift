@@ -7,12 +7,22 @@
 
 import SwiftUI
 
-struct updateOrderView: View {
+struct UpdateOrderView: View {
+    @Environment(\.modelContext) private var modelContext
+    
+    @Bindable var order: Order
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        OrderForm(
+            order: order,
+            titleForm: "Update Order",
+            captionButtonSuccess: "Update",
+            action: updateOrder
+        )
     }
-}
-
-#Preview {
-    updateOrderView()
+    
+    func updateOrder(_ order: Order){
+        self.order.details = order.details
+        try? modelContext.save()
+    }
 }

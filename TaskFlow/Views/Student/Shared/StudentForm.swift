@@ -9,25 +9,26 @@ import SwiftUI
 
 struct StudentForm: View {
     
-    @Environment(\.dismiss) private var dismiss
-    
     init(
         student: Student? = nil,
         titleForm: String,
         captionButtonSuccess: String,
+        isPresented: Binding<Bool>,
         action: @escaping (Student) -> Void
     ) {
-        
         self.name = student?.name ?? ""
         self.contacts = student?.contacts ?? ""
         
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
         self.action = action
+        self._isPresented = isPresented
     }
 
     @State private var name: String
     @State private var contacts: String
+    
+    @Binding var isPresented: Bool
     
     var titleForm: String
     var captionButtonSuccess: String
@@ -46,7 +47,7 @@ struct StudentForm: View {
             HStack {
                 
                 Button("Cancel", role: .cancel) {
-                    dismiss()
+                    isPresented = false
                 }
                 
                 Button(captionButtonSuccess) {
@@ -58,8 +59,8 @@ struct StudentForm: View {
                     if isValid(student: student){
                         withAnimation {
                             action(student)
-                            dismiss()
                         }
+                        isPresented = false
                     }else{
                         showValidateErrorMsg.toggle()
                     }

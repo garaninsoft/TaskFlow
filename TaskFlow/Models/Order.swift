@@ -11,13 +11,15 @@ import SwiftData
 @Model
 final class Order{
     var student: Student?
+    var title: String = ""
     var details: String
     var created: Date
-    var schedules: [Schedule]
-    var payments: [Payment]
+    var schedules: [Schedule]?
+    var payments: [Payment]?
     
-    init(student: Student? = nil, details: String, created: Date, schedules: [Schedule], payments: [Payment]) {
+    init(student: Student? = nil, title: String, details: String, created: Date, schedules: [Schedule]? = nil, payments: [Payment]? = nil) {
         self.student = student
+        self.title = title
         self.details = details
         self.created = created
         self.schedules = schedules

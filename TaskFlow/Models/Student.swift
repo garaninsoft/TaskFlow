@@ -13,14 +13,12 @@ final class Student {
     var name: String
     var contacts: String
     var created: Date
-    var updated: Date?
     var orders: [Order]?
     
-    init(name: String, contacts: String, created: Date, updated: Date? = nil, orders: [Order]? = nil) {
+    init(name: String, contacts: String, created: Date, orders: [Order]? = nil) {
         self.name = name
         self.contacts = contacts
         self.created = created
-        self.updated = updated
         self.orders = orders
     }
 }

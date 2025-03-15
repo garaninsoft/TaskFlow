@@ -9,34 +9,67 @@ import SwiftUI
 import SwiftData
 
 struct MainView: View {
+    // Logging Debug (import os enabled)
+//    private static let logger = Logger(
+//            subsystem: "mySubsystem",
+//            category: String(describing: Self.self)
+//    )
+//    let _ = Self.logger.trace("hello \(student.name)") // sample logging
+
+    
     @Environment(\.modelContext) private var modelContext
     @Query private var students: [Student]
-    @State private var showSheetNewStudent = false
+    
+    @Binding var selectedStudent: Student?
+    @State private var selectedOrder: Order?
+    
+    @Binding var showSheetNewStudent: Bool
+    
+    // NavigationPath for column Order Detail
+    @State private var detailPath = NavigationPath()
+    
+    
+    
     var body: some View {
         NavigationSplitView {
-            List {
+            // column Students
+            List(selection: $selectedStudent) {
                 ForEach(students) { student in
-                    NavigationLink {
-                        Text(student.name)
-                        StudentDetailView(student: student)
-                    } label: {
-                        Text(student.name)
-                    }
+                    NavigationLink(student.name, value: student)
                 }
                 .onDelete(perform: deleteStudents)
             }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
             .toolbar {
                 ToolbarItem {
                     Button(action: {showSheetNewStudent.toggle()}) {
                         Label("Add Student", systemImage: "plus")
                     }.sheet(isPresented: $showSheetNewStudent) {
-                        CreateStudentView()
+                        CreateStudentView(isPresented: $showSheetNewStudent)
                     }
                 }
             }
+            
+        } content:{
+            // column Orders
+            NavigationStack{
+                if let student = selectedStudent {
+                    List(student.orders ?? [], selection: $selectedOrder) { order in
+                        NavigationLink(order.title, value: order)
+                    }
+                } else {
+                    Text("Select Student")
+                }
+            }
+            .navigationTitle("Orders")
         } detail: {
-            Text("Select an Student")
+            // column Order Details
+            NavigationStack(path: $detailPath) {
+                if let order = selectedOrder {
+                    Text(order.details)
+                } else {
+                    Text("Select Order")
+                }
+            }
         }
     }
     
@@ -49,7 +82,3 @@ struct MainView: View {
     }
 }
 
-#Preview {
-    MainView()
-        .modelContainer(for: Student.self, inMemory: true)
-}
