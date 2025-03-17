@@ -9,12 +9,11 @@ import SwiftUI
 
 struct OrderForm: View {
     
-    @Environment(\.dismiss) private var dismiss
-    
     init(
         order: Order? = nil,
         titleForm: String,
         captionButtonSuccess: String,
+        isPresented: Binding<Bool>,
         action: @escaping (Order) -> Void
     ) {
         self.title = order?.title ?? ""
@@ -23,10 +22,13 @@ struct OrderForm: View {
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
         self.action = action
+        self._isPresented = isPresented
     }
 
     @State private var details: String
     @State private var title: String
+    
+    @Binding var isPresented: Bool
 
     var titleForm: String
     var captionButtonSuccess: String
@@ -45,7 +47,7 @@ struct OrderForm: View {
             HStack {
                 
                 Button("Cancel", role: .cancel) {
-                    dismiss()
+                    isPresented = false
                 }
                 
                 Button(captionButtonSuccess) {
@@ -57,8 +59,8 @@ struct OrderForm: View {
                     if isValid(order: order){
                         withAnimation {
                             action(order)
-                            dismiss()
                         }
+                        isPresented = false
                     }else{
                         showValidateErrorMsg.toggle()
                     }

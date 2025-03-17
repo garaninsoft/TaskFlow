@@ -12,13 +12,13 @@ struct CreateOrderView: View {
     @Environment(\.modelContext) private var modelContext
     
     var student: Student
-    var order: Order? = nil
+    @Binding var isPresented: Bool
     
     var body: some View {
         OrderForm(
-            order: order,
             titleForm: "Create Order",
             captionButtonSuccess: "Create",
+            isPresented: $isPresented,
             action: {order in
                 student.orders?.append(order)
             }

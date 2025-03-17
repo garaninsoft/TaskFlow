@@ -12,7 +12,7 @@ struct UpdateStudentView: View {
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     
-    @Bindable var student: Student
+    var student: Student
     
     var body: some View {
         StudentForm(

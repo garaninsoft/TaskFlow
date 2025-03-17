@@ -18,17 +18,22 @@ struct MainView: View {
 
     
     @Environment(\.modelContext) private var modelContext
-    @Query private var students: [Student]
+    @Query(sort: \Student.created, order: .forward) private var students: [Student]
     
     @Binding var selectedStudent: Student?
-    @State private var selectedOrder: Order?
+    @Binding var selectedOrder: Order?
     
     @Binding var showSheetNewStudent: Bool
+    @Binding var showSheetNewOrder: Bool
+    
+    @Binding var showSheetEditStudent: Bool
+    @Binding var showSheetEditOrder: Bool
+    
+    @Binding var showConfirmDeleteStudent: Bool
+    @Binding var showConfirmDeleteOrder: Bool
     
     // NavigationPath for column Order Detail
     @State private var detailPath = NavigationPath()
-    
-    
     
     var body: some View {
         NavigationSplitView {
@@ -37,30 +42,79 @@ struct MainView: View {
                 ForEach(students) { student in
                     NavigationLink(student.name, value: student)
                 }
-                .onDelete(perform: deleteStudents)
+                .onChange(of: selectedStudent) {
+                    selectedOrder = nil
+                }
             }
             .toolbar {
                 ToolbarItem {
-                    Button(action: {showSheetNewStudent.toggle()}) {
+                    Button(action: {showSheetNewStudent = true}) {
                         Label("Add Student", systemImage: "plus")
-                    }.sheet(isPresented: $showSheetNewStudent) {
+                    }
+                    .sheet(isPresented: $showSheetNewStudent) {
                         CreateStudentView(isPresented: $showSheetNewStudent)
                     }
                 }
+                if let student = selectedStudent {
+                    ToolbarItem {
+                        Button(action: {showSheetEditStudent = true}) {
+                            Label("Edit Student", systemImage: "pencil")
+                        }
+                        .sheet(isPresented: $showSheetEditStudent) {
+                            UpdateStudentView(isPresented: $showSheetEditStudent, student: student)
+                        }
+                    }
+                    ToolbarItem {
+                        TrashConfirmButton(isPresent: $showConfirmDeleteStudent, label: "Delete Student"){
+                            deleteStudent(student: student)
+                        }
+                    }
+                }
             }
-            
         } content:{
             // column Orders
             NavigationStack{
                 if let student = selectedStudent {
-                    List(student.orders ?? [], selection: $selectedOrder) { order in
-                        NavigationLink(order.title, value: order)
+                    let orders = student.orders ?? []
+                    if !orders.isEmpty {
+                        List(orders, selection: $selectedOrder) { order in
+                            NavigationLink(order.title, value: order)
+                        }
+                    }else{
+                        Text("No Orders")
                     }
                 } else {
                     Text("Select Student")
                 }
             }
             .navigationTitle("Orders")
+            .toolbar {
+                if let student = selectedStudent {
+                    ToolbarItem {
+                        Button(action: {showSheetNewOrder = true}) {
+                            Label("Add Order", systemImage: "plus")
+                        }
+                        .sheet(isPresented: $showSheetNewOrder) {
+                            CreateOrderView(student: student, isPresented: $showSheetNewOrder)
+                        }
+                    }
+                    if let order = selectedOrder {
+                        ToolbarItem {
+                            Button(action: {showSheetEditOrder = true}) {
+                                Label("Edit Order", systemImage: "pencil")
+                            }
+                            .sheet(isPresented: $showSheetEditOrder) {
+                                UpdateOrderView(isPresented: $showSheetEditOrder, order: order)
+                            }
+                        }
+                        ToolbarItem {
+                            TrashConfirmButton(isPresent: $showConfirmDeleteOrder, label: "Delete Order"){
+                                deleteStudent(student: student)
+                            }
+                        }
+                    }
+                }
+            }
         } detail: {
             // column Order Details
             NavigationStack(path: $detailPath) {
@@ -73,12 +127,24 @@ struct MainView: View {
         }
     }
     
-    private func deleteStudents(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(students[index])
-            }
+    private func deleteStudent(student: Student){
+        withAnimation{
+            modelContext.delete(student)
         }
     }
+    
+    private func deleteOrder(order: Order){
+        withAnimation{
+            modelContext.delete(order)
+        }
+    }
+    
+//    private func deleteStudents(offsets: IndexSet) {
+//        withAnimation {
+//            for index in offsets {
+//                modelContext.delete(students[index])
+//            }
+//        }
+//    }
 }
 
