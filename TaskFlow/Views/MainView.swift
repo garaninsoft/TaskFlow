@@ -119,7 +119,7 @@ struct MainView: View {
             // column Order Details
             NavigationStack(path: $detailPath) {
                 if let order = selectedOrder {
-                    Text(order.details)
+                    OrderDetailsView(order: order)
                 } else {
                     Text("Select Order")
                 }
@@ -139,12 +139,5 @@ struct MainView: View {
         }
     }
     
-//    private func deleteStudents(offsets: IndexSet) {
-//        withAnimation {
-//            for index in offsets {
-//                modelContext.delete(students[index])
-//            }
-//        }
-//    }
 }
 

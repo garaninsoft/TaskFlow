@@ -46,7 +46,13 @@ struct TaskFlowApp: App {
     @State private var showConfirmDeleteOrder: Bool = false
     
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([Student.self])
+        let schema = Schema([
+            PaymentCategory.self,
+            Order.self,
+            Payment.self,
+            Schedule.self,
+            Student.self
+        ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         
         do {
