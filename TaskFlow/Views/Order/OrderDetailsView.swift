@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct OrderDetailsView: View {
-    var order: Order
+    
+    let order: Order
+    @Binding var selectedMeeting: Schedule?
+    @Binding var showSheetNewMeeting: Bool
+    @Binding var showConfirmDeleteMeeting: Bool
+    
+    let actionDeleteMeeting: (Schedule) -> Void
     
     let headers = ["Name", "Age", "City"]
     let data1 = [
@@ -59,7 +65,13 @@ struct OrderDetailsView: View {
     
     var body: some View {
         TabView {
-            MeetingsView()
+            MeetingsView(
+                order: order,
+                selectedMeeting: $selectedMeeting,
+                showSheetNewMeeting: $showSheetNewMeeting,
+                showConfirmDeleteMeeting: $showConfirmDeleteMeeting,
+                actionDeleteMeeting: actionDeleteMeeting
+            )
                 .tabItem {
                     Text("Meetings")
                 }

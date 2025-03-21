@@ -22,15 +22,19 @@ struct MainView: View {
     
     @Binding var selectedStudent: Student?
     @Binding var selectedOrder: Order?
+    @Binding var selectedMeeting: Schedule?
     
     @Binding var showSheetNewStudent: Bool
     @Binding var showSheetNewOrder: Bool
+    @Binding var showSheetNewMeeting: Bool
     
     @Binding var showSheetEditStudent: Bool
     @Binding var showSheetEditOrder: Bool
+    @Binding var showSheetEditMeeting: Bool
     
     @Binding var showConfirmDeleteStudent: Bool
     @Binding var showConfirmDeleteOrder: Bool
+    @Binding var showConfirmDeleteMeeting: Bool
     
     // NavigationPath for column Order Detail
     @State private var detailPath = NavigationPath()
@@ -80,6 +84,9 @@ struct MainView: View {
                         List(orders, selection: $selectedOrder) { order in
                             NavigationLink(order.title, value: order)
                         }
+                        .onChange(of: selectedOrder) {
+                            selectedMeeting = nil
+                        }
                     }else{
                         Text("No Orders")
                     }
@@ -119,7 +126,13 @@ struct MainView: View {
             // column Order Details
             NavigationStack(path: $detailPath) {
                 if let order = selectedOrder {
-                    OrderDetailsView(order: order)
+                    OrderDetailsView(
+                        order: order,
+                        selectedMeeting: $selectedMeeting,
+                        showSheetNewMeeting: $showSheetNewMeeting,
+                        showConfirmDeleteMeeting: $showConfirmDeleteMeeting,
+                        actionDeleteMeeting: deleteMeeting
+                    )
                 } else {
                     Text("Select Order")
                 }
@@ -139,5 +152,10 @@ struct MainView: View {
         }
     }
     
+    private func deleteMeeting(meeting: Schedule){
+        withAnimation{
+            modelContext.delete(meeting)
+        }
+    }
 }
 

@@ -35,15 +35,20 @@ struct TaskFlowApp: App {
     
     @State private var selectedStudent: Student? = nil
     @State private var selectedOrder: Order? = nil
+    @State private var selectedMeeting: Schedule? = nil
+    
     
     @State private var showSheetNewStudent: Bool = false
     @State private var showSheetNewOrder: Bool = false
+    @State private var showSheetNewMeeting: Bool = false
     
     @State private var showSheetEditStudent: Bool = false
     @State private var showSheetEditOrder: Bool = false
+    @State private var showSheetEditMeeting: Bool = false
     
     @State private var showConfirmDeleteStudent: Bool = false
     @State private var showConfirmDeleteOrder: Bool = false
+    @State private var showConfirmDeleteMeeting: Bool = false
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -69,12 +74,16 @@ struct TaskFlowApp: App {
             MainView(
                 selectedStudent: $selectedStudent,
                 selectedOrder: $selectedOrder,
+                selectedMeeting: $selectedMeeting,
                 showSheetNewStudent: $showSheetNewStudent,
                 showSheetNewOrder: $showSheetNewOrder,
+                showSheetNewMeeting: $showSheetNewMeeting,
                 showSheetEditStudent: $showSheetEditStudent,
                 showSheetEditOrder: $showSheetEditOrder,
+                showSheetEditMeeting: $showSheetEditMeeting,
                 showConfirmDeleteStudent: $showConfirmDeleteStudent,
-                showConfirmDeleteOrder: $showConfirmDeleteOrder
+                showConfirmDeleteOrder: $showConfirmDeleteOrder,
+                showConfirmDeleteMeeting: $showConfirmDeleteMeeting
             )
         }
         .modelContainer(sharedModelContainer)
@@ -106,6 +115,23 @@ struct TaskFlowApp: App {
                             }
                             Button("Delete") {
                                 showConfirmDeleteOrder = true
+                            }
+                        }
+                    }
+                }
+            }
+            if selectedOrder != nil {
+                CommandMenu("Schedule") {
+                    Button("New meeting..."){
+                        showSheetNewMeeting = true
+                    }
+                    if let selectedMeeting = selectedMeeting{
+                        Menu(selectedMeeting.details){
+                            Button("Edit...") {
+                                showSheetEditMeeting = true
+                            }
+                            Button("Delete") {
+                                showConfirmDeleteMeeting = true
                             }
                         }
                     }

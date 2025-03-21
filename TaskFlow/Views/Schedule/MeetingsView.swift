@@ -7,53 +7,35 @@
 
 import SwiftUI
 
-struct Item: Identifiable {
-    let id = UUID()
-    let name: String
-    let value: Int
-}
-
 struct MeetingsView: View {
     
-    @State private var meetings = [
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 001"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 002"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 003"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 004"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 005"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 006"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 007"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 2000, details: "Android 008")
-    ]
+    let order: Order
     
-    @State private var selectedMeeting: Schedule? = nil
+    @Binding var selectedMeeting: Schedule?
+    @Binding var showSheetNewMeeting: Bool
+    @Binding var showConfirmDeleteMeeting: Bool
     
-    @State private var dateFormatter1: DateFormatter = { // Создаем DateFormatter только один раз
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEE dd-MM HH:MM"  // Пример формата
-        formatter.locale = Locale(identifier: "ru_RU")
-            return formatter
-        }()
-    
-    @State private var dateFormatter2: DateFormatter = { // Создаем DateFormatter только один раз
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd-MM HH:MM"  // Пример формата
-        formatter.locale = Locale(identifier: "ru_RU")
-            return formatter
-        }()
+    let actionDeleteMeeting: (Schedule)-> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Кастомный Toolbar
             HStack {
                 // Кнопка "Добавить"
-                Button(action: {}) {
+                Button(action: {
+                    showSheetNewMeeting = true
+                }) {
                     Label("Meeting", systemImage: "plus")
+                }
+                .sheet(isPresented: $showSheetNewMeeting) {
+                    CreateMeetingView(order: order, isPresented: $showSheetNewMeeting)
                 }
                 
                 // Кнопка "Удалить"
-                Button(action: {}) {
-                    Label("Delete", systemImage: "trash")
+                TrashConfirmButton(isPresent: $showConfirmDeleteMeeting, label: "Delete Meeting"){
+                    if let meeting = selectedMeeting{
+                        actionDeleteMeeting(meeting)
+                    }
                 }
                 .disabled(selectedMeeting == nil) // Кнопка неактивна, если ничего не выбрано
             }
@@ -87,26 +69,16 @@ struct MeetingsView: View {
                     .font(.headline)
                     .padding(.horizontal, 8)
                 
-                
-    
             }
             .padding(.vertical, 8)
             .background(Color.gray.opacity(0.1))
             
             // Список с данными
-            List(meetings) { meeting in
+            List(order.schedules ?? []) { meeting in
                 HStack {
-                    Text(dateFormatter1.string(from: meeting.start))
-                        .frame(width: 150, alignment: .leading)
-                        .padding(.horizontal, 8)
-                    
-                    Text(dateFormatter2.string(from:meeting.finish))
-                        .frame(width: 150, alignment: .leading)
-                        .padding(.horizontal, 8)
-                    
-                    Text(dateFormatter2.string(from:meeting.completed))
-                        .frame(width: 150, alignment: .leading)
-                        .padding(.horizontal, 8)
+                    DateTimeFormatText(date: meeting.start, format: .format1)
+                    DateTimeFormatText(date: meeting.finish, format: .format2)
+                    DateTimeFormatText(date: meeting.completed, format: .format2)
                     
                     Text("\(meeting.cost.formatted(.number.precision(.fractionLength(2))))")
                         .frame(width: 150, alignment: .leading)

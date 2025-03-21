@@ -9,18 +9,16 @@ import SwiftUI
 
 struct CreateMeetingView: View {
     
-    @Environment(\.modelContext) private var modelContext
-    
-    var student: Student
+    var order: Order
     @Binding var isPresented: Bool
     
     var body: some View {
-        OrderForm(
-            titleForm: "Create Order",
+        MeetingForm(
+            titleForm: "Create Meeting",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
-            action: {order in
-                student.orders?.append(order)
+            action: {meeting in
+                order.schedules?.append(meeting)
             }
         )
     }
