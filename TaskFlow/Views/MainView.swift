@@ -71,6 +71,7 @@ struct MainView: View {
                     ToolbarItem {
                         TrashConfirmButton(isPresent: $showConfirmDeleteStudent, label: "Delete Student"){
                             deleteStudent(student: student)
+                            selectedStudent = nil
                         }
                     }
                 }
@@ -116,7 +117,8 @@ struct MainView: View {
                         }
                         ToolbarItem {
                             TrashConfirmButton(isPresent: $showConfirmDeleteOrder, label: "Delete Order"){
-                                deleteStudent(student: student)
+                                deleteOrder(order: order)
+                                selectedOrder = nil
                             }
                         }
                     }
@@ -130,8 +132,10 @@ struct MainView: View {
                         order: order,
                         selectedMeeting: $selectedMeeting,
                         showSheetNewMeeting: $showSheetNewMeeting,
+                        showSheetEditMeeting: $showSheetEditMeeting,
                         showConfirmDeleteMeeting: $showConfirmDeleteMeeting,
-                        actionDeleteMeeting: deleteMeeting
+                        actionDeleteMeeting: deleteMeeting,
+                        actionUpdateMeeting: updateMeeting
                     )
                 } else {
                     Text("Select Order")
@@ -155,6 +159,17 @@ struct MainView: View {
     private func deleteMeeting(meeting: Schedule){
         withAnimation{
             modelContext.delete(meeting)
+        }
+    }
+    
+    private func updateMeeting(meeting: Schedule){
+        withAnimation{
+            selectedMeeting?.start = meeting.start
+            selectedMeeting?.finish = meeting.finish
+            selectedMeeting?.completed = meeting.completed
+            selectedMeeting?.cost = meeting.cost
+            selectedMeeting?.details = meeting.details
+            try? modelContext.save()
         }
     }
 }

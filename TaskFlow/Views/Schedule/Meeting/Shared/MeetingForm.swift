@@ -49,23 +49,23 @@ struct MeetingForm: View {
                 .font(.title2)
             
             // Поле для выбора даты начала
-            DatePickerButton(selectedDate: $startDate)
+            DatePickerButton(caption:"Start", selectedDate: $startDate)
 
             // Поле для выбора даты окончания
-            DatePickerButton(selectedDate: $finishDate)
+            DatePickerButton(caption:"Finish", selectedDate: $finishDate)
             
             // Поле для выбора даты завершения (если занятие состоялось)
-            DatePickerButton(selectedDate: $completedDate)
+            DatePickerButton(caption:"Completed", selectedDate: $completedDate)
 
             // Поле для ввода стоимости
             TextField("Cost (rur/60)", value: $cost, format: .number)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal, 16)
+                
             
             // Поле для ввода деталей
             TextField("Details", text: $details)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal, 16)
+
             
             HStack {
                 Button("Cancel", role: .cancel) {
@@ -118,4 +118,9 @@ struct MeetingForm: View {
         }
         return true
     }
+}
+
+#Preview {
+    @Previewable @State var isPresent: Bool = false
+    MeetingForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent){_ in }
 }

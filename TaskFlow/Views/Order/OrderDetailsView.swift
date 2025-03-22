@@ -12,9 +12,11 @@ struct OrderDetailsView: View {
     let order: Order
     @Binding var selectedMeeting: Schedule?
     @Binding var showSheetNewMeeting: Bool
+    @Binding var showSheetEditMeeting: Bool
     @Binding var showConfirmDeleteMeeting: Bool
     
     let actionDeleteMeeting: (Schedule) -> Void
+    let actionUpdateMeeting: (Schedule) -> Void
     
     let headers = ["Name", "Age", "City"]
     let data1 = [
@@ -69,8 +71,10 @@ struct OrderDetailsView: View {
                 order: order,
                 selectedMeeting: $selectedMeeting,
                 showSheetNewMeeting: $showSheetNewMeeting,
+                showSheetEditMeeting: $showSheetEditMeeting,
                 showConfirmDeleteMeeting: $showConfirmDeleteMeeting,
-                actionDeleteMeeting: actionDeleteMeeting
+                actionDeleteMeeting: actionDeleteMeeting,
+                actionUpdateMeeting: actionUpdateMeeting
             )
                 .tabItem {
                     Text("Meetings")

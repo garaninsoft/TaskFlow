@@ -8,41 +8,34 @@
 import SwiftUI
 
 struct DatePickerButton: View {
+    let caption: String
+    
     @Binding var selectedDate: Date?
     @State private var showDatePicker = false
+    
     var body: some View {
-            VStack(spacing: 20) {
-                // Поле для отображения выбранной даты
-                HStack {
-                    Text(selectedDate?.formatted(date: .abbreviated, time: .shortened) ?? "Дата не выбрана")
-                        .foregroundColor(selectedDate == nil ? .gray : .primary)
-                    
-                    Spacer()
-                    
-                    // Кнопка для сброса даты
-                    if selectedDate != nil {
-                        Button(action: {
-                            selectedDate = nil
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.red)
-                        }
-                        .buttonStyle(PlainButtonStyle())
+        // Поле для отображения выбранной даты
+        HStack {
+            Text(caption)
+            Spacer()
+            HStack {
+                Text(selectedDate?.formatted(date: .abbreviated, time: .shortened) ?? "Дата не выбрана")
+                    .foregroundColor(selectedDate == nil ? .gray : .primary)
+                
+                // Кнопка для сброса даты
+                if selectedDate != nil {
+                    Button(action: {
+                        selectedDate = nil
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.red)
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
                 
                 // Кнопка для открытия DatePicker
-                Button(action: {
+                Button("Выбрать дату"){
                     showDatePicker.toggle()
-                }) {
-                    Text("Выбрать дату")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
                 }
                 
                 // DatePicker в sheet
@@ -50,8 +43,13 @@ struct DatePickerButton: View {
                     DatePickerView(selectedDate: $selectedDate)
                 }
             }
-            .padding()
+            .padding(8)
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(8)
         }
+        .frame(maxWidth: .infinity)
+        
+    }
 }
 
 
@@ -97,4 +95,9 @@ struct DatePickerView: View {
             tempDate = selectedDate ?? Date()
         }
     }
+}
+
+#Preview {
+    @Previewable @State var selectedDate: Date? = Date()
+    DatePickerButton(caption: "Caption", selectedDate: $selectedDate)
 }

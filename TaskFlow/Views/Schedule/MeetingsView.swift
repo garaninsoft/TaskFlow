@@ -13,9 +13,11 @@ struct MeetingsView: View {
     
     @Binding var selectedMeeting: Schedule?
     @Binding var showSheetNewMeeting: Bool
+    @Binding var showSheetEditMeeting: Bool
     @Binding var showConfirmDeleteMeeting: Bool
     
     let actionDeleteMeeting: (Schedule)-> Void
+    let actionUpdateMeeting: (Schedule)-> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -30,6 +32,19 @@ struct MeetingsView: View {
                 .sheet(isPresented: $showSheetNewMeeting) {
                     CreateMeetingView(order: order, isPresented: $showSheetNewMeeting)
                 }
+                
+                // Кнопка "Редактировать"
+                Button(action: {
+                    showSheetEditMeeting = true
+                }) {
+                    Label("Edit", systemImage: "pencil")
+                }
+                .sheet(isPresented: $showSheetEditMeeting) {
+                    if let meeting = selectedMeeting{
+                        UpdateMeetingView(meeting: meeting, isPresented: $showSheetEditMeeting, actionUpdateMeeting: actionUpdateMeeting)
+                    }
+                }
+                .disabled(selectedMeeting == nil)
                 
                 // Кнопка "Удалить"
                 TrashConfirmButton(isPresent: $showConfirmDeleteMeeting, label: "Delete Meeting"){
