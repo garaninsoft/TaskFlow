@@ -19,22 +19,8 @@ struct MainView: View {
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Student.created, order: .forward) private var students: [Student]
-    
-    @Binding var selectedStudent: Student?
-    @Binding var selectedOrder: Order?
-    @Binding var selectedMeeting: Schedule?
-    
-    @Binding var showSheetNewStudent: Bool
-    @Binding var showSheetNewOrder: Bool
-    @Binding var showSheetNewMeeting: Bool
-    
-    @Binding var showSheetEditStudent: Bool
-    @Binding var showSheetEditOrder: Bool
-    @Binding var showSheetEditMeeting: Bool
-    
-    @Binding var showConfirmDeleteStudent: Bool
-    @Binding var showConfirmDeleteOrder: Bool
-    @Binding var showConfirmDeleteMeeting: Bool
+
+    @ObservedObject var viewModel: MainViewModel
     
     // NavigationPath for column Order Detail
     @State private var detailPath = NavigationPath()
@@ -42,36 +28,36 @@ struct MainView: View {
     var body: some View {
         NavigationSplitView {
             // column Students
-            List(selection: $selectedStudent) {
+            List(selection: $viewModel.selectedStudent) {
                 ForEach(students) { student in
                     NavigationLink(student.name, value: student)
                 }
-                .onChange(of: selectedStudent) {
-                    selectedOrder = nil
+                .onChange(of: viewModel.selectedStudent) {
+                    viewModel.selectedOrder = nil
                 }
             }
             .toolbar {
                 ToolbarItem {
-                    Button(action: {showSheetNewStudent = true}) {
+                    Button(action: {viewModel.showSheetNewStudent = true}) {
                         Label("Add Student", systemImage: "plus")
                     }
-                    .sheet(isPresented: $showSheetNewStudent) {
-                        CreateStudentView(isPresented: $showSheetNewStudent)
+                    .sheet(isPresented: $viewModel.showSheetNewStudent) {
+                        CreateStudentView(isPresented: $viewModel.showSheetNewStudent)
                     }
                 }
-                if let student = selectedStudent {
+                if let student = viewModel.selectedStudent {
                     ToolbarItem {
-                        Button(action: {showSheetEditStudent = true}) {
+                        Button(action: {viewModel.showSheetEditStudent = true}) {
                             Label("Edit Student", systemImage: "pencil")
                         }
-                        .sheet(isPresented: $showSheetEditStudent) {
-                            UpdateStudentView(isPresented: $showSheetEditStudent, student: student)
+                        .sheet(isPresented: $viewModel.showSheetEditStudent) {
+                            UpdateStudentView(isPresented: $viewModel.showSheetEditStudent, student: student)
                         }
                     }
                     ToolbarItem {
-                        TrashConfirmButton(isPresent: $showConfirmDeleteStudent, label: "Delete Student"){
+                        TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteStudent, label: "Delete Student"){
                             deleteStudent(student: student)
-                            selectedStudent = nil
+                            viewModel.selectedStudent = nil
                         }
                     }
                 }
@@ -79,14 +65,14 @@ struct MainView: View {
         } content:{
             // column Orders
             NavigationStack{
-                if let student = selectedStudent {
+                if let student = viewModel.selectedStudent {
                     let orders = student.orders ?? []
                     if !orders.isEmpty {
-                        List(orders, selection: $selectedOrder) { order in
+                        List(orders, selection: $viewModel.selectedOrder) { order in
                             NavigationLink(order.title, value: order)
                         }
-                        .onChange(of: selectedOrder) {
-                            selectedMeeting = nil
+                        .onChange(of: viewModel.selectedOrder) {
+                            viewModel.selectedMeeting = nil
                         }
                     }else{
                         Text("No Orders")
@@ -97,28 +83,28 @@ struct MainView: View {
             }
             .navigationTitle("Orders")
             .toolbar {
-                if let student = selectedStudent {
+                if let student = viewModel.selectedStudent {
                     ToolbarItem {
-                        Button(action: {showSheetNewOrder = true}) {
+                        Button(action: {viewModel.showSheetNewOrder = true}) {
                             Label("Add Order", systemImage: "plus")
                         }
-                        .sheet(isPresented: $showSheetNewOrder) {
-                            CreateOrderView(student: student, isPresented: $showSheetNewOrder)
+                        .sheet(isPresented: $viewModel.showSheetNewOrder) {
+                            CreateOrderView(student: student, isPresented: $viewModel.showSheetNewOrder)
                         }
                     }
-                    if let order = selectedOrder {
+                    if let order = viewModel.selectedOrder {
                         ToolbarItem {
-                            Button(action: {showSheetEditOrder = true}) {
+                            Button(action: {viewModel.showSheetEditOrder = true}) {
                                 Label("Edit Order", systemImage: "pencil")
                             }
-                            .sheet(isPresented: $showSheetEditOrder) {
-                                UpdateOrderView(isPresented: $showSheetEditOrder, order: order)
+                            .sheet(isPresented: $viewModel.showSheetEditOrder) {
+                                UpdateOrderView(isPresented: $viewModel.showSheetEditOrder, order: order)
                             }
                         }
                         ToolbarItem {
-                            TrashConfirmButton(isPresent: $showConfirmDeleteOrder, label: "Delete Order"){
+                            TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteOrder, label: "Delete Order"){
                                 deleteOrder(order: order)
-                                selectedOrder = nil
+                                viewModel.selectedOrder = nil
                             }
                         }
                     }
@@ -127,13 +113,9 @@ struct MainView: View {
         } detail: {
             // column Order Details
             NavigationStack(path: $detailPath) {
-                if let order = selectedOrder {
+                if viewModel.selectedOrder != nil {
                     OrderDetailsView(
-                        order: order,
-                        selectedMeeting: $selectedMeeting,
-                        showSheetNewMeeting: $showSheetNewMeeting,
-                        showSheetEditMeeting: $showSheetEditMeeting,
-                        showConfirmDeleteMeeting: $showConfirmDeleteMeeting,
+                        viewModel: viewModel,
                         actionDeleteMeeting: deleteMeeting,
                         actionUpdateMeeting: updateMeeting
                     )
@@ -164,13 +146,12 @@ struct MainView: View {
     
     private func updateMeeting(meeting: Schedule){
         withAnimation{
-            selectedMeeting?.start = meeting.start
-            selectedMeeting?.finish = meeting.finish
-            selectedMeeting?.completed = meeting.completed
-            selectedMeeting?.cost = meeting.cost
-            selectedMeeting?.details = meeting.details
+            viewModel.selectedMeeting?.start = meeting.start
+            viewModel.selectedMeeting?.finish = meeting.finish
+            viewModel.selectedMeeting?.completed = meeting.completed
+            viewModel.selectedMeeting?.cost = meeting.cost
+            viewModel.selectedMeeting?.details = meeting.details
             try? modelContext.save()
         }
     }
 }
-

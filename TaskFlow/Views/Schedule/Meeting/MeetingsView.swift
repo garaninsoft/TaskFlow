@@ -1,5 +1,5 @@
 //
-//  PaymentsView.swift
+//  MeetingsView.swift
 //  TaskFlow
 //
 //  Created by alexandergaranin on 18.03.2025.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct PaymentsView: View {
+struct MeetingsView: View {
 
     @ObservedObject var viewModel: MainViewModel
     
-    let actionDeletePayment: (Payment)-> Void
-    let actionUpdatePayment: (Payment)-> Void
+    let actionDeleteMeeting: (Schedule)-> Void
+    let actionUpdateMeeting: (Schedule)-> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -21,55 +21,60 @@ struct PaymentsView: View {
                 HStack {
                     // Кнопка "Добавить"
                     Button(action: {
-                        viewModel.showSheetNewPayment = true
+                        viewModel.showSheetNewMeeting = true
                     }) {
-                        Label("Payment", systemImage: "plus")
+                        Label("Meeting", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewMeeting) {
-                        //CreatePaymentView(order: order, isPresented: $viewModel.showSheetNewPayment)
+                        CreateMeetingView(order: order, isPresented: $viewModel.showSheetNewMeeting)
                     }
                     
                     // Кнопка "Редактировать"
                     Button(action: {
-                        viewModel.showSheetEditPayment = true
+                        viewModel.showSheetEditMeeting = true
                     }) {
                         Label("Edit", systemImage: "pencil")
                     }
-                    .sheet(isPresented: $viewModel.showSheetEditPayment) {
-                        if let payment = viewModel.selectedPayment{
-//                            UpdatePaymentView(
-//                                payment: payment,
-//                                isPresented: $viewModel.showSheetEditPayment,
-//                                actionUpdatePayment: actionUpdatePayment
-//                            )
+                    .sheet(isPresented: $viewModel.showSheetEditMeeting) {
+                        if let meeting = viewModel.selectedMeeting{
+                            UpdateMeetingView(
+                                meeting: meeting,
+                                isPresented: $viewModel.showSheetEditMeeting,
+                                actionUpdateMeeting: actionUpdateMeeting
+                            )
                         }
                     }
-                    .disabled(viewModel.selectedPayment == nil)
+                    .disabled(viewModel.selectedMeeting == nil)
                     
                     // Кнопка "Удалить"
-                    TrashConfirmButton(isPresent: $viewModel.showConfirmDeletePayment, label: "Delete Payment"){
-                        if let payment = viewModel.selectedPayment{
-                            actionDeletePayment(payment)
+                    TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteMeeting, label: "Delete Meeting"){
+                        if let meeting = viewModel.selectedMeeting{
+                            actionDeleteMeeting(meeting)
                         }
                     }
-                    .disabled(viewModel.selectedPayment == nil) // Кнопка неактивна, если ничего не выбрано
+                    .disabled(viewModel.selectedMeeting == nil) // Кнопка неактивна, если ничего не выбрано
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 8)
                 .background(Color.gray.opacity(0.1))
                 // Заголовки колонок
                 HStack {
-                    Text("Date")
+                    Text("Start")
                         .frame(width: 150, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
-                    Text("Amount rur")
+                    Text("Finish")
                         .frame(width: 150, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
-                    Text("Category")
+                    Text("Completed")
+                        .frame(width: 150, alignment: .leading)
+                        .font(.headline)
+                        .padding(.horizontal, 8)
+                    
+                    Text("Cost rur/60")
                         .frame(width: 150, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
@@ -84,40 +89,37 @@ struct PaymentsView: View {
                 .background(Color.gray.opacity(0.1))
                 
                 // Список с данными
-                List(order.payments ?? []) { payment in
+                List(order.schedules ?? []) { meeting in
                     HStack {
-                        DateTimeFormatText(date: payment.created, format: .format1)
+                        DateTimeFormatText(date: meeting.start, format: .format1)
+                        DateTimeFormatText(date: meeting.finish, format: .format2)
+                        DateTimeFormatText(date: meeting.completed, format: .format2)
                         
-                        Text("\(payment.amount.formatted(.number.precision(.fractionLength(2))))")
+                        Text("\(meeting.cost.formatted(.number.precision(.fractionLength(2))))")
                             .frame(width: 150, alignment: .leading)
                             .padding(.horizontal, 8)
                         
-                        Text("\(payment.category?.name ?? "")")
-                            .frame(width: 150, alignment: .leading)
-                            .padding(.horizontal, 8)
-                        
-                        Text("\(payment.details)")
+                        Text("\(meeting.details)")
                             .frame(width: 150, alignment: .leading)
                             .padding(.horizontal, 8)
                     }
                     .contentShape(Rectangle()) // Чтобы вся строка была кликабельной
                     .onTapGesture {
-                        viewModel.selectedPayment = payment
-                        print("Клик по элементу: \(payment.details)")
+                        viewModel.selectedMeeting = meeting
+                        print("Клик по элементу: \(meeting.details)")
                     }
-                    .background(viewModel.selectedMeeting?.id == payment.id ? Color.blue.opacity(0.2) : Color.clear)
+                    .background(viewModel.selectedMeeting?.id == meeting.id ? Color.blue.opacity(0.2) : Color.clear)
                     .cornerRadius(4)
                 }
             }
         }
         .padding()
         .contextMenu {
-            Button("Увеличить значение") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
-            Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
+            Button("Увеличить значение") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
+            Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
             Divider()
-            Button("Удалить") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
+            Button("Удалить") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
                 .disabled(viewModel.selectedMeeting == nil)
         }
     }
 }
-

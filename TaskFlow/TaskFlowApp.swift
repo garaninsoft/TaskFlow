@@ -33,22 +33,7 @@ struct TaskFlowApp: App {
     //    }
     // ^^^
     
-    @State private var selectedStudent: Student? = nil
-    @State private var selectedOrder: Order? = nil
-    @State private var selectedMeeting: Schedule? = nil
-    
-    
-    @State private var showSheetNewStudent: Bool = false
-    @State private var showSheetNewOrder: Bool = false
-    @State private var showSheetNewMeeting: Bool = false
-    
-    @State private var showSheetEditStudent: Bool = false
-    @State private var showSheetEditOrder: Bool = false
-    @State private var showSheetEditMeeting: Bool = false
-    
-    @State private var showConfirmDeleteStudent: Bool = false
-    @State private var showConfirmDeleteOrder: Bool = false
-    @State private var showConfirmDeleteMeeting: Bool = false
+    @StateObject var viewModel = MainViewModel()
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -71,75 +56,59 @@ struct TaskFlowApp: App {
         @Environment(\.openWindow) var openWindow
         
         WindowGroup {
-            MainView(
-                selectedStudent: $selectedStudent,
-                selectedOrder: $selectedOrder,
-                selectedMeeting: $selectedMeeting,
-                showSheetNewStudent: $showSheetNewStudent,
-                showSheetNewOrder: $showSheetNewOrder,
-                showSheetNewMeeting: $showSheetNewMeeting,
-                showSheetEditStudent: $showSheetEditStudent,
-                showSheetEditOrder: $showSheetEditOrder,
-                showSheetEditMeeting: $showSheetEditMeeting,
-                showConfirmDeleteStudent: $showConfirmDeleteStudent,
-                showConfirmDeleteOrder: $showConfirmDeleteOrder,
-                showConfirmDeleteMeeting: $showConfirmDeleteMeeting
-            )
+            MainView(viewModel: viewModel)
         }
         .modelContainer(sharedModelContainer)
         .commands {
             CommandMenu("Students") {
                 Button("New..."){
-                    showSheetNewStudent = true
+                    viewModel.showSheetNewStudent = true
                 }
-                if let selectedStudent = selectedStudent {
+                if let selectedStudent = viewModel.selectedStudent {
                     Menu(selectedStudent.name){
                         Button("Edit...") {
-                            showSheetEditStudent = true
+                            viewModel.showSheetEditStudent = true
                         }
                         Button("Delete") {
-                            showConfirmDeleteStudent = true
+                            viewModel.showConfirmDeleteStudent = true
                         }
                     }
                 }
             }
-            if selectedStudent != nil {
+            if viewModel.selectedStudent != nil {
                 CommandMenu("Orders") {
                     Button("New..."){
-                        showSheetNewOrder = true
+                        viewModel.showSheetNewOrder = true
                     }
-                    if let selectedOrder = selectedOrder{
+                    if let selectedOrder = viewModel.selectedOrder{
                         Menu(selectedOrder.title){
                             Button("Edit...") {
-                                showSheetEditOrder = true
+                                viewModel.showSheetEditOrder = true
                             }
                             Button("Delete") {
-                                showConfirmDeleteOrder = true
+                                viewModel.showConfirmDeleteOrder = true
                             }
                         }
                     }
                 }
             }
-            if selectedOrder != nil {
+            if viewModel.selectedOrder != nil {
                 CommandMenu("Schedule") {
                     Button("New meeting..."){
-                        showSheetNewMeeting = true
+                        viewModel.showSheetNewMeeting = true
                     }
-                    if let selectedMeeting = selectedMeeting{
+                    if let selectedMeeting = viewModel.selectedMeeting{
                         Menu(selectedMeeting.details){
                             Button("Edit...") {
-                                showSheetEditMeeting = true
+                                viewModel.showSheetEditMeeting = true
                             }
                             Button("Delete") {
-                                showConfirmDeleteMeeting = true
+                                viewModel.showConfirmDeleteMeeting = true
                             }
                         }
                     }
                 }
             }
-            
         }
-        
     }
-    
 }

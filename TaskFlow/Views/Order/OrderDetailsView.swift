@@ -9,70 +9,15 @@ import SwiftUI
 
 struct OrderDetailsView: View {
     
-    let order: Order
-    @Binding var selectedMeeting: Schedule?
-    @Binding var showSheetNewMeeting: Bool
-    @Binding var showSheetEditMeeting: Bool
-    @Binding var showConfirmDeleteMeeting: Bool
+    @ObservedObject var viewModel: MainViewModel
     
     let actionDeleteMeeting: (Schedule) -> Void
     let actionUpdateMeeting: (Schedule) -> Void
     
-    let headers = ["Name", "Age", "City"]
-    let data1 = [
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"]
-    ]
-    let data2 = [
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"],
-        ["Alice", "30", "New York"],
-        ["Bob", "25", "London"],
-        ["Charlie", "40", "Paris"],
-        ["David", "35", "Tokyo"]
-    ]
-    
-    let columnWidths: [CGFloat] = [100, 50, 120] // Задаем ширину столбцов
-    
     var body: some View {
         TabView {
             MeetingsView(
-                order: order,
-                selectedMeeting: $selectedMeeting,
-                showSheetNewMeeting: $showSheetNewMeeting,
-                showSheetEditMeeting: $showSheetEditMeeting,
-                showConfirmDeleteMeeting: $showConfirmDeleteMeeting,
+                viewModel: viewModel,
                 actionDeleteMeeting: actionDeleteMeeting,
                 actionUpdateMeeting: actionUpdateMeeting
             )
@@ -80,7 +25,9 @@ struct OrderDetailsView: View {
                     Text("Meetings")
                 }
             
-            PaymentsView(headers: headers, data: data2, columnWidths: columnWidths)
+            PaymentsView(
+                viewModel: viewModel, actionDeletePayment: {_ in }, actionUpdatePayment: {_ in }
+            )
                 .tabItem {
                     Text("Payments")
                 }
