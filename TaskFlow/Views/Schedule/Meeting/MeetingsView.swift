@@ -11,8 +11,7 @@ struct MeetingsView: View {
 
     @ObservedObject var viewModel: MainViewModel
     
-    let actionDeleteMeeting: (Schedule)-> Void
-    let actionUpdateMeeting: (Schedule)-> Void
+    let meetingsProtocol: MeetingsProtocol
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -40,7 +39,7 @@ struct MeetingsView: View {
                             UpdateMeetingView(
                                 meeting: meeting,
                                 isPresented: $viewModel.showSheetEditMeeting,
-                                actionUpdateMeeting: actionUpdateMeeting
+                                actionUpdateMeeting: meetingsProtocol.actionUpdateMeeting
                             )
                         }
                     }
@@ -49,7 +48,7 @@ struct MeetingsView: View {
                     // Кнопка "Удалить"
                     TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteMeeting, label: "Delete Meeting"){
                         if let meeting = viewModel.selectedMeeting{
-                            actionDeleteMeeting(meeting)
+                            meetingsProtocol.actionDeleteMeeting(meeting: meeting)
                         }
                     }
                     .disabled(viewModel.selectedMeeting == nil) // Кнопка неактивна, если ничего не выбрано

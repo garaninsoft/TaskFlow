@@ -61,10 +61,10 @@ struct DatePickerView: View {
     @State private var tempDate = Date() // Временная переменная для DatePicker
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 1) {
             Text("Выберите дату")
                 .font(.title)
-                .padding(.top, 16)
+                .padding(.top, 8)
             
             DatePicker("", selection: $tempDate, displayedComponents: [.date, .hourAndMinute])
                 .datePickerStyle(.stepperField)
@@ -74,27 +74,28 @@ struct DatePickerView: View {
                 Button("Отмена") {
                     dismiss()
                 }
-                .padding()
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(8)
+            
                 
                 Button("Сохранить") {
                     selectedDate = tempDate
                     dismiss()
                 }
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(8)
+               
             }
-            .padding()
+
         }
-        .frame(width: 400, height: 400)
+        .padding()
+//        .frame(width: 400, height: 400)
         .onAppear {
             // Устанавливаем временную дату при открытии
             tempDate = selectedDate ?? Date()
         }
     }
+}
+
+#Preview {
+    @Previewable @State var selectedDate: Date? = Date()
+    DatePickerView(selectedDate: $selectedDate)
 }
 
 #Preview {

@@ -13,9 +13,9 @@ final class Payment {
     var category: PaymentCategory?
     var amount: Double
     var details: String
-    var created: Date
+    var created: Date?
     
-    init(order: Order? = nil, category: PaymentCategory? = nil, amount: Double, details: String, created: Date) {
+    init(order: Order? = nil, category: PaymentCategory? = nil, amount: Double, details: String, created: Date?) {
         self.order = order
         self.category = category
         self.amount = amount

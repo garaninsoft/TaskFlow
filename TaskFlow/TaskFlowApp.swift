@@ -10,7 +10,6 @@ import SwiftData
 
 @main
 struct TaskFlowApp: App {
-    
     // *** Эти примеры возможно пригодятся. Потом удалю.
     //    init() {
     //        // Заменяем названия после запуска приложения
@@ -57,9 +56,23 @@ struct TaskFlowApp: App {
         
         WindowGroup {
             MainView(viewModel: viewModel)
+                .tabItem {
+                    Label("Главное", systemImage: "house")
+                }
+                .sheet(isPresented: $viewModel.showSettings){
+                    PaymentCategoriesView(isPresented: $viewModel.showSettings)
+                        .environment(\.modelContext, sharedModelContainer.mainContext)
+                }
         }
         .modelContainer(sharedModelContainer)
         .commands {
+            CommandGroup(after: .appInfo) {
+                Divider()
+                Button("Settings") {
+                    viewModel.showSettings = true
+                }
+            }
+            
             CommandMenu("Students") {
                 Button("New..."){
                     viewModel.showSheetNewStudent = true
@@ -93,17 +106,36 @@ struct TaskFlowApp: App {
                 }
             }
             if viewModel.selectedOrder != nil {
-                CommandMenu("Schedule") {
-                    Button("New meeting..."){
-                        viewModel.showSheetNewMeeting = true
-                    }
-                    if let selectedMeeting = viewModel.selectedMeeting{
-                        Menu(selectedMeeting.details){
-                            Button("Edit...") {
-                                viewModel.showSheetEditMeeting = true
+                if viewModel.selectedTab == .meetings {
+                    CommandMenu("Schedule") {
+                        Button("New meeting..."){
+                            viewModel.showSheetNewMeeting = true
+                        }
+                        if let selectedMeeting = viewModel.selectedMeeting{
+                            Menu(selectedMeeting.details){
+                                Button("Edit...") {
+                                    viewModel.showSheetEditMeeting = true
+                                }
+                                Button("Delete") {
+                                    viewModel.showConfirmDeleteMeeting = true
+                                }
                             }
-                            Button("Delete") {
-                                viewModel.showConfirmDeleteMeeting = true
+                        }
+                    }
+                }
+                if viewModel.selectedTab == .payments {
+                    CommandMenu("Payments") {
+                        Button("New payment..."){
+                            viewModel.showSheetNewPayment = true
+                        }
+                        if let selectedPayment = viewModel.selectedPayment{
+                            Menu(selectedPayment.details){
+                                Button("Edit...") {
+                                    viewModel.showSheetEditPayment = true
+                                }
+                                Button("Delete") {
+                                    viewModel.showConfirmDeletePayment = true
+                                }
                             }
                         }
                     }

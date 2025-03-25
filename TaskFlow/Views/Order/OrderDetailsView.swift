@@ -7,35 +7,41 @@
 
 import SwiftUI
 
+enum EOrderDetails: Int {
+    case meetings, payments, calendar
+}
+
 struct OrderDetailsView: View {
     
     @ObservedObject var viewModel: MainViewModel
     
-    let actionDeleteMeeting: (Schedule) -> Void
-    let actionUpdateMeeting: (Schedule) -> Void
+    let ordersProtocol: OrdersProtocol
     
     var body: some View {
-        TabView {
+        TabView(selection: $viewModel.selectedTab) {
             MeetingsView(
                 viewModel: viewModel,
-                actionDeleteMeeting: actionDeleteMeeting,
-                actionUpdateMeeting: actionUpdateMeeting
+                meetingsProtocol: ordersProtocol
             )
                 .tabItem {
                     Text("Meetings")
                 }
+                .tag(EOrderDetails.meetings)
             
             PaymentsView(
-                viewModel: viewModel, actionDeletePayment: {_ in }, actionUpdatePayment: {_ in }
+                viewModel: viewModel,
+                paymentProtocol: ordersProtocol
             )
                 .tabItem {
                     Text("Payments")
                 }
+                .tag(EOrderDetails.payments)
             
             CalendarView()
                 .tabItem {
                     Text("Calendar")
                 }
+                .tag(EOrderDetails.calendar)
         }
     }
 }

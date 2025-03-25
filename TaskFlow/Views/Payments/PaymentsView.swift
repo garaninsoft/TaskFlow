@@ -11,8 +11,7 @@ struct PaymentsView: View {
 
     @ObservedObject var viewModel: MainViewModel
     
-    let actionDeletePayment: (Payment)-> Void
-    let actionUpdatePayment: (Payment)-> Void
+    let paymentProtocol: PaymentsProtocol
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -25,8 +24,8 @@ struct PaymentsView: View {
                     }) {
                         Label("Payment", systemImage: "plus")
                     }
-                    .sheet(isPresented: $viewModel.showSheetNewMeeting) {
-                        //CreatePaymentView(order: order, isPresented: $viewModel.showSheetNewPayment)
+                    .sheet(isPresented: $viewModel.showSheetNewPayment) {
+                        CreatePaymentView(order: order, isPresented: $viewModel.showSheetNewPayment)
                     }
                     
                     // Кнопка "Редактировать"
@@ -37,11 +36,11 @@ struct PaymentsView: View {
                     }
                     .sheet(isPresented: $viewModel.showSheetEditPayment) {
                         if let payment = viewModel.selectedPayment{
-//                            UpdatePaymentView(
-//                                payment: payment,
-//                                isPresented: $viewModel.showSheetEditPayment,
-//                                actionUpdatePayment: actionUpdatePayment
-//                            )
+                            UpdatePaymentView(
+                                payment: payment,
+                                isPresented: $viewModel.showSheetEditPayment,
+                                actionUpdatePayment: paymentProtocol.actionUpdatePayment
+                            )
                         }
                     }
                     .disabled(viewModel.selectedPayment == nil)
@@ -49,7 +48,7 @@ struct PaymentsView: View {
                     // Кнопка "Удалить"
                     TrashConfirmButton(isPresent: $viewModel.showConfirmDeletePayment, label: "Delete Payment"){
                         if let payment = viewModel.selectedPayment{
-                            actionDeletePayment(payment)
+                            paymentProtocol.actionDeletePayment(payment: payment)
                         }
                     }
                     .disabled(viewModel.selectedPayment == nil) // Кнопка неактивна, если ничего не выбрано
@@ -105,7 +104,7 @@ struct PaymentsView: View {
                         viewModel.selectedPayment = payment
                         print("Клик по элементу: \(payment.details)")
                     }
-                    .background(viewModel.selectedMeeting?.id == payment.id ? Color.blue.opacity(0.2) : Color.clear)
+                    .background(viewModel.selectedPayment?.id == payment.id ? Color.blue.opacity(0.2) : Color.clear)
                     .cornerRadius(4)
                 }
             }

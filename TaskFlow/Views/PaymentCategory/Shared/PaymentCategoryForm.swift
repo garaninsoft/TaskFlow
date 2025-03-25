@@ -1,38 +1,39 @@
 //
-//  StudentForm.swift
+//  PaymentCategoryForm.swift
 //  TaskFlow
 //
-//  Created by alexandergaranin on 04.03.2025.
+//  Created by alexandergaranin on 25.03.2025.
 //
 
 import SwiftUI
 
-struct StudentForm: View {
-    
+struct PaymentCategoryForm: View {
     init(
-        student: Student? = nil,
+        category: PaymentCategory? = nil,
         titleForm: String,
         captionButtonSuccess: String,
         isPresented: Binding<Bool>,
-        action: @escaping (Student) -> Void
+        action: @escaping (PaymentCategory) -> Void
     ) {
-        self.name = student?.name ?? ""
-        self.contacts = student?.contacts ?? ""
+        self.name = category?.name ?? ""
+        self.details = category?.details ?? ""
+        self.created = category?.created
         
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
         self.action = action
         self._isPresented = isPresented
     }
-
+    
     @State private var name: String
-    @State private var contacts: String
+    @State private var created: Date?
+    @State private var details: String
     
     @Binding var isPresented: Bool
-    
+
     var titleForm: String
     var captionButtonSuccess: String
-    var action: (Student)->Void
+    var action: (PaymentCategory)->Void
     
     @State private var showValidateErrorMsg = false
     
@@ -42,23 +43,23 @@ struct StudentForm: View {
                 .font(.title2)
             
             TextField("Name", text: $name)
-            TextField("Contacts", text: $contacts)
+            TextField("Details", text: $details)
+            DatePickerButton(caption:"Created", selectedDate: $created)
             
             HStack {
-                
                 Button("Cancel", role: .cancel) {
                     isPresented = false
                 }
                 
                 Button(captionButtonSuccess) {
-                    let student = Student(
+                    let category = PaymentCategory(
                         name: name,
-                        contacts: contacts,
-                        created: Date()
+                        details: details,
+                        created: created ?? Date()
                     )
-                    if isValid(student: student){
+                    if isValid(category: category){
                         withAnimation {
-                            action(student)
+                            action(category)
                         }
                         isPresented = false
                     }else{
@@ -77,8 +78,12 @@ struct StudentForm: View {
         }
         .formStyle(.grouped)
     }
-    private func isValid(student: Student)->Bool{
-        return !name.isEmpty && !contacts.isEmpty
+    private func isValid(category: PaymentCategory)->Bool{
+        return !name.isEmpty
     }
 }
 
+#Preview {
+    @Previewable @State var isPresent: Bool = false
+    PaymentCategoryForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent){_ in}
+}

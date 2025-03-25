@@ -66,16 +66,14 @@ struct OrderForm: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .sheet(isPresented: $showValidateErrorMsg) {
-                    VStack{
-                        XMarkButton().onTapGesture { // on tap gesture calls dismissal
-                            showValidateErrorMsg.toggle()
-                        }
-                        .padding(.trailing)
-                        Text("Error")
-                    }
-                }
             }
+        }
+        .alert("Ошибка", isPresented: $showValidateErrorMsg) {
+            Button("OK", role: .cancel) {
+                showValidateErrorMsg = false
+            }
+        } message: {
+            Text("Error")
         }
         .formStyle(.grouped)
     }

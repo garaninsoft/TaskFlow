@@ -8,7 +8,8 @@
 import SwiftUI
 import SwiftData
 
-struct MainView: View {
+struct MainView: View, OrdersProtocol {
+    
     // Logging Debug (import os enabled)
 //    private static let logger = Logger(
 //            subsystem: "mySubsystem",
@@ -73,6 +74,7 @@ struct MainView: View {
                         }
                         .onChange(of: viewModel.selectedOrder) {
                             viewModel.selectedMeeting = nil
+                            viewModel.selectedPayment = nil
                         }
                     }else{
                         Text("No Orders")
@@ -116,8 +118,7 @@ struct MainView: View {
                 if viewModel.selectedOrder != nil {
                     OrderDetailsView(
                         viewModel: viewModel,
-                        actionDeleteMeeting: deleteMeeting,
-                        actionUpdateMeeting: updateMeeting
+                        ordersProtocol: self
                     )
                 } else {
                     Text("Select Order")
@@ -126,31 +127,51 @@ struct MainView: View {
         }
     }
     
-    private func deleteStudent(student: Student){
-        withAnimation{
-            modelContext.delete(student)
-        }
-    }
-    
-    private func deleteOrder(order: Order){
-        withAnimation{
-            modelContext.delete(order)
-        }
-    }
-    
-    private func deleteMeeting(meeting: Schedule){
+    func actionDeleteMeeting(meeting: Schedule) {
         withAnimation{
             modelContext.delete(meeting)
+            try? modelContext.save()
         }
     }
     
-    private func updateMeeting(meeting: Schedule){
+    func actionUpdateMeeting(meeting: Schedule) {
         withAnimation{
             viewModel.selectedMeeting?.start = meeting.start
             viewModel.selectedMeeting?.finish = meeting.finish
             viewModel.selectedMeeting?.completed = meeting.completed
             viewModel.selectedMeeting?.cost = meeting.cost
             viewModel.selectedMeeting?.details = meeting.details
+            try? modelContext.save()
+        }
+    }
+    
+    func actionDeletePayment(payment: Payment) {
+        withAnimation{
+            modelContext.delete(payment)
+            try? modelContext.save()
+        }
+    }
+    
+    func actionUpdatePayment(payment: Payment) {
+        withAnimation{
+            viewModel.selectedPayment?.created = payment.created
+            viewModel.selectedPayment?.amount = payment.amount
+            viewModel.selectedPayment?.category = payment.category
+            viewModel.selectedPayment?.details = payment.details
+            try? modelContext.save()
+        }
+    }
+    
+    private func deleteStudent(student: Student){
+        withAnimation{
+            modelContext.delete(student)
+            try? modelContext.save()
+        }
+    }
+    
+    private func deleteOrder(order: Order){
+        withAnimation{
+            modelContext.delete(order)
             try? modelContext.save()
         }
     }
