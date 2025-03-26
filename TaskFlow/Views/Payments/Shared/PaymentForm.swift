@@ -6,8 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
+
 
 struct PaymentForm: View {
+    
+    @Environment(\.modelContext) private var modelContext
+    @Query private var categories: [PaymentCategory]
+    
     init(
         payment: Payment? = nil,
         titleForm: String,
@@ -26,7 +32,7 @@ struct PaymentForm: View {
         self.action = action
         self._isPresented = isPresented
     }
-
+    
     // Поля для ввода данных
     @State private var created: Date?
     @State private var category: PaymentCategory?
@@ -48,15 +54,23 @@ struct PaymentForm: View {
             
             // Поле для выбора даты начала
             DatePickerButton(caption:"Created", selectedDate: $created)
-
+            
             // Поле для ввода стоимости
             TextField("Amount (rur)", value: $amount, format: .number)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                
+            
+            Picker("Category", selection: $category) {
+                Text("Не выбрано").tag(nil as PaymentCategory?)
+                ForEach(categories) { categori in
+                    Text(categori.name).tag(categori as PaymentCategory?)
+                }
+            }
+            .pickerStyle(.menu)
+            
             // Поле для ввода деталей
             TextField("Details", text: $details)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-
+            
             HStack {
                 Button("Cancel", role: .cancel) {
                     isPresented = false
@@ -65,7 +79,7 @@ struct PaymentForm: View {
                 Button(captionButtonSuccess) {
                     
                     let payment = Payment(
-                        category: nil,
+                        category: category,
                         amount: amount,
                         details: details,
                         created: created
