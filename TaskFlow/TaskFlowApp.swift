@@ -60,6 +60,11 @@ struct TaskFlowApp: App {
                     Label("Главное", systemImage: "house")
                 }
                 .sheet(isPresented: $viewModel.showSettings){
+// MARK: - не удалять пока. здесь можно посмотреть путь к бд
+//                    if let storeURL = sharedModelContainer.configurations.first?.url {
+//                        Text( storeURL.path)
+//                            .textSelection(.enabled)
+//                    }
                     PaymentCategoriesView(isPresented: $viewModel.showSettings)
                         .environment(\.modelContext, sharedModelContainer.mainContext)
                 }
@@ -85,6 +90,10 @@ struct TaskFlowApp: App {
                         Button("Delete") {
                             viewModel.showConfirmDeleteStudent = true
                         }
+                        Divider()
+                        Button("Statistics") {
+                            viewModel.showSheetStudentStatistics = true
+                        }
                     }
                 }
             }
@@ -101,12 +110,16 @@ struct TaskFlowApp: App {
                             Button("Delete") {
                                 viewModel.showConfirmDeleteOrder = true
                             }
+                            Divider()
+                            Button("Statistics") {
+                                viewModel.showSheetOrderStatistics = true
+                            }
                         }
                     }
                 }
             }
             if viewModel.selectedOrder != nil {
-                if viewModel.selectedTab == .meetings {
+                if viewModel.selectedOrderDetailsTab == .meetings {
                     CommandMenu("Schedule") {
                         Button("New meeting..."){
                             viewModel.showSheetNewMeeting = true
@@ -123,7 +136,7 @@ struct TaskFlowApp: App {
                         }
                     }
                 }
-                if viewModel.selectedTab == .payments {
+                if viewModel.selectedOrderDetailsTab == .payments {
                     CommandMenu("Payments") {
                         Button("New payment..."){
                             viewModel.showSheetNewPayment = true

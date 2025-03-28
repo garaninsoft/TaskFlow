@@ -18,7 +18,7 @@ struct OrderDetailsView: View {
     let ordersProtocol: OrdersProtocol
     
     var body: some View {
-        TabView(selection: $viewModel.selectedTab) {
+        TabView(selection: $viewModel.selectedOrderDetailsTab) {
             MeetingsView(
                 viewModel: viewModel,
                 meetingsProtocol: ordersProtocol

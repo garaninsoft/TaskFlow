@@ -12,13 +12,17 @@ final class Payment {
     var order: Order?
     var category: PaymentCategory?
     var amount: Double
+    var declared: Bool? = nil
     var details: String
     var created: Date?
+    // declared: Bool? - по самозанятости задекларированный налог
+    //                   или расход, котрый будет проходить по полю category
     
-    init(order: Order? = nil, category: PaymentCategory? = nil, amount: Double, details: String, created: Date?) {
+    init(order: Order? = nil, category: PaymentCategory? = nil, amount: Double, declared: Bool? = nil, details: String, created: Date? = nil) {
         self.order = order
         self.category = category
         self.amount = amount
+        self.declared = declared
         self.details = details
         self.created = created
     }

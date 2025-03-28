@@ -9,26 +9,7 @@ import SwiftUI
 
 struct HourRow: View {
     let hour: Int
-    
-    
-    var body: some View {
-        HStack(alignment: .top) {
-            
-            Text(String(format: "%02d:00", hour))
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .frame(width: 50, alignment: .leading)
-            
-            Rectangle()
-                .fill(Color.gray.opacity(0.2))
-                .frame(height: 120)
-        }
-    }
-}
-
-struct HourRow2: View {
-    let hour: Int
-    let busyMinutes: [Int] // минуты передаём последовательно [нач, кон, нач, кон ...]
+    let busyMinutes: [Int] = [0, 11, 33, 60]// минуты передаём последовательно [нач, кон, нач, кон ...]
     private let totalMinutesInHour: Int = 60
     
     // Отсортированные и проверенные интервалы
@@ -155,6 +136,6 @@ struct HourRow2: View {
 }
 
 #Preview {
-    HourRow2(hour: 13, busyMinutes: [0, 11, 33, 45])
+    HourRow(hour: 13)
         .padding()
 }

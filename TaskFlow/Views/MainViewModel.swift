@@ -27,7 +27,10 @@ class MainViewModel: ObservableObject {
     @Published var showConfirmDeleteMeeting: Bool = false
     @Published var showConfirmDeletePayment: Bool = false
     
-    @Published var selectedTab: EOrderDetails = .meetings
+    @Published var selectedOrderDetailsTab: EOrderDetails = .meetings
+    
+    @Published var showSheetStudentStatistics: Bool = false
+    @Published var showSheetOrderStatistics: Bool = false
     
     @Published var showSettings: Bool = false
 }

@@ -11,15 +11,12 @@ struct DayView: View {
     @Binding var selectedDate: Date
     var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            VStack(spacing: 1) {
                 ForEach(0..<24) { hour in
                     HourRow(hour: hour)
-//                        .padding(.vertical, 4)
-//                    ForEach(0..<4) { hour in
-//                        HourRow(hour: hour)
-//                            .padding(.vertical, 4)
-//                        
-//                    }
+                    Rectangle()
+                        .fill(Color.blue)
+                                    .frame(height: 1) // Толщина "spacing"
                 }
             }
             .padding()

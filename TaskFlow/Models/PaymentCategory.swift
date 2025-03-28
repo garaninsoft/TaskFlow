@@ -15,7 +15,7 @@ final class PaymentCategory{
     var created: Date
     var payments: [Payment]? = nil
     
-    init(name: String, details: String, created: Date, payments: [Payment]? = nil) {
+    init(name: String, details: String = "", created: Date = Date(), payments: [Payment]? = nil) {
         self.name = name
         self.details = details
         self.created = created

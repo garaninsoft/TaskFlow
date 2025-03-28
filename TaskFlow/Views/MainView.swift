@@ -47,6 +47,15 @@ struct MainView: View, OrdersProtocol {
                     }
                 }
                 if let student = viewModel.selectedStudent {
+                    //statistics
+                    ToolbarItem {
+                        Button(action: {viewModel.showSheetStudentStatistics = true}) {
+                            Label("Statistics", systemImage: "chart.line.uptrend.xyaxis")
+                        }
+                        .sheet(isPresented: $viewModel.showSheetStudentStatistics) {
+                            //StatisticsView()
+                        }
+                    }
                     ToolbarItem {
                         Button(action: {viewModel.showSheetEditStudent = true}) {
                             Label("Edit Student", systemImage: "pencil")
@@ -95,6 +104,14 @@ struct MainView: View, OrdersProtocol {
                         }
                     }
                     if let order = viewModel.selectedOrder {
+                        ToolbarItem {
+                            Button(action: {viewModel.showSheetOrderStatistics = true}) {
+                                Label("Statistics", systemImage: "chart.line.uptrend.xyaxis")
+                            }
+                            .sheet(isPresented: $viewModel.showSheetOrderStatistics) {
+                                StatisticsView(order: order, isPresented: $viewModel.showSheetOrderStatistics)
+                            }
+                        }
                         ToolbarItem {
                             Button(action: {viewModel.showSheetEditOrder = true}) {
                                 Label("Edit Order", systemImage: "pencil")
