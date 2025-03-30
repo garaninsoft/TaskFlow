@@ -32,7 +32,7 @@ struct MeetingForm: View {
     @State private var startDate: Date?
     @State private var finishDate: Date?
     @State private var completedDate: Date?
-    @State private var cost: Float
+    @State private var cost: Double
     @State private var details: String
     
     @Binding var isPresented: Bool

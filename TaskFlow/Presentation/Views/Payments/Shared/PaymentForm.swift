@@ -81,6 +81,7 @@ struct PaymentForm: View {
                     let payment = Payment(
                         category: category,
                         amount: amount,
+                        declared: false,
                         details: details,
                         created: created
                     )

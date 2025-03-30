@@ -77,7 +77,7 @@ struct DatePickerView: View {
             
                 
                 Button("Сохранить") {
-                    selectedDate = tempDate
+                    selectedDate = tempDate.roundedToMinutes()
                     dismiss()
                 }
                
@@ -90,6 +90,13 @@ struct DatePickerView: View {
             // Устанавливаем временную дату при открытии
             tempDate = selectedDate ?? Date()
         }
+    }
+}
+
+extension Date {
+    func roundedToMinutes(calendar: Calendar = .current) -> Date {
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: self)
+        return calendar.date(from: components) ?? self
     }
 }
 

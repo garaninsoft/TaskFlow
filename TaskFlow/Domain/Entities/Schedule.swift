@@ -14,7 +14,7 @@ final class Schedule {
     var start: Date?
     var finish: Date? = nil
     var completed: Date? = nil
-    var cost: Float
+    var cost: Double
     var details: String
     
     //start     - начало запланированного занятия (есть всегда не nil)
@@ -25,7 +25,7 @@ final class Schedule {
     // * если completed == nil -> занятий не было
     // * стоимость заносим в первое занятие. Эта стоимость будет считаться договорной. Далее будем её копировать и
     // * переподставлять
-    init(order: Order? = nil, start: Date?, finish: Date?, completed: Date?, cost: Float, details: String) {
+    init(order: Order? = nil, start: Date? = nil, finish: Date? = nil, completed: Date? = nil, cost: Double, details: String) {
         self.order = order
         self.start = start
         self.finish = finish

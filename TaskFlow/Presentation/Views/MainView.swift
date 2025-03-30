@@ -53,7 +53,7 @@ struct MainView: View, OrdersProtocol {
                             Label("Statistics", systemImage: "chart.line.uptrend.xyaxis")
                         }
                         .sheet(isPresented: $viewModel.showSheetStudentStatistics) {
-                            //StatisticsView()
+                            StudentStatisticsView(student: student, isPresented: $viewModel.showSheetStudentStatistics)
                         }
                     }
                     ToolbarItem {
@@ -109,7 +109,7 @@ struct MainView: View, OrdersProtocol {
                                 Label("Statistics", systemImage: "chart.line.uptrend.xyaxis")
                             }
                             .sheet(isPresented: $viewModel.showSheetOrderStatistics) {
-                                StatisticsView(order: order, isPresented: $viewModel.showSheetOrderStatistics)
+                                OrderStatisticsView(order: order, isPresented: $viewModel.showSheetOrderStatistics)
                             }
                         }
                         ToolbarItem {

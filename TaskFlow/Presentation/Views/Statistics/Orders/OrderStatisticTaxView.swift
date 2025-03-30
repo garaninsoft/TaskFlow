@@ -7,24 +7,9 @@
 
 import SwiftUI
 
-struct StatisticTaxItem: Identifiable {
-    let id = UUID()
-    let category: String
-    let declared: Double
-    let undeclared: Double
-}
-
-struct StatisticTaxView: View {
+struct OrderStatisticTaxView: View {
     
-    var order: Order
-    private var statisticTaxItems: [StatisticTaxItem]
-    @Binding var isPresented: Bool
-    
-    init(order: Order, isPresented: Binding<Bool>) {
-        self._isPresented = isPresented
-        self.order = order
-        self.statisticTaxItems = StatisticTaxView.getStatisticTax(order: order)
-    }
+    let order: Order
     
     var body: some View {
         VStack(spacing: 16) {
@@ -54,7 +39,7 @@ struct StatisticTaxView: View {
                 // Строки данных
                 ScrollView {
                     LazyVStack(spacing: 1) {
-                        ForEach(statisticTaxItems) { record in
+                        ForEach(order.statisticTaxItems) { record in
                             HStack {
                                 Text(record.category)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -78,39 +63,11 @@ struct StatisticTaxView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
             }
             .padding(.horizontal)
-            
-            Spacer()
-            
-            // Кнопка закрытия (в стиле macOS)
-            HStack {
-                Spacer()
-                Button(action: { isPresented = false }) {
-                    Text("Закрыть")
-                        .frame(minWidth: 80)
-                }
-                .controlSize(.large)
-                .keyboardShortcut(.defaultAction)
-            }
-            .padding()
         }
         .frame(minWidth: 500, idealWidth: 550, maxWidth: .infinity,
-               minHeight: 400, idealHeight: 450, maxHeight: .infinity)
+               minHeight: 300, idealHeight: 350, maxHeight: .infinity)
         .background(Color(.windowBackgroundColor))
     }
-    
-    private static func getStatisticTax(order: Order) -> [StatisticTaxItem]{
-        order.payments?.reduce(into: [String: (declared: Double, undeclared: Double)]()) { result, payment in
-                let key = payment.category?.name ?? "Без категории"
-                if payment.declared == true {
-                    result[key, default: (0, 0)].declared += payment.amount
-                } else if payment.declared == false {
-                    result[key, default: (0, 0)].undeclared += payment.amount
-                }
-            }.map { category, sums in
-                StatisticTaxItem(category: category, declared: sums.declared, undeclared: sums.undeclared)
-            } ?? []
-    }
-    
 }
     
 // Вью для отображения суммы с цветом в зависимости от значения
@@ -134,17 +91,8 @@ struct CurrencyView: View {
         amount < 0 ? .red : (amount > 0 ? .green : .primary)
     }
 }
-    
-
 
 #Preview {
-    @Previewable @State var isPresent: Bool = false
-    let items = [
-        StatisticTaxItem(category: "Расходы по Категории1", declared: -2000, undeclared: -3000),
-        StatisticTaxItem(category: "Расходы по Категории2", declared: -1500, undeclared: -0),
-        StatisticTaxItem(category: "Расходы по Категории3", declared: -0, undeclared: -3000),
-        StatisticTaxItem(category: "Приходы за занятия", declared: 12000, undeclared: 3000)
-    ]
     
     let pc1 = PaymentCategory(name: "Cat 1")
     let pc2 = PaymentCategory(name: "Cat 2")
@@ -165,5 +113,5 @@ struct CurrencyView: View {
         ]
     )
     
-    StatisticTaxView(order: order, isPresented: $isPresent)
+    OrderStatisticTaxView(order: order)
 }

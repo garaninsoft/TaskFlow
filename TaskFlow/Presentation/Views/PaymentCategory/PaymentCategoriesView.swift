@@ -121,13 +121,27 @@ struct PaymentCategoriesView: View {
         }
         .frame(height: 300)
         .padding()
-        .contextMenu {
-            Button("Увеличить значение") { print("Клик по элементу: \(selectedCategory?.name ?? "")") }
-            Button("Уменьшить значение") { print("Клик по элементу: \(selectedCategory?.name ?? "")") }
-            Divider()
-            Button("Удалить") { print("Клик по элементу: \(selectedCategory?.name ?? "")") }
-                .disabled(selectedCategory == nil)
+        // Пока не удалять. Возможно пригодится
+//        .contextMenu {
+//            Button("Увеличить значение") { print("Клик по элементу: \(selectedCategory?.name ?? "")") }
+//            Button("Уменьшить значение") { print("Клик по элементу: \(selectedCategory?.name ?? "")") }
+//            Divider()
+//            Button("Удалить") { print("Клик по элементу: \(selectedCategory?.name ?? "")") }
+//                .disabled(selectedCategory == nil)
+//        }
+        
+        Spacer()
+        
+        HStack {
+            Spacer()
+            Button(action: { isPresented = false }) {
+                Text("Закрыть")
+                    .frame(minWidth: 80)
+            }
+            .controlSize(.large)
+            .keyboardShortcut(.defaultAction)
         }
+        .padding()
     }
 }
 
