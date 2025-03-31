@@ -20,7 +20,7 @@ private enum CalcConstants {
 }
 
 
-extension Order {
+extension Order: StatisticsProtocol {
     /// Общая сумма за все проведенные занятия
     var totalSessionsCost: Double {
         guard let schedules = schedules else { return 0 }
@@ -89,20 +89,9 @@ extension Order {
             } ?? []
     }
     
-    /// Статистика по проведенным занятиям
-    struct OrderStatistics {
-        let totalCost: Double
-        let totalPayments: Double
-        let totalTimeDiscrepancy: String
-        let sessionsCount: Int
-        let completedSessionsCount: Int
-        let netIncome: Double
-        let totalTax: Double
-    }
-    
     /// Полная статистика по занятиям
-    var orderTotalStatistics: OrderStatistics {
-        return OrderStatistics(
+    var totalStatistics: StatisticTotalItem {
+        return StatisticTotalItem(
             totalCost: totalSessionsCost,
             totalPayments: totalPaymentsAmount,
             totalTimeDiscrepancy: formattedTotalTimeDiscrepancy,

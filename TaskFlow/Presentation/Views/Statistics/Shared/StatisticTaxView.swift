@@ -1,16 +1,14 @@
 //
-//  StudentStatisticTaxView.swift
+//  StatisticTaxView.swift
 //  TaskFlow
 //
-//  Created by alexandergaranin on 30.03.2025.
+//  Created by alexandergaranin on 31.03.2025.
 //
 
 import SwiftUI
 
-struct StudentStatisticTaxView: View {
-    
-    let student: Student
-    
+struct StatisticTaxView: View {
+    let statisticTaxItems: [StatisticTaxItem]
     var body: some View {
         VStack(spacing: 16) {
             // Заголовок
@@ -39,7 +37,7 @@ struct StudentStatisticTaxView: View {
                 // Строки данных
                 ScrollView {
                     LazyVStack(spacing: 1) {
-                        ForEach(student.statisticTaxItems) { record in
+                        ForEach(statisticTaxItems) { record in
                             HStack {
                                 Text(record.category)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -69,3 +67,4 @@ struct StudentStatisticTaxView: View {
         .background(Color(.windowBackgroundColor))
     }
 }
+

@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Student {
+extension Student: StatisticsProtocol {
     /// Общая сумма за все проведенные занятия
     var totalSessionsCost: Double {
         guard let orders = orders else { return 0 }
@@ -68,20 +68,9 @@ extension Student {
         return categoryTotals
     }
     
-    /// Статистика по проведенным занятиям
-    struct StudentStatistics {
-        let totalCost: Double
-        let totalPayments: Double
-        let totalTimeDiscrepancy: String
-        let sessionsCount: Int
-        let completedSessionsCount: Int
-        let netIncome: Double
-        let totalTax: Double
-    }
-    
     /// Полная статистика по занятиям
-    var studentTotalStatistics: StudentStatistics {
-        return StudentStatistics(
+    var totalStatistics: StatisticTotalItem {
+        return StatisticTotalItem(
             totalCost: totalSessionsCost,
             totalPayments: totalPaymentsAmount,
             totalTimeDiscrepancy: formattedTotalTimeDiscrepancy,

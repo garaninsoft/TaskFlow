@@ -15,9 +15,9 @@ struct StatisticTaxItem: Identifiable {
     let undeclared: Double
 }
 
-let sampleItems = [
-    StatisticTaxItem(category: "Налоги", declared: 1500, undeclared: 200),
-    StatisticTaxItem(category: "Аренда", declared: 30000, undeclared: 0),
-    StatisticTaxItem(category: "Услуги", declared: 5000, undeclared: 750),
-    
-]
+//let sampleItems = [
+//    StatisticTaxItem(category: "Налоги", declared: 1500, undeclared: 200),
+//    StatisticTaxItem(category: "Аренда", declared: 30000, undeclared: 0),
+//    StatisticTaxItem(category: "Услуги", declared: 5000, undeclared: 750),
+//    
+//]

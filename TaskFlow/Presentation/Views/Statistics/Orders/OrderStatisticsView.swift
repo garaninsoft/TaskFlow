@@ -12,7 +12,7 @@ struct OrderStatisticsView: View {
     @Binding var isPresented: Bool
     var body: some View {
         TabView{
-            OrderStatisticTaxView(order: order)
+            StatisticTaxView(statisticTaxItems: order.statisticTaxItems)
             .tabItem {
                 Text("Tax")
             }
