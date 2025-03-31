@@ -59,17 +59,17 @@ struct MeetingsView: View {
                 // Заголовки колонок
                 HStack {
                     Text("Start")
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 112, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
                     Text("Finish")
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 112, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
                     Text("Completed")
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 112, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
@@ -88,11 +88,11 @@ struct MeetingsView: View {
                 .background(Color.gray.opacity(0.1))
                 
                 // Список с данными
-                List(order.schedules ?? []) { meeting in
+                List(order.schedules?.sorted { $0.start ?? Date.distantPast < $1.start ?? Date.distantPast }  ?? []) { meeting in
                     HStack {
-                        DateTimeFormatText(date: meeting.start, format: .format1)
-                        DateTimeFormatText(date: meeting.finish, format: .format2)
-                        DateTimeFormatText(date: meeting.completed, format: .format2)
+                        DateTimeFormatText(date: meeting.start)
+                        DateTimeFormatText(date: meeting.finish)
+                        DateTimeFormatText(date: meeting.completed)
                         
                         Text("\(meeting.cost.formatted(.number.precision(.fractionLength(2))))")
                             .frame(width: 150, alignment: .leading)

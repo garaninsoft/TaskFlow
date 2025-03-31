@@ -90,7 +90,7 @@ struct PaymentCategoriesView: View {
                     .padding(.horizontal, 8)
                 
                 Text("Created")
-                    .frame(width: 150, alignment: .leading)
+                    .frame(width: 120, alignment: .leading)
                     .font(.headline)
                     .padding(.horizontal, 8)
             }
@@ -108,7 +108,7 @@ struct PaymentCategoriesView: View {
                         .frame(width: 150, alignment: .leading)
                         .padding(.horizontal, 8)
                     
-                    DateTimeFormatText(date: category.created, format: .format1)
+                    DateTimeFormatText(date: category.created)
                 }
                 .contentShape(Rectangle()) // Чтобы вся строка была кликабельной
                 .onTapGesture {

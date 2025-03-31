@@ -175,6 +175,7 @@ struct MainView: View, OrdersProtocol {
             viewModel.selectedPayment?.amount = payment.amount
             viewModel.selectedPayment?.category = payment.category
             viewModel.selectedPayment?.details = payment.details
+            viewModel.selectedPayment?.declared = payment.declared
             try? modelContext.save()
         }
     }

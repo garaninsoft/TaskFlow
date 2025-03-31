@@ -59,22 +59,27 @@ struct PaymentsView: View {
                 // Заголовки колонок
                 HStack {
                     Text("Date")
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 120, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
                     Text("Amount rur")
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 100, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
                     Text("Category")
-                        .frame(width: 150, alignment: .leading)
+                        .frame(width: 100, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
                     Text("Details")
                         .frame(width: 150, alignment: .leading)
+                        .font(.headline)
+                        .padding(.horizontal, 8)
+                    
+                    Text("Tax")
+                        .frame(width: 50, alignment: .leading)
                         .font(.headline)
                         .padding(.horizontal, 8)
                     
@@ -85,19 +90,28 @@ struct PaymentsView: View {
                 // Список с данными
                 List(order.payments ?? []) { payment in
                     HStack {
-                        DateTimeFormatText(date: payment.created, format: .format1)
+                        DateTimeFormatText(date: payment.created)
                         
                         Text("\(payment.amount.formatted(.number.precision(.fractionLength(2))))")
-                            .frame(width: 150, alignment: .leading)
+                            .frame(width: 100, alignment: .leading)
                             .padding(.horizontal, 8)
                         
                         Text("\(payment.category?.name ?? "")")
-                            .frame(width: 150, alignment: .leading)
+                            .frame(width: 100, alignment: .leading)
                             .padding(.horizontal, 8)
                         
                         Text("\(payment.details)")
                             .frame(width: 150, alignment: .leading)
                             .padding(.horizontal, 8)
+                        
+                        if payment.declared {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                                .frame(width: 50)
+                        }else{
+                            Text("")
+                                .frame(width: 50)
+                        }
                     }
                     .contentShape(Rectangle()) // Чтобы вся строка была кликабельной
                     .onTapGesture {
