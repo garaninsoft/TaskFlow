@@ -11,7 +11,7 @@ import SwiftData
 @Model
 final class Schedule {
     var order: Order?
-    var start: Date?
+    var start: Date? = nil
     var finish: Date? = nil
     var completed: Date? = nil
     var cost: Double
