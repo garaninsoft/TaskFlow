@@ -10,61 +10,110 @@ import SwiftUI
 struct DateTimeFormatText: View {
     
     let date: Date?
-    var style: Style = .compact
-    var alignment: Alignment = .leading
+    let width: CGFloat = 120
+    var style: Style = .meeting
     
-    enum Style {
-        case compact      // "Пн 15-05 [14:30]"
+    enum Style: Equatable {
+        case meeting      // "Пн 15-05/n14:30"
         case short       // "15 мая 14:30"
         case verbose     // "Понедельник, 15 мая 2023"
         case timeOnly    // "14:30"
-        case custom(String)
         
-        var formatter: DateFormatter {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "ru_RU")
-            
+        private static let ruLocale = Locale(identifier: "ru_RU")
+           private static let mainFormatter: DateFormatter = {
+               let formatter = DateFormatter()
+               formatter.locale = ruLocale
+               return formatter
+           }()
+           private static let secondFormatter: DateFormatter = {
+               let formatter = DateFormatter()
+               formatter.locale = ruLocale
+               return formatter
+           }()
+        
+        var formatter: (main: DateFormatter, second: DateFormatter) {
+            let main = Self.mainFormatter
+            let second = Self.secondFormatter
             switch self {
-            case .compact:
-                formatter.dateFormat = "EEE dd-MM [HH:mm]"
+            case .meeting:
+                main.dateFormat = "EEE dd MMM yy"
+                second.dateStyle = .none
+                second.timeStyle = .short
             case .short:
-                formatter.dateStyle = .short
-                formatter.timeStyle = .short
+                main.dateStyle = .short
+                main.timeStyle = .short
             case .verbose:
-                formatter.dateStyle = .full
-                formatter.timeStyle = .none
+                main.dateStyle = .full
+                main.timeStyle = .none
             case .timeOnly:
-                formatter.dateStyle = .none
-                formatter.timeStyle = .short
-            case .custom(let format):
-                formatter.dateFormat = format
+                main.dateStyle = .none
+                main.timeStyle = .short
             }
-            return formatter
+            return (main, second)
         }
     }
     
     var body: some View {
         Group {
             if let date = date {
-                Text(style.formatter.string(from: date))
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .monospacedDigit()
+                if style == .meeting{
+                    VStack(alignment: .leading) {
+                        Text(style.formatter.main.string(from: date))
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        Text(style.formatter.second.string(from: date))
+                            .font(.headline)
+                    }
+                    .padding(4)
+                }else{
+                    Text(style.formatter.main.string(from: date))
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .monospacedDigit()
+                        .padding(4)
+                }
             } else {
                 Text("--:--")
-                    .foregroundColor(.gray.opacity(0.6))
+                    .foregroundColor(.red)
+                    .padding(4)
             }
         }
-        .frame(width: idealWidth, alignment: alignment)
+        .frame(width: width)
     }
-    
-    private var idealWidth: CGFloat? {
-        switch style {
-        case .compact: return 120
-        case .short: return 150
-        case .verbose: return 200
-        case .timeOnly: return 80
-        case .custom: return nil
+}
+
+#Preview{
+    VStack(spacing: 0){
+        Group{
+            DateTimeFormatText(date: Date())
+                .border(Color.gray)
         }
+        .padding()
+        
+        Group{
+            DateTimeFormatText(date: nil)
+                .border(Color.gray)
+        }
+        .padding()
+        
+        Group{
+            DateTimeFormatText(date: Date(), style: .short)
+                .border(Color.gray)
+        }
+        .padding()
+        
+        Group{
+            DateTimeFormatText(date: Date(), style: .timeOnly)
+                .border(Color.gray)
+        }
+        .padding()
+        
+        Group{
+            DateTimeFormatText(date: Date(), style: .verbose)
+                .border(Color.gray)
+        }
+        .padding()
     }
+    .padding()
+    
 }
