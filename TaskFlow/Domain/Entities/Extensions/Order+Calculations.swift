@@ -35,6 +35,10 @@ extension Order: StatisticsProtocol {
         }
     }
     
+    var totalCompletedWorksCost: Double {
+        works?.filter { $0.completed != nil }.reduce(0) { $0 + $1.cost } ?? 0
+    }
+    
     /// Общий перерасход/недоплата времени (в минутах)
     var totalTimeDiscrepancyInMinutes: Int {
         guard let schedules = schedules else { return 0 }
@@ -92,7 +96,7 @@ extension Order: StatisticsProtocol {
     /// Полная статистика по занятиям
     var totalStatistics: StatisticTotalItem {
         return StatisticTotalItem(
-            totalCost: totalSessionsCost,
+            totalCost: totalSessionsCost + totalCompletedWorksCost,
             totalPayments: totalPaymentsAmount,
             totalTimeDiscrepancy: formattedTotalTimeDiscrepancy,
             sessionsCount: totalMeetingsCount,

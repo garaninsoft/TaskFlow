@@ -77,38 +77,27 @@ struct PaymentCategoriesView: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 8)
             .background(Color.gray.opacity(0.1))
+            
             // Заголовки колонок
-            HStack {
-                Text("Name")
-                    .frame(width: 150, alignment: .leading)
-                    .font(.headline)
-                    .padding(.horizontal, 8)
-                
-                Text("Details")
-                    .frame(width: 150, alignment: .leading)
-                    .font(.headline)
-                    .padding(.horizontal, 8)
-                
-                Text("Created")
-                    .frame(width: 120, alignment: .leading)
-                    .font(.headline)
-                    .padding(.horizontal, 8)
-            }
-            .padding(.vertical, 8)
-            .background(Color.gray.opacity(0.1))
+            let titleItems = [
+                TitleColumnItem(title: "Name", alignment: .center, font: .headline, width: 120, borderHeight: 20),
+                TitleColumnItem(title: "Details", alignment: .center, font: .headline, width: 150, borderHeight: 20),
+                TitleColumnItem(title: "Created", alignment: .center, font: .headline, width: 120, borderHeight: 0)
+            ]
+            TableHeader(titleItems: titleItems)
+//                .padding(.horizontal, 8)
             
             // Список с данными
             List(categories) { category in
-                HStack {
+                ZeroSpacingHStack {
                     Text(category.name)
-                        .frame(width: 150, alignment: .leading)
-                        .padding(.horizontal, 8)
+                        .rightBorderStyle(width: titleItems[0].width, alignment: .leading, padding:8, borderHeight: 20)
                     
                     Text(category.details)
-                        .frame(width: 150, alignment: .leading)
-                        .padding(.horizontal, 8)
+                        .rightBorderStyle(width: titleItems[1].width, alignment: .leading, padding:8, borderHeight: 20)
                     
-                    DateTimeFormatText(date: category.created)
+                    DateTimeFormatText(date: category.created, style: .short)
+                        .rightBorderStyle(width: titleItems[2].width)
                 }
                 .contentShape(Rectangle()) // Чтобы вся строка была кликабельной
                 .onTapGesture {
@@ -118,6 +107,7 @@ struct PaymentCategoriesView: View {
                 .background(selectedCategory?.id == category.id ? Color.blue.opacity(0.2) : Color.clear)
                 .cornerRadius(4)
             }
+            .listStyle(.plain)
         }
         .frame(height: 300)
         .padding()

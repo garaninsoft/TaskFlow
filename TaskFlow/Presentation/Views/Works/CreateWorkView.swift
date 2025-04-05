@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct CreateWorkView: View {
+    var order: Order
+    @Binding var isPresented: Bool
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        WorkForm(
+            titleForm: "Create Work",
+            captionButtonSuccess: "Create",
+            isPresented: $isPresented,
+            action: {work in
+                order.works?.append(work)
+            }
+        )
     }
-}
-
-#Preview {
-    CreateWorkView()
 }

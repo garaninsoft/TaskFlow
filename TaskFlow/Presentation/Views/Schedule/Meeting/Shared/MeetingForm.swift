@@ -107,11 +107,11 @@ struct MeetingForm: View {
         
         if let start = meeting.start{
             if meeting.finish != nil && meeting.completed == nil{
-                return start < meeting.finish! && meeting.cost >= 0
+                return start <= meeting.finish! && meeting.cost >= 0
             }
             
             if meeting.finish != nil && meeting.completed != nil{
-                return start < meeting.finish! && start < meeting.completed! && meeting.cost >= 0
+                return start <= meeting.finish! && start <= meeting.completed! && meeting.cost >= 0
             }
         } else{
             return false

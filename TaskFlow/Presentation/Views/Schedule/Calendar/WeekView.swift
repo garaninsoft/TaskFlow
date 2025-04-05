@@ -27,7 +27,7 @@ struct WeekView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Заголовки дней недели
-            HStack(spacing: 0) {
+            ZeroSpacingHStack {
                 // Заглушка для выравнивания
                 Text("")
                     .foregroundColor(.secondary)
@@ -48,7 +48,7 @@ struct WeekView: View {
             
             // Сетка календаря
             ScrollView {
-                HStack(spacing: 0) {
+                ZeroSpacingHStack {
                     // Колонка с часами
                     VStack(spacing: 0) {
                         ForEach(0..<24) { hour in

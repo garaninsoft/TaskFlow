@@ -6,6 +6,6 @@
 //
 
 protocol PaymentsProtocol {
-    func actionDeletePayment(payment: Payment)
-    func actionUpdatePayment(payment: Payment)
+    func actionDeletePayment(payment: Payment, onSuccess: ()->Void)
+    func actionUpdatePayment(payment: Payment, onSuccess: ()->Void)
 }

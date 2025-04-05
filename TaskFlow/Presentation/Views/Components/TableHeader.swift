@@ -8,11 +8,28 @@
 import SwiftUI
 
 struct TableHeader: View {
+    let titleItems: [TitleColumnItem]
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List{ // Это костыль для выравнивания
+            ZeroSpacingHStack {
+                ForEach(titleItems, id: \.self){ item in
+                    Text(item.title)
+                        .font(item.font)
+                        .rightBorderStyle(width: item.width, alignment: item.alignment, borderHeight: item.borderHeight, borderСolor: .white)
+                }
+            }
+            .padding(.vertical, 4)
+            .foregroundColor(.white)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color.cyan)
+            )
+        }
+        .listStyle(.plain)
+        .environment(\.defaultMinListRowHeight, 40) // Высота строки
+        .frame(height: 40) // Точная высота списка
+        .scrollDisabled(true) // Отключаем скролл
+        
     }
 }
 
-#Preview {
-    TableHeader()
-}

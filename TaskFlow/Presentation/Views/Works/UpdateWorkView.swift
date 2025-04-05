@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct UpdateWorkView: View {
+    let work: Work
+    @Binding var isPresented: Bool
+    let actionUpdateWork: (Work)-> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        WorkForm(
+            work: work,
+            titleForm: "Update Work",
+            captionButtonSuccess: "Update",
+            isPresented: $isPresented,
+            action: actionUpdateWork
+        )
     }
-}
-
-#Preview {
-    UpdateWorkView()
 }

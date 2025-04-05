@@ -52,7 +52,7 @@ struct MonthView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Заголовки дней недели с учетом первого дня недели системы
-            HStack(spacing: 0) {
+            ZeroSpacingHStack {
                 ForEach(getOrderedWeekdaySymbols(), id: \.self) { day in
                     Text(day)
                         .font(.caption)
@@ -65,7 +65,7 @@ struct MonthView: View {
             // Сетка календаря
             VStack(spacing: 8) {
                 ForEach(weeks, id: \.self) { week in
-                    HStack(spacing: 0) {
+                    ZeroSpacingHStack {
                         ForEach(week, id: \.self) { date in
                             DayCell(date: date,
                                    isSelected: isSameDay(date, selectedDate),

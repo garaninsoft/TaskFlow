@@ -39,7 +39,11 @@ struct PaymentsView: View {
                             UpdatePaymentView(
                                 payment: payment,
                                 isPresented: $viewModel.showSheetEditPayment,
-                                actionUpdatePayment: paymentProtocol.actionUpdatePayment
+                                actionUpdatePayment: { payment in
+                                    paymentProtocol.actionUpdatePayment(payment: payment){
+                                        viewModel.selectedPayment = nil
+                                    }
+                                }
                             )
                         }
                     }
@@ -48,7 +52,9 @@ struct PaymentsView: View {
                     // Кнопка "Удалить"
                     TrashConfirmButton(isPresent: $viewModel.showConfirmDeletePayment, label: "Delete Payment"){
                         if let payment = viewModel.selectedPayment{
-                            paymentProtocol.actionDeletePayment(payment: payment)
+                            paymentProtocol.actionDeletePayment(payment: payment){
+                                viewModel.selectedPayment = nil
+                            }
                         }
                     }
                     .disabled(viewModel.selectedPayment == nil) // Кнопка неактивна, если ничего не выбрано
@@ -57,52 +63,29 @@ struct PaymentsView: View {
                 .padding(.vertical, 8)
                 .background(Color.gray.opacity(0.1))
                 // Заголовки колонок
-                HStack {
-                    Text("Date")
-                        .frame(width: 120, alignment: .leading)
-                        .font(.headline)
-                        .padding(.horizontal, 8)
-                    
-                    Text("Amount rur")
-                        .frame(width: 100, alignment: .leading)
-                        .font(.headline)
-                        .padding(.horizontal, 8)
-                    
-                    Text("Category")
-                        .frame(width: 100, alignment: .leading)
-                        .font(.headline)
-                        .padding(.horizontal, 8)
-                    
-                    Text("Details")
-                        .frame(width: 150, alignment: .leading)
-                        .font(.headline)
-                        .padding(.horizontal, 8)
-                    
-                    Text("Tax")
-                        .frame(width: 50, alignment: .leading)
-                        .font(.headline)
-                        .padding(.horizontal, 8)
-                    
-                }
-                .padding(.vertical, 8)
-                .background(Color.gray.opacity(0.1))
+                
+                let titleItems = [
+                    TitleColumnItem(title: "Date", alignment: .center, font: .title3, width: 120, borderHeight: 20),
+                    TitleColumnItem(title: "Amount", alignment: .center, font: .title3, width: 100, borderHeight: 20),
+                    TitleColumnItem(title: "Category", alignment: .center, font: .title3, width: 100, borderHeight: 20),
+                    TitleColumnItem(title: "Details", alignment: .center, font: .title3, width: 160, borderHeight: 0)
+                ]
+                TableHeader(titleItems: titleItems)
                 
                 // Список с данными
                 List(order.payments ?? []) { payment in
-                    HStack {
-                        DateTimeFormatText(date: payment.created)
+                    ZeroSpacingHStack {
+                        DateTimeFormatText(date: payment.created, style: .short)
+                            .rightBorderStyle(width: titleItems[0].width, borderHeight: 40)
                         
-                        Text("\(payment.amount.formatted(.number.precision(.fractionLength(2))))")
-                            .frame(width: 100, alignment: .leading)
-                            .padding(.horizontal, 8)
+                        Text("\(payment.amount.formattedAsCurrency())")
+                            .rightBorderStyle(width: titleItems[1].width, alignment: .trailing, padding:8, borderHeight: 40)
                         
                         Text("\(payment.category?.name ?? "")")
-                            .frame(width: 100, alignment: .leading)
-                            .padding(.horizontal, 8)
+                            .rightBorderStyle(width: titleItems[2].width, alignment: .trailing, padding:4, borderHeight: 40)
                         
                         Text("\(payment.details)")
-                            .frame(width: 150, alignment: .leading)
-                            .padding(.horizontal, 8)
+                            .rightBorderStyle(width: titleItems[3].width, alignment: .trailing, padding:4)
                         
                         if payment.declared {
                             Image(systemName: "checkmark.circle.fill")
@@ -121,6 +104,7 @@ struct PaymentsView: View {
                     .background(viewModel.selectedPayment?.id == payment.id ? Color.blue.opacity(0.2) : Color.clear)
                     .cornerRadius(4)
                 }
+                .listStyle(.plain)
             }
         }
         .padding()

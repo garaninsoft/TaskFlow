@@ -66,8 +66,9 @@ struct MainView: View, OrdersProtocol {
                     }
                     ToolbarItem {
                         TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteStudent, label: "Delete Student"){
-                            deleteStudent(student: student)
-                            viewModel.selectedStudent = nil
+                            deleteStudent(student: student){
+                                viewModel.selectedStudent = nil
+                            }
                         }
                     }
                 }
@@ -84,6 +85,7 @@ struct MainView: View, OrdersProtocol {
                         .onChange(of: viewModel.selectedOrder) {
                             viewModel.selectedMeeting = nil
                             viewModel.selectedPayment = nil
+                            viewModel.selectedWork = nil
                         }
                     }else{
                         Text("No Orders")
@@ -122,8 +124,9 @@ struct MainView: View, OrdersProtocol {
                         }
                         ToolbarItem {
                             TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteOrder, label: "Delete Order"){
-                                deleteOrder(order: order)
-                                viewModel.selectedOrder = nil
+                                deleteOrder(order: order){
+                                    viewModel.selectedOrder = nil
+                                }
                             }
                         }
                     }
@@ -144,53 +147,86 @@ struct MainView: View, OrdersProtocol {
         }
     }
     
-    func actionDeleteMeeting(meeting: Schedule) {
+    func actionDeleteMeeting(meeting: Schedule, onSuccess: () -> Void) {
         withAnimation{
             modelContext.delete(meeting)
-            try? modelContext.save()
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
         }
     }
     
-    func actionUpdateMeeting(meeting: Schedule) {
+    func actionUpdateMeeting(meeting: Schedule, onSuccess: () -> Void) {
         withAnimation{
             viewModel.selectedMeeting?.start = meeting.start
             viewModel.selectedMeeting?.finish = meeting.finish
             viewModel.selectedMeeting?.completed = meeting.completed
             viewModel.selectedMeeting?.cost = meeting.cost
             viewModel.selectedMeeting?.details = meeting.details
-            try? modelContext.save()
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
         }
     }
     
-    func actionDeletePayment(payment: Payment) {
+    func actionDeleteWork(work: Work, onSuccess: () -> Void) {
+        withAnimation{
+            modelContext.delete(work)
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
+        }
+    }
+    
+    func actionUpdateWork(work: Work, onSuccess: () -> Void) {
+        withAnimation{
+            viewModel.selectedWork?.created = work.created
+            viewModel.selectedWork?.completed = work.completed
+            viewModel.selectedWork?.cost = work.cost
+            viewModel.selectedWork?.details = work.details
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
+        }
+    }
+    
+    func actionDeletePayment(payment: Payment, onSuccess: () -> Void) {
         withAnimation{
             modelContext.delete(payment)
-            try? modelContext.save()
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
         }
     }
     
-    func actionUpdatePayment(payment: Payment) {
+    func actionUpdatePayment(payment: Payment, onSuccess: () -> Void) {
         withAnimation{
             viewModel.selectedPayment?.created = payment.created
             viewModel.selectedPayment?.amount = payment.amount
             viewModel.selectedPayment?.category = payment.category
             viewModel.selectedPayment?.details = payment.details
             viewModel.selectedPayment?.declared = payment.declared
-            try? modelContext.save()
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
         }
     }
     
-    private func deleteStudent(student: Student){
+    private func deleteStudent(student: Student, onSuccess: () -> Void){
         withAnimation{
             modelContext.delete(student)
-            try? modelContext.save()
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
         }
     }
     
-    private func deleteOrder(order: Order){
+    private func deleteOrder(order: Order, onSuccess: () -> Void){
         withAnimation{
             modelContext.delete(order)
-            try? modelContext.save()
+            if (try? modelContext.save()) != nil {
+                onSuccess()
+            }
         }
     }
 }

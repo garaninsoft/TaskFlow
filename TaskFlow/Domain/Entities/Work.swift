@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class PaidWork{
+final class Work{
     var order: Order?
     var created: Date? = nil
     var completed: Date? = nil

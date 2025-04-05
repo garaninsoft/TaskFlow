@@ -5,4 +5,4 @@
 //  Created by alexandergaranin on 24.03.2025.
 //
 
-protocol OrdersProtocol: MeetingsProtocol, PaymentsProtocol{}
+protocol OrdersProtocol: MeetingsProtocol, WorksProtocol, PaymentsProtocol{}

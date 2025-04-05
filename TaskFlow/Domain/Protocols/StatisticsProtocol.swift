@@ -7,6 +7,7 @@
 
 protocol StatisticsProtocol{
     var totalSessionsCost: Double { get }
+    var totalCompletedWorksCost: Double { get }
     var totalTimeDiscrepancyInMinutes: Int { get }
     var netIncome: Double { get }
     var totalPaymentsAmount: Double { get }

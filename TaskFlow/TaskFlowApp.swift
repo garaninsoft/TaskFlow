@@ -136,6 +136,23 @@ struct TaskFlowApp: App {
                         }
                     }
                 }
+                if viewModel.selectedOrderDetailsTab == .works {
+                    CommandMenu("Works") {
+                        Button("New work..."){
+                            viewModel.showSheetNewWork = true
+                        }
+                        if let selectedWork = viewModel.selectedWork{
+                            Menu(selectedWork.details){
+                                Button("Edit...") {
+                                    viewModel.showSheetEditWork = true
+                                }
+                                Button("Delete") {
+                                    viewModel.showConfirmDeleteWork = true
+                                }
+                            }
+                        }
+                    }
+                }
                 if viewModel.selectedOrderDetailsTab == .payments {
                     CommandMenu("Payments") {
                         Button("New payment..."){

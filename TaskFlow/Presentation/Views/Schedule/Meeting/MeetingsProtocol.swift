@@ -6,6 +6,6 @@
 //
 
 protocol MeetingsProtocol {
-    func actionDeleteMeeting(meeting: Schedule)
-    func actionUpdateMeeting(meeting: Schedule)
+    func actionDeleteMeeting(meeting: Schedule, onSuccess: ()->Void)
+    func actionUpdateMeeting(meeting: Schedule, onSuccess: ()->Void)
 }
