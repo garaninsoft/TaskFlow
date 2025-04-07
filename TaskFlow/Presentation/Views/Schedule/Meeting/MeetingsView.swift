@@ -11,7 +11,7 @@ struct MeetingsView: View {
 
     @ObservedObject var viewModel: MainViewModel
     
-    let meetingsProtocol: MeetingsProtocol
+    let dataService: MeetingsProtocol
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -25,7 +25,7 @@ struct MeetingsView: View {
                         Label("Meeting", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewMeeting) {
-                        CreateMeetingView(order: order, isPresented: $viewModel.showSheetNewMeeting)
+                        CreateMeetingView(order: order, isPresented: $viewModel.showSheetNewMeeting, dataService: dataService){}
                     }
                     
                     // Кнопка "Редактировать"
@@ -39,10 +39,8 @@ struct MeetingsView: View {
                             UpdateMeetingView(
                                 meeting: meeting,
                                 isPresented: $viewModel.showSheetEditMeeting,
-                                actionUpdateMeeting: { meeting in
-                                    meetingsProtocol.actionUpdateMeeting(meeting: meeting){}
-                                }
-                            )
+                                dataService: dataService
+                            ){}
                         }
                     }
                     .disabled(viewModel.selectedMeeting == nil)
@@ -50,7 +48,7 @@ struct MeetingsView: View {
                     // Кнопка "Удалить"
                     TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteMeeting, label: "Delete Meeting"){
                         if let meeting = viewModel.selectedMeeting{
-                            meetingsProtocol.actionDeleteMeeting(meeting: meeting){
+                            dataService.delete(meeting: meeting){
                                 viewModel.selectedMeeting = nil
                             }
                         }

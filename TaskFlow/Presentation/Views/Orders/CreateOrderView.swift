@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct CreateOrderView: View {
-    
-    @Environment(\.modelContext) private var modelContext
-    
     var student: Student
+    
     @Binding var isPresented: Bool
+    let dataService: OrdersProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         OrderForm(
@@ -20,7 +20,7 @@ struct CreateOrderView: View {
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
             action: {order in
-                student.orders?.append(order)
+                dataService.create(order: order, for: student, onSuccess: onSuccess)
             }
         )
     }

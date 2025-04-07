@@ -11,7 +11,7 @@ struct PaymentsView: View {
 
     @ObservedObject var viewModel: MainViewModel
     
-    let paymentProtocol: PaymentsProtocol
+    let dataService: PaymentsProtocol
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -25,7 +25,7 @@ struct PaymentsView: View {
                         Label("Payment", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewPayment) {
-                        CreatePaymentView(order: order, isPresented: $viewModel.showSheetNewPayment)
+                        CreatePaymentView(order: order, isPresented: $viewModel.showSheetNewPayment, dataService: dataService){}
                     }
                     
                     // Кнопка "Редактировать"
@@ -39,12 +39,10 @@ struct PaymentsView: View {
                             UpdatePaymentView(
                                 payment: payment,
                                 isPresented: $viewModel.showSheetEditPayment,
-                                actionUpdatePayment: { payment in
-                                    paymentProtocol.actionUpdatePayment(payment: payment){
-                                        viewModel.selectedPayment = nil
-                                    }
-                                }
-                            )
+                                dataService: dataService
+                            ){
+                                viewModel.selectedPayment = nil
+                            }
                         }
                     }
                     .disabled(viewModel.selectedPayment == nil)
@@ -52,7 +50,7 @@ struct PaymentsView: View {
                     // Кнопка "Удалить"
                     TrashConfirmButton(isPresent: $viewModel.showConfirmDeletePayment, label: "Delete Payment"){
                         if let payment = viewModel.selectedPayment{
-                            paymentProtocol.actionDeletePayment(payment: payment){
+                            dataService.delete(payment: payment){
                                 viewModel.selectedPayment = nil
                             }
                         }

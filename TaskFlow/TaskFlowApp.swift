@@ -55,7 +55,7 @@ struct TaskFlowApp: App {
         @Environment(\.openWindow) var openWindow
         
         WindowGroup {
-            MainView(viewModel: viewModel)
+            MainView(viewModel: viewModel, modelContext: sharedModelContainer.mainContext)
                 .tabItem {
                     Label("Главное", systemImage: "house")
                 }

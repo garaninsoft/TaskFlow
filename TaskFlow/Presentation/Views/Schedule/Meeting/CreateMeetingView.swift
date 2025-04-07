@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct CreateMeetingView: View {
-    
     var order: Order
+    
     @Binding var isPresented: Bool
+    let dataService: MeetingsProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         MeetingForm(
@@ -18,7 +20,7 @@ struct CreateMeetingView: View {
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
             action: {meeting in
-                order.schedules?.append(meeting)
+                dataService.create(meeting: meeting, for: order, onSuccess: onSuccess)
             }
         )
     }

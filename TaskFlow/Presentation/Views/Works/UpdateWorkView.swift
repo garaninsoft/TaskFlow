@@ -9,8 +9,10 @@ import SwiftUI
 
 struct UpdateWorkView: View {
     let work: Work
+    
     @Binding var isPresented: Bool
-    let actionUpdateWork: (Work)-> Void
+    let dataService: WorksProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         WorkForm(
@@ -18,7 +20,9 @@ struct UpdateWorkView: View {
             titleForm: "Update Work",
             captionButtonSuccess: "Update",
             isPresented: $isPresented,
-            action: actionUpdateWork
+            action: { work in
+                dataService.update(work: work, onSuccess: onSuccess)
+            }
         )
     }
 }

@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct UpdateStudentView: View {
-    
-    @Environment(\.modelContext) private var modelContext
-    @Binding var isPresented: Bool
-    
     var student: Student
+    
+    @Binding var isPresented: Bool
+    let dataService: StudentsProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         StudentForm(
@@ -20,14 +20,10 @@ struct UpdateStudentView: View {
             titleForm: "Update Student",
             captionButtonSuccess: "Update",
             isPresented: $isPresented,
-            action: updateStudent
+            action: {student in
+                dataService.update(student: student, onSuccess: onSuccess)
+            }
         )
-    }
-    
-    func updateStudent(_ student: Student){
-        self.student.name = student.name
-        self.student.contacts = student.contacts
-        try? modelContext.save()
     }
 }
 

@@ -15,13 +15,13 @@ struct OrderDetailsView: View {
     
     @ObservedObject var viewModel: MainViewModel
     
-    let ordersProtocol: OrdersProtocol
+    let dataService: OrdersProtocol
     
     var body: some View {
         TabView(selection: $viewModel.selectedOrderDetailsTab) {
             MeetingsView(
                 viewModel: viewModel,
-                meetingsProtocol: ordersProtocol
+                dataService: dataService
             )
             .tabItem {
                 Text("Meetings")
@@ -30,7 +30,7 @@ struct OrderDetailsView: View {
             
             WorksView(
                 viewModel: viewModel,
-                worksProtocol: ordersProtocol
+                dataService: dataService
             )
             .tabItem {
                 Text("Works")
@@ -39,7 +39,7 @@ struct OrderDetailsView: View {
             
             PaymentsView(
                 viewModel: viewModel,
-                paymentProtocol: ordersProtocol
+                dataService: dataService
             )
             .tabItem {
                 Text("Payments")

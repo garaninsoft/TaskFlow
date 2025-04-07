@@ -18,6 +18,7 @@ struct StudentForm: View {
     ) {
         self.name = student?.name ?? ""
         self.contacts = student?.contacts ?? ""
+        self.closed = student?.closed
         
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
@@ -27,6 +28,8 @@ struct StudentForm: View {
 
     @State private var name: String
     @State private var contacts: String
+    @State private var closed: Date?
+    
     
     @Binding var isPresented: Bool
     
@@ -43,6 +46,7 @@ struct StudentForm: View {
             
             TextField("Name", text: $name)
             TextField("Contacts", text: $contacts)
+            DatePickerButton(caption:"Closed", selectedDate: $closed)
             
             HStack {
                 
@@ -54,7 +58,8 @@ struct StudentForm: View {
                     let student = Student(
                         name: name,
                         contacts: contacts,
-                        created: Date()
+                        created: Date(),
+                        closed: closed
                     )
                     if isValid(student: student){
                         withAnimation {

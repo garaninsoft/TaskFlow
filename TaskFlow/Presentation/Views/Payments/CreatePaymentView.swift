@@ -9,7 +9,10 @@ import SwiftUI
 
 struct CreatePaymentView: View {
     var order: Order
+    
     @Binding var isPresented: Bool
+    let dataService: PaymentsProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         PaymentForm(
@@ -17,7 +20,7 @@ struct CreatePaymentView: View {
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
             action: {payment in
-                order.payments?.append(payment)
+                dataService.create(payment: payment, for: order, onSuccess: onSuccess)
             }
         )
     }

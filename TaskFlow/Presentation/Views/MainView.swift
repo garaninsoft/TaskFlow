@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct MainView: View, OrdersProtocol {
+struct MainView: View {
     
     // Logging Debug (import os enabled)
 //    private static let logger = Logger(
@@ -18,32 +18,66 @@ struct MainView: View, OrdersProtocol {
 //    let _ = Self.logger.trace("hello \(student.name)") // sample logging
 
     
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Student.created, order: .forward) private var students: [Student]
+    var modelContext: ModelContext
+
+    private var dataService: StudentsProtocol
+    
+    @Query(filter: #Predicate<Student> { $0.closed == nil }) private var activeStudents: [Student]
+    @Query(filter: #Predicate<Student> { $0.closed != nil }) private var closedStudents: [Student]
 
     @ObservedObject var viewModel: MainViewModel
     
     // NavigationPath for column Order Detail
     @State private var detailPath = NavigationPath()
+
+    init(viewModel: MainViewModel, modelContext: ModelContext) {
+        self.dataService = StudentsDataService(modelContext: modelContext, viewModel: viewModel)
+        self.viewModel = viewModel
+        self.modelContext = modelContext
+    }
     
     var body: some View {
         NavigationSplitView {
-            // column Students
-            List(selection: $viewModel.selectedStudent) {
-                ForEach(students) { student in
-                    NavigationLink(student.name, value: student)
+            
+            TabView{
+                List(selection: $viewModel.selectedStudent) {
+                    ForEach(activeStudents) { student in
+                        NavigationLink(student.name, value: student)
+                    }
+                    .onChange(of: viewModel.selectedStudent) {
+                        viewModel.selectedOrder = nil
+                    }
+                }.tabItem {
+                    Text("Open")
                 }
-                .onChange(of: viewModel.selectedStudent) {
+                .onAppear{
+                    viewModel.selectedStudent = nil
+                    viewModel.selectedOrder = nil
+                }
+                
+                List(selection: $viewModel.selectedStudent) {
+                    ForEach(closedStudents) { student in
+                        NavigationLink(student.name, value: student)
+                    }
+                    .onChange(of: viewModel.selectedStudent) {
+                        viewModel.selectedOrder = nil
+                    }
+                }.tabItem {
+                    Text("Closed")
+                }
+                .onAppear{
+                    viewModel.selectedStudent = nil
                     viewModel.selectedOrder = nil
                 }
             }
+            
             .toolbar {
                 ToolbarItem {
                     Button(action: {viewModel.showSheetNewStudent = true}) {
                         Label("Add Student", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewStudent) {
-                        CreateStudentView(isPresented: $viewModel.showSheetNewStudent)
+                        CreateStudentView(isPresented: $viewModel.showSheetNewStudent, dataService: dataService){}
                     }
                 }
                 if let student = viewModel.selectedStudent {
@@ -61,14 +95,12 @@ struct MainView: View, OrdersProtocol {
                             Label("Edit Student", systemImage: "pencil")
                         }
                         .sheet(isPresented: $viewModel.showSheetEditStudent) {
-                            UpdateStudentView(isPresented: $viewModel.showSheetEditStudent, student: student)
+                            UpdateStudentView(student: student,isPresented: $viewModel.showSheetEditStudent, dataService: dataService){}
                         }
                     }
                     ToolbarItem {
                         TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteStudent, label: "Delete Student"){
-                            deleteStudent(student: student){
-                                viewModel.selectedStudent = nil
-                            }
+                            dataService.delete(student: student){ viewModel.selectedStudent = nil }
                         }
                     }
                 }
@@ -102,7 +134,7 @@ struct MainView: View, OrdersProtocol {
                             Label("Add Order", systemImage: "plus")
                         }
                         .sheet(isPresented: $viewModel.showSheetNewOrder) {
-                            CreateOrderView(student: student, isPresented: $viewModel.showSheetNewOrder)
+                            CreateOrderView(student: student, isPresented: $viewModel.showSheetNewOrder, dataService: dataService){}
                         }
                     }
                     if let order = viewModel.selectedOrder {
@@ -119,12 +151,12 @@ struct MainView: View, OrdersProtocol {
                                 Label("Edit Order", systemImage: "pencil")
                             }
                             .sheet(isPresented: $viewModel.showSheetEditOrder) {
-                                UpdateOrderView(isPresented: $viewModel.showSheetEditOrder, order: order)
+                                UpdateOrderView(order: order, isPresented: $viewModel.showSheetEditOrder, dataService: dataService){}
                             }
                         }
                         ToolbarItem {
                             TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteOrder, label: "Delete Order"){
-                                deleteOrder(order: order){
+                                dataService.delete(order: order){
                                     viewModel.selectedOrder = nil
                                 }
                             }
@@ -138,94 +170,11 @@ struct MainView: View, OrdersProtocol {
                 if viewModel.selectedOrder != nil {
                     OrderDetailsView(
                         viewModel: viewModel,
-                        ordersProtocol: self
+                        dataService: dataService
                     )
                 } else {
                     Text("Select Order")
                 }
-            }
-        }
-    }
-    
-    func actionDeleteMeeting(meeting: Schedule, onSuccess: () -> Void) {
-        withAnimation{
-            modelContext.delete(meeting)
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    func actionUpdateMeeting(meeting: Schedule, onSuccess: () -> Void) {
-        withAnimation{
-            viewModel.selectedMeeting?.start = meeting.start
-            viewModel.selectedMeeting?.finish = meeting.finish
-            viewModel.selectedMeeting?.completed = meeting.completed
-            viewModel.selectedMeeting?.cost = meeting.cost
-            viewModel.selectedMeeting?.details = meeting.details
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    func actionDeleteWork(work: Work, onSuccess: () -> Void) {
-        withAnimation{
-            modelContext.delete(work)
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    func actionUpdateWork(work: Work, onSuccess: () -> Void) {
-        withAnimation{
-            viewModel.selectedWork?.created = work.created
-            viewModel.selectedWork?.completed = work.completed
-            viewModel.selectedWork?.cost = work.cost
-            viewModel.selectedWork?.details = work.details
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    func actionDeletePayment(payment: Payment, onSuccess: () -> Void) {
-        withAnimation{
-            modelContext.delete(payment)
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    func actionUpdatePayment(payment: Payment, onSuccess: () -> Void) {
-        withAnimation{
-            viewModel.selectedPayment?.created = payment.created
-            viewModel.selectedPayment?.amount = payment.amount
-            viewModel.selectedPayment?.category = payment.category
-            viewModel.selectedPayment?.details = payment.details
-            viewModel.selectedPayment?.declared = payment.declared
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    private func deleteStudent(student: Student, onSuccess: () -> Void){
-        withAnimation{
-            modelContext.delete(student)
-            if (try? modelContext.save()) != nil {
-                onSuccess()
-            }
-        }
-    }
-    
-    private func deleteOrder(order: Order, onSuccess: () -> Void){
-        withAnimation{
-            modelContext.delete(order)
-            if (try? modelContext.save()) != nil {
-                onSuccess()
             }
         }
     }

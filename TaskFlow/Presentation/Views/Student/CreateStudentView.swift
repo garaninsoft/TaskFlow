@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct CreateStudentView: View {
-    
-    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
+    let dataService: StudentsProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         StudentForm(
@@ -18,8 +18,7 @@ struct CreateStudentView: View {
             captionButtonSuccess: "Register",
             isPresented: $isPresented,
             action: {student in
-                modelContext.insert(student)
-                try? modelContext.save()
+                dataService.create(student: student, onSuccess: onSuccess)
             }
         )
     }

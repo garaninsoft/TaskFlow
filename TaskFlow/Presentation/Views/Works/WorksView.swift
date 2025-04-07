@@ -10,7 +10,7 @@ import SwiftUI
 struct WorksView: View {
     
     @ObservedObject var viewModel: MainViewModel
-    let worksProtocol: WorksProtocol
+    let dataService: WorksProtocol
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -24,7 +24,7 @@ struct WorksView: View {
                         Label("Work", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewWork) {
-                        CreateWorkView(order: order, isPresented: $viewModel.showSheetNewWork)
+                        CreateWorkView(order: order, isPresented: $viewModel.showSheetNewWork, dataService: dataService){}
                     }
                     
                     // Кнопка "Редактировать"
@@ -38,12 +38,11 @@ struct WorksView: View {
                             UpdateWorkView(
                                 work: work,
                                 isPresented: $viewModel.showSheetEditWork,
-                                actionUpdateWork: { work in
-                                    worksProtocol.actionUpdateWork(work: work){
-                                        viewModel.selectedWork = nil
-                                    }
-                                }
-                            )
+                                dataService: dataService
+                            ){
+                                viewModel.selectedWork = nil
+                            }
+                               
                         }
                     }
                     .disabled(viewModel.selectedWork == nil)
@@ -51,7 +50,7 @@ struct WorksView: View {
                     // Кнопка "Удалить"
                     TrashConfirmButton(isPresent: $viewModel.showConfirmDeleteWork, label: "Delete Work"){
                         if let work = viewModel.selectedWork{
-                            worksProtocol.actionDeleteWork(work: work){
+                            dataService.delete(work: work){
                                 viewModel.selectedWork = nil
                             }
                         }

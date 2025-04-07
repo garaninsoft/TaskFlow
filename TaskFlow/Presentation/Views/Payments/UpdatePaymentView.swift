@@ -9,8 +9,10 @@ import SwiftUI
 
 struct UpdatePaymentView: View {
     let payment: Payment
+    
     @Binding var isPresented: Bool
-    let actionUpdatePayment: (Payment)-> Void
+    let dataService: PaymentsProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         PaymentForm(
@@ -18,7 +20,9 @@ struct UpdatePaymentView: View {
             titleForm: "Update Payment",
             captionButtonSuccess: "Update",
             isPresented: $isPresented,
-            action: actionUpdatePayment
+            action: { payment in
+                dataService.update(payment: payment, onSuccess: onSuccess)
+            }
         )
     }
 }

@@ -9,8 +9,10 @@ import SwiftUI
 
 struct UpdateMeetingView: View {
     let meeting: Schedule
+    
     @Binding var isPresented: Bool
-    let actionUpdateMeeting: (Schedule)-> Void
+    let dataService: MeetingsProtocol
+    let onSuccess: () -> Void
     
     var body: some View {
         MeetingForm(
@@ -18,7 +20,9 @@ struct UpdateMeetingView: View {
             titleForm: "Update Meeting",
             captionButtonSuccess: "Update",
             isPresented: $isPresented,
-            action: actionUpdateMeeting
+            action: {meeting in
+                dataService.update(meeting: meeting, onSuccess: onSuccess)
+            }
         )
     }
 }

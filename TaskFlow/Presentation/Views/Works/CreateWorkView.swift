@@ -9,15 +9,18 @@ import SwiftUI
 
 struct CreateWorkView: View {
     var order: Order
-    @Binding var isPresented: Bool
     
+    @Binding var isPresented: Bool
+    let dataService: WorksProtocol
+    let onSuccess: () -> Void
+
     var body: some View {
         WorkForm(
             titleForm: "Create Work",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
             action: {work in
-                order.works?.append(work)
+                dataService.create(work: work, for: order, onSuccess: onSuccess)
             }
         )
     }
