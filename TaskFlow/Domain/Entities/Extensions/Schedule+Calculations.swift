@@ -9,29 +9,38 @@ import Foundation
 import SwiftData
 
 extension Schedule {
-    // Возвращает первое найденное конфликтующее событие
-//    static func findTimeConflict(
-//        withStart start: Date,
-//        finish: Date,
-//        excluding scheduleID: Schedule.ID? = nil,
-//        in modelContext: ModelContext
-//    ) -> Schedule? {
-//        let predicate = #Predicate<Schedule> { existing in
-//            (existing.start != nil && existing.finish != nil) &&
-//            (existing.id != scheduleID) &&
-//            (
-//                (start >= existing.start! && start < existing.finish!) ||
-//                (finish > existing.start! && finish <= existing.finish!) ||
-//                (start <= existing.start! && finish >= existing.finish!)
-//            )
-//        }
-//        
-//        do {
-//            let conflicts = try modelContext.fetch(FetchDescriptor<Schedule>(predicate: predicate))
-//            return conflicts.first
-//        } catch {
-//            print("Ошибка при проверке конфликтов: \(error)")
-//            return nil
-//        }
-//    }
+    static func findTimeConflict(
+        withStart start: Date,
+        finish: Date,
+        buffer: TimeInterval = 0, // Буфер в секундах (по умолчанию 0)
+        excluding scheduleID: Schedule.ID? = nil,
+        in modelContext: ModelContext,
+        fetchLimit: Int = 200
+    ) -> Schedule? {
+        do {
+               let bufferedStart = start.addingTimeInterval(-buffer)
+               let bufferedFinish = finish.addingTimeInterval(buffer)
+               
+               // Получаем все записи без сложного предиката
+               var descriptor = FetchDescriptor<Schedule>(
+                   sortBy: [SortDescriptor(\.start)]
+               )
+               descriptor.fetchLimit = fetchLimit
+               
+               let allSchedules = try modelContext.fetch(descriptor)
+               
+               // Фильтрация полностью в памяти
+               return allSchedules.first { existing in
+                   guard let existingStart = existing.start,
+                         let existingFinish = existing.finish,
+                         existing.id != scheduleID else {
+                       return false
+                   }
+                   return bufferedStart < existingFinish && bufferedFinish > existingStart
+               }
+           } catch {
+               print("Ошибка при проверке конфликтов: \(error)")
+               return nil
+           }
+    }
 }

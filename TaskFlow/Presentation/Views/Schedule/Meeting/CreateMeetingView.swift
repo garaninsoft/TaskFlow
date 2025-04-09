@@ -19,10 +19,10 @@ struct CreateMeetingView: View {
             titleForm: "Create Meeting",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
-            action: {meeting in
-                dataService.create(meeting: meeting, for: order, onSuccess: onSuccess)
-            }
-        )
+            modelContext: dataService.getModelContext()
+        ){meeting in
+            dataService.create(meeting: meeting, for: order, onSuccess: onSuccess)
+        }
     }
 }
 

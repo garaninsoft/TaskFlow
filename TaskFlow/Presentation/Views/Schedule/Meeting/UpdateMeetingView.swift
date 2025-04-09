@@ -20,9 +20,9 @@ struct UpdateMeetingView: View {
             titleForm: "Update Meeting",
             captionButtonSuccess: "Update",
             isPresented: $isPresented,
-            action: {meeting in
-                dataService.update(meeting: meeting, onSuccess: onSuccess)
-            }
-        )
+            modelContext: dataService.getModelContext()
+        ){meeting in
+            dataService.update(meeting: meeting, onSuccess: onSuccess)
+        }
     }
 }

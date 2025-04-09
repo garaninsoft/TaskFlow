@@ -8,12 +8,16 @@ import SwiftUI
 import SwiftData
 
 class StudentsDataService: StudentsProtocol {
-    private var modelContext: ModelContext
+    private let modelContext: ModelContext
     @ObservedObject var viewModel: MainViewModel
     
     init(modelContext: ModelContext, viewModel: MainViewModel) {
         self.modelContext = modelContext
         self.viewModel = viewModel
+    }
+    
+    func getModelContext() -> ModelContext {
+        return modelContext
     }
     
     // student -------------------------------------------

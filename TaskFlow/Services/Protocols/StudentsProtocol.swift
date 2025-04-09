@@ -8,5 +8,5 @@
 protocol StudentsProtocol: OrdersProtocol{
     func create(student: Student, onSuccess: () -> Void)
     func update(student: Student, onSuccess: () -> Void)
-    func delete(student: Student, onSuccess: () -> Void) 
+    func delete(student: Student, onSuccess: () -> Void)
 }

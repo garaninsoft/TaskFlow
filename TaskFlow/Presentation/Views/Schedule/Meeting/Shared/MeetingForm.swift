@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MeetingForm: View {
     
@@ -14,6 +15,7 @@ struct MeetingForm: View {
         titleForm: String,
         captionButtonSuccess: String,
         isPresented: Binding<Bool>,
+        modelContext: ModelContext, // Для проверки пересечений по времени занятий
         action: @escaping (Schedule) -> Void
     ) {
         self.startDate = meeting?.start
@@ -21,6 +23,9 @@ struct MeetingForm: View {
         self.completedDate = meeting?.completed
         self.cost = meeting?.cost ?? 0
         self.details = meeting?.details ?? ""
+        
+        self.scheduleID = meeting?.id
+        self.modelContext = modelContext
         
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
@@ -37,11 +42,16 @@ struct MeetingForm: View {
     
     @Binding var isPresented: Bool
     
+    @State private var errorMessage: String = "Ошибка"
+    private let scheduleID: Schedule.ID?
+    private let modelContext: ModelContext
+    
     var titleForm: String
     var captionButtonSuccess: String
     var action: (Schedule)->Void
     
     @State private var showValidateErrorMsg = false
+    @State private var meetingConflict: Schedule? = nil
     
     var body: some View {
         Form {
@@ -50,6 +60,7 @@ struct MeetingForm: View {
             
             // Поле для выбора даты начала
             DatePickerButton(caption:"Start", selectedDate: $startDate)
+            
 
             // Поле для выбора даты окончания
             DatePickerButton(caption:"Finish", selectedDate: $finishDate)
@@ -93,34 +104,63 @@ struct MeetingForm: View {
                 .buttonStyle(.borderedProminent)
             }
         }
-        .alert("Ошибка", isPresented: $showValidateErrorMsg) {
+        .alert(errorMessage, isPresented: $showValidateErrorMsg) {
             Button("OK", role: .cancel) {
                 showValidateErrorMsg = false
             }
         } message: {
-            Text("Error")
+            if let meetingConflict = self.meetingConflict {
+                // Основной текст с форматированием
+                let studentText = meetingConflict.order?.student.map { "Студент: **\($0.name)**" } ?? ""
+                let orderText = meetingConflict.order.map { "Заказ: **\($0.title)**" } ?? ""
+                let startText = "Начало: \(meetingConflict.start?.formatted(date: .omitted, time: .shortened) ?? "не указано")"
+                let endText = "Окончание: \(meetingConflict.finish?.formatted(date: .omitted, time: .shortened) ?? "не указано")"
+                
+                // Комбинируем все тексты
+                Text("\(studentText)\n\(orderText)\n\(startText)\n\(endText)")
+            }
         }
         .formStyle(.grouped)
     }
     private func isValid(meeting: Schedule)->Bool{
         // Стоимость возможна == 0 (бесплатное занятие), но не отрицательная
         
-        if let start = meeting.start{
-            if meeting.finish != nil && meeting.completed == nil{
-                return start <= meeting.finish! && meeting.cost >= 0
+        //Сброс перед проверкой
+        errorMessage = "Ошибка валидации" // по умолчанию
+        self.meetingConflict = nil
+        
+        if let start = meeting.start, let finish = meeting.finish{
+            // Сначала проверим на пересечение с уже запланированными занятиями.
+            if let meetingConflict =  Schedule.findTimeConflict(
+                withStart: start,
+                finish: finish,
+                buffer: 15 * 60,
+                excluding: scheduleID, // Исключаем текущее событие, если есть
+                in: modelContext
+            ) {
+                if let order = meetingConflict.order{
+                    errorMessage = "Найдено конфликтующее событие:"
+                    self.meetingConflict = meetingConflict
+                    return false
+                }
             }
             
-            if meeting.finish != nil && meeting.completed != nil{
-                return start <= meeting.finish! && start <= meeting.completed! && meeting.cost >= 0
+            if let completed = meeting.completed{
+                // Начал о занятия <= Конец занятия и Начало занятия <= Фактический конец занятия
+                return start <= finish && start <= completed && meeting.cost >= 0
+                
+            }else{
+                // Начало занятия <= Конец занятия
+                return start <= finish && meeting.cost >= 0
             }
-        } else{
-            return false
         }
-        return true
+        return false
+        
     }
 }
 
 #Preview {
+    @Previewable @Environment(\.modelContext) var modelContext
     @Previewable @State var isPresent: Bool = false
-    MeetingForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent){_ in }
+    MeetingForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent, modelContext: modelContext){_ in }
 }
