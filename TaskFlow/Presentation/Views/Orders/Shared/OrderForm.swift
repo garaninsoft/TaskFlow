@@ -8,6 +8,19 @@
 import SwiftUI
 
 struct OrderForm: View {
+    @State private var title: String
+    @State private var details: String
+    @State private var created: Date?
+    
+    @State private var errorMessage: String = ""
+    
+    @Binding var isPresented: Bool
+
+    var titleForm: String
+    var captionButtonSuccess: String
+    var action: (Order)->Void
+    
+    @State private var showValidateErrorMsg = false
     
     init(
         order: Order? = nil,
@@ -18,23 +31,13 @@ struct OrderForm: View {
     ) {
         self.title = order?.title ?? ""
         self.details = order?.details ?? ""
+        self.created = order?.created
         
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
         self.action = action
         self._isPresented = isPresented
     }
-
-    @State private var details: String
-    @State private var title: String
-    
-    @Binding var isPresented: Bool
-
-    var titleForm: String
-    var captionButtonSuccess: String
-    var action: (Order)->Void
-    
-    @State private var showValidateErrorMsg = false
     
     var body: some View {
         Form {
@@ -43,6 +46,7 @@ struct OrderForm: View {
             
             TextField("Title", text: $title)
             TextField("Details", text: $details)
+            DatePickerButton(caption:"Created", selectedDate: $created)
             
             HStack {
                 
@@ -54,9 +58,9 @@ struct OrderForm: View {
                     let order = Order(
                         title: title,
                         details: details,
-                        created: Date()
+                        created: created ?? Date()
                     )
-                    if isValid(order: order){
+                    if let order = getValid(){
                         withAnimation {
                             action(order)
                         }
@@ -73,11 +77,23 @@ struct OrderForm: View {
                 showValidateErrorMsg = false
             }
         } message: {
-            Text("Error")
+            Text(errorMessage)
         }
         .formStyle(.grouped)
     }
-    private func isValid(order: Order)->Bool{
-        return !(details.isEmpty || title.isEmpty)
+    private func getValid() -> Order?{
+        if title.isEmpty{
+            errorMessage = "Нет названия Заказа"
+            return nil
+        }
+        if let created = created{
+            return Order(
+                title: title,
+                details: details,
+                created: created
+            )
+        }
+        errorMessage = "Нет даты Заказа"
+        return nil
     }
 }
