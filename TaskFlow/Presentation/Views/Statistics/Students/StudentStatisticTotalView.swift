@@ -19,7 +19,7 @@ struct StudentStatisticTotalView: View {
                 .padding(.top)
             
             // Основная статистика
-            StatisticTotalCard(statisticTotal: student)
+            StatisticTotalCard(statisticTotal: student, orderCaption: "Баланс по заказам")
         }
         .padding(.horizontal)
     }

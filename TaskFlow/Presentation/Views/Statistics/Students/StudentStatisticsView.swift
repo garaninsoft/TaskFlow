@@ -12,14 +12,13 @@ struct StudentStatisticsView: View {
     @Binding var isPresented: Bool
     var body: some View {
         TabView{
-            StatisticTaxView(statisticTaxItems: student.statisticTaxItems)
-            .tabItem {
-                Text("Tax")
-            }
-            
             StudentStatisticTotalView(student: student)
             .tabItem {
                 Text("Total")
+            }
+            StatisticTaxView(statisticTaxItems: student.statisticTaxItems)
+            .tabItem {
+                Text("Tax")
             }
         }
         .padding()

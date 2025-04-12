@@ -15,7 +15,7 @@ private enum CalcConstants {
     
     enum Time {
         static let secInHour = 3600.0
-        static let minInHour = 3600.0
+        static let minInHour = 60.0
     }
 }
 
@@ -50,7 +50,6 @@ extension Order: StatisticsProtocol {
             let plannedDuration = finish.timeIntervalSince(start)
             let actualDuration = completed.timeIntervalSince(start)
             let difference = actualDuration - plannedDuration
-            
             return total + Int(difference / CalcConstants.Time.minInHour)
         }
     }
@@ -95,9 +94,10 @@ extension Order: StatisticsProtocol {
     
     /// Полная статистика по занятиям
     var totalStatistics: StatisticTotalItem {
+        let totalCost = totalSessionsCost + totalCompletedWorksCost
         return StatisticTotalItem(
-            totalCost: totalSessionsCost + totalCompletedWorksCost,
-            totalPayments: totalPaymentsAmount,
+            totalCost: totalCost,
+            totalPayments: totalPaymentsAmount - totalCost,
             totalTimeDiscrepancy: formattedTotalTimeDiscrepancy,
             sessionsCount: totalMeetingsCount,
             completedSessionsCount: completedMeetingsCount,

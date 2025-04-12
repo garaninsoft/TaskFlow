@@ -9,6 +9,13 @@ import SwiftUI
 
 struct TableHeader: View {
     let titleItems: [TitleColumnItem]
+    let rowHeight: CGFloat
+    
+    init(titleItems: [TitleColumnItem], rowHeight: CGFloat = 40) {
+            self.titleItems = titleItems
+            self.rowHeight = rowHeight
+        }
+    
     var body: some View {
         List{ // Это костыль для выравнивания
             ZeroSpacingHStack {
@@ -26,8 +33,8 @@ struct TableHeader: View {
             )
         }
         .listStyle(.plain)
-        .environment(\.defaultMinListRowHeight, 40) // Высота строки
-        .frame(height: 40) // Точная высота списка
+        .environment(\.defaultMinListRowHeight, rowHeight) // Высота строки
+        .frame(height: rowHeight) // Точная высота списка
         .scrollDisabled(true) // Отключаем скролл
         
     }

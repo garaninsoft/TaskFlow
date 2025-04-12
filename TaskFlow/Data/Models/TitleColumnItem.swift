@@ -13,6 +13,14 @@ struct TitleColumnItem: Hashable{
     let width: CGFloat
     let borderHeight: CGFloat
     
+    init(title: String, alignment: Alignment, font: Font, width: CGFloat, borderHeight: CGFloat = 0) {
+        self.title = title
+        self.alignment = alignment
+        self.font = font
+        self.width = width
+        self.borderHeight = borderHeight
+    }
+    
     func hash(into hasher: inout Hasher) {
            hasher.combine(title)
            hasher.combine(width)

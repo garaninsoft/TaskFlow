@@ -26,9 +26,8 @@ struct OrderStatisticTotalView: View {
             .padding(.top)
             
             // Основная статистика
-            StatisticTotalCard(statisticTotal: order)
+            StatisticTotalCard(statisticTotal: order, orderCaption: "Баланс по заказу")
         }
         .padding(.horizontal)
     }
-
 }

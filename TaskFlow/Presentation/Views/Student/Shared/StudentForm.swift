@@ -8,6 +8,19 @@
 import SwiftUI
 
 struct StudentForm: View {
+    @State private var name: String
+    @State private var contacts: String
+    @State private var details: String
+    @State private var created: Date?
+    @State private var closed: Date?
+    
+    @Binding var isPresented: Bool
+    
+    var titleForm: String
+    var captionButtonSuccess: String
+    var action: (Student)->Void
+    
+    @State private var showValidateErrorMsg = false
     
     init(
         student: Student? = nil,
@@ -18,6 +31,8 @@ struct StudentForm: View {
     ) {
         self.name = student?.name ?? ""
         self.contacts = student?.contacts ?? ""
+        self.details = student?.details ?? ""
+        self.created = student?.created ?? Date()
         self.closed = student?.closed
         
         self.titleForm = titleForm
@@ -25,28 +40,17 @@ struct StudentForm: View {
         self.action = action
         self._isPresented = isPresented
     }
-
-    @State private var name: String
-    @State private var contacts: String
-    @State private var closed: Date?
-    
-    
-    @Binding var isPresented: Bool
-    
-    var titleForm: String
-    var captionButtonSuccess: String
-    var action: (Student)->Void
-    
-    @State private var showValidateErrorMsg = false
     
     var body: some View {
         Form {
             Text(titleForm)
                 .font(.title2)
             
-            TextField("Name", text: $name)
-            TextField("Contacts", text: $contacts)
-            DatePickerButton(caption:"Closed", selectedDate: $closed)
+            TextField("Имя", text: $name)
+            TextField("Контакты", text: $contacts)
+            TextField("Детали", text: $details)
+            DatePickerButton(caption:"Создан", selectedDate: $created)
+            DatePickerButton(caption:"Закрыт", selectedDate: $closed)
             
             HStack {
                 
@@ -58,7 +62,8 @@ struct StudentForm: View {
                     let student = Student(
                         name: name,
                         contacts: contacts,
-                        created: Date(),
+                        details: details,
+                        created: created,
                         closed: closed
                     )
                     if isValid(student: student){
@@ -83,7 +88,7 @@ struct StudentForm: View {
         .formStyle(.grouped)
     }
     private func isValid(student: Student)->Bool{
-        return !name.isEmpty && !contacts.isEmpty
+        return !name.isEmpty && !contacts.isEmpty && created != nil
     }
 }
 

@@ -24,7 +24,7 @@ struct DatePickerButton: View {
                 
                 // Кнопка для сброса даты
                 if selectedDate != nil {
-                    Button(action: {
+                    Button( action: {
                         selectedDate = nil
                     }) {
                         Image(systemName: "xmark.circle.fill")
@@ -80,6 +80,9 @@ struct DatePickerView: View {
                     selectedDate = tempDate.roundedToMinutes()
                     dismiss()
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)  // Синий цвет
+                .keyboardShortcut(.defaultAction)  // Нажатие Enter
                
             }
 

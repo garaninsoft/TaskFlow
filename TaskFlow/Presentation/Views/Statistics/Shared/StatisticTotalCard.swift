@@ -9,12 +9,12 @@ import SwiftUI
 
 struct StatisticTotalCard: View {
     let statisticTotal: StatisticsProtocol
-    
+    let orderCaption: String
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             StatsRow(
                 title: "Проведено занятий",
-                value: "\(statisticTotal.totalStatistics.completedSessionsCount)/\(statisticTotal.totalStatistics.sessionsCount)",
+                value: "\(statisticTotal.totalStatistics.completedSessionsCount) / \(statisticTotal.totalStatistics.sessionsCount)",
                 icon: "checkmark.circle.fill",
                 color: .blue
             )
@@ -34,7 +34,7 @@ struct StatisticTotalCard: View {
             )
             Divider()
             StatsRow(
-                title: "Баланс платежей",
+                title: orderCaption,
                 value: statisticTotal.totalStatistics.totalPayments.formattedAsCurrency(),
                 icon: currencyIcon,
                 color: .red
@@ -67,9 +67,9 @@ struct StatisticTotalCard: View {
 
 // MARK: - Вспомогательные компоненты
 
-struct StatsRow: View {
+struct StatsRow<Value: CustomStringConvertible>: View {
     let title: String
-    let value: String
+    let value: Value
     let icon: String
     let color: Color
     
@@ -80,15 +80,19 @@ struct StatsRow: View {
                 .frame(width: 24)
             Text(title)
             Spacer()
-            Text(value)
-                .bold()
+            if let amonnt = value as? Double{
+                CurrencyView(amount: amonnt)
+            } else if let text = value as? String{
+                Text(text)
+            } else {
+                Text("no data")
+            }
         }
-        .font(.system(size: 16))
+        .font(.system(size: 14))
     }
 }
 
-struct BackgroundView: View {
-    var body: some View {
-        Color(.windowBackgroundColor)
-    }
+#Preview {
+    let order = Order(title: "Order", details: "Details", created: Date())
+    StatisticTotalCard(statisticTotal: order, orderCaption: "Баланс по занятиям")
 }

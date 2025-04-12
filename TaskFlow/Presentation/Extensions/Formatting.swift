@@ -16,9 +16,9 @@ extension TimeDiscrepancyFormattable {
         let totalMinutes = abs(totalTimeDiscrepancyInMinutes)
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
-        let sign = totalTimeDiscrepancyInMinutes >= 0 ? "+" : "-"
+        let sign = totalTimeDiscrepancyInMinutes > 0 ? "+" : "-"
         
-        return "\(sign)\(hours)ч \(minutes)мин"
+        return hours == 0 && minutes == 0 ? "--:--" : "\(sign)\(hours)ч \(minutes)мин"
     }
 }
 
@@ -35,5 +35,24 @@ extension Double {
         formatter.maximumFractionDigits = fractionDigits
         
         return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
+    }
+}
+
+extension TimeInterval {
+    func formatDuration() -> String {
+        let totalSeconds = Int(self)
+        guard totalSeconds > 0 else { return "0 мин" }
+        
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        
+        switch (hours, minutes) {
+        case (0, _):
+            return "\(minutes) мин"
+        case (_, 0):
+            return "\(hours) ч"
+        default:
+            return "\(hours) ч \(minutes) мин"
+        }
     }
 }

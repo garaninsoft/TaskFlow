@@ -12,13 +12,15 @@ import SwiftData
 final class Student {
     var name: String
     var contacts: String
-    var created: Date
+    var details: String = ""
+    var created: Date?
     var closed: Date?
     var orders: [Order]?
     
-    init(name: String, contacts: String, created: Date, closed: Date? = nil, orders: [Order]? = nil) {
+    init(name: String, contacts: String, details: String, created: Date?, closed: Date? = nil, orders: [Order]? = nil) {
         self.name = name
         self.contacts = contacts
+        self.details = details
         self.created = created
         self.closed = closed
         self.orders = orders

@@ -9,6 +9,7 @@ extension Student {
    func update(with other: Student) {
        self.name = other.name
        self.contacts = other.contacts
+       self.details = other.details
        self.created = other.created
        self.closed = other.closed
    }
