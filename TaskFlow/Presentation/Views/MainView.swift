@@ -112,7 +112,13 @@ struct MainView: View {
                     let orders = student.orders ?? []
                     if !orders.isEmpty {
                         List(orders, selection: $viewModel.selectedOrder) { order in
-                            NavigationLink(order.title, value: order)
+                            NavigationLink(value: order){
+                                HStack {
+                                    Text(order.title)
+                                    Text(order.details)
+                                        .font(.system(size: 10))
+                                }
+                            }
                         }
                         .onChange(of: viewModel.selectedOrder) {
                             viewModel.selectedMeeting = nil
