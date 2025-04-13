@@ -48,7 +48,6 @@ struct DatePickerButton: View {
             .cornerRadius(8)
         }
         .frame(maxWidth: .infinity)
-        
     }
 }
 

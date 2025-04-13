@@ -20,10 +20,17 @@ struct StatisticTotalCard: View {
             )
             
             StatsRow(
-                title: "Общая стоимость",
+                title: "На сумму",
                 value: statisticTotal.totalStatistics.totalCost.formattedAsCurrency(),
                 icon: currencyIcon,
                 color: .green
+            )
+            
+            StatsRow(
+                title: "Баланс оплаченных занятий",
+                value: statisticTotal.totalStatistics.totalPaymentsMeetings.formattedAsCurrency(),
+                icon: currencyIcon,
+                color: .red
             )
             
             StatsRow(
@@ -32,12 +39,13 @@ struct StatisticTotalCard: View {
                 icon: "clock.fill",
                 color: timeDiscrepancyColor
             )
+            
             Divider()
             StatsRow(
-                title: orderCaption,
-                value: statisticTotal.totalStatistics.totalPayments.formattedAsCurrency(),
+                title: "Прочие расходы",
+                value: statisticTotal.totalStatistics.totalOtherExpenses.formattedAsCurrency(),
                 icon: currencyIcon,
-                color: .red
+                color: .cyan
             )
             StatsRow(
                 title: "Общая сумма налога",

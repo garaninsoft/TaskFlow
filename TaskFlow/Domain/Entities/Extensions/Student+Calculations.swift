@@ -36,6 +36,18 @@ extension Student: StatisticsProtocol {
         return orders.reduce(0) { $0 + $1.totalPaymentsAmount }
     }
     
+    /// Общая сумма всех платежей по категориям по студенту
+    /// Общая сумма приходов по урокам вычисляется по отсутствию категории (PaymentCategory==nil)
+    var totalPaymentsAmountbyCategory: [PaymentCategory?: Double] {
+        // 1. Собираем все платежи из всех заказов в один массив
+        let allPayments = orders?.flatMap { $0.payments ?? [] } ?? []
+        
+        // 2. Считаем сумму по категориям (включая nil)
+        return allPayments.reduce(into: [PaymentCategory?: Double]()) { result, payment in
+            result[payment.category] = (result[payment.category] ?? 0) + payment.amount
+        }
+    }
+    
     /// Общая сумма налогов
     var totalTax: Double {
         guard let orders = orders else { return 0 }
@@ -74,8 +86,11 @@ extension Student: StatisticsProtocol {
     
     /// Полная статистика по занятиям
     var totalStatistics: StatisticTotalItem {
+        let totalCost = totalSessionsCost + totalCompletedWorksCost // Это несколько криво. Надо может рефакторнуть в вычисления
         return StatisticTotalItem(
-            totalCost: totalSessionsCost + totalCompletedWorksCost,
+            totalCost: totalCost,
+            totalPaymentsMeetings: (totalPaymentsAmountbyCategory[nil] ?? 0) - totalCost,
+            totalOtherExpenses: totalPaymentsAmountbyCategory.reduce(0){$0 + ($1.key == nil ? 0 : $1.value)},
             totalPayments: totalPaymentsAmount,
             totalTimeDiscrepancy: formattedTotalTimeDiscrepancy,
             sessionsCount: totalMeetingsCount,

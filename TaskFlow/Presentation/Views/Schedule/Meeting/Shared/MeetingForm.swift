@@ -9,6 +9,27 @@ import SwiftUI
 import SwiftData
 
 struct MeetingForm: View {
+    // Поля для ввода данных
+    @State private var startDate: Date?
+    @State private var finishDate: Date?
+    @State private var completedDate: Date?
+    @State private var cost: Double
+    @State private var details: String
+    
+    @State private var totalPayment: Double
+    
+    @Binding var isPresented: Bool
+    
+    @State private var errorMessage: String = "Ошибка"
+    private let scheduleID: Schedule.ID?
+    private let modelContext: ModelContext
+    
+    var titleForm: String
+    var captionButtonSuccess: String
+    var action: (Schedule)->Void
+    
+    @State private var showValidateErrorMsg = false
+    @State private var meetingConflict: Schedule? = nil
     
     init(
         meeting: Schedule? = nil,
@@ -31,27 +52,12 @@ struct MeetingForm: View {
         self.captionButtonSuccess = captionButtonSuccess
         self.action = action
         self._isPresented = isPresented
+        if let meeting = meeting{
+            self.totalPayment = CostCalculator.calculate(meeting: meeting) ?? 0
+        }else{
+            self.totalPayment = 0
+        }
     }
-
-    // Поля для ввода данных
-    @State private var startDate: Date?
-    @State private var finishDate: Date?
-    @State private var completedDate: Date?
-    @State private var cost: Double
-    @State private var details: String
-    
-    @Binding var isPresented: Bool
-    
-    @State private var errorMessage: String = "Ошибка"
-    private let scheduleID: Schedule.ID?
-    private let modelContext: ModelContext
-    
-    var titleForm: String
-    var captionButtonSuccess: String
-    var action: (Schedule)->Void
-    
-    @State private var showValidateErrorMsg = false
-    @State private var meetingConflict: Schedule? = nil
     
     var body: some View {
         Form {
@@ -59,19 +65,47 @@ struct MeetingForm: View {
                 .font(.title2)
             
             // Поле для выбора даты начала
-            DatePickerButton(caption:"Start", selectedDate: $startDate)
+            DatePickerButton(caption:"Начало", selectedDate: $startDate)
             
 
             // Поле для выбора даты окончания
-            DatePickerButton(caption:"Finish", selectedDate: $finishDate)
+            DatePickerButton(caption:"Окончание", selectedDate: $finishDate)
+                .onChange(of: finishDate){ oldValue, newValue in
+                    if let newValue {
+                        if let calcTotal = CostCalculator.calculate(
+                            start: startDate, calcValue: newValue, cost: cost
+                        ){
+                            totalPayment = calcTotal
+                        }
+                    }
+                }
             
             // Поле для выбора даты завершения (если занятие состоялось)
-            DatePickerButton(caption:"Completed", selectedDate: $completedDate)
+            DatePickerButton(caption:"Завершено", selectedDate: $completedDate)
 
             // Поле для ввода стоимости
-            TextField("Cost (rur/60)", value: $cost, format: .number)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                
+            HStack{
+                TextField("Стоимость", value: $cost, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                Text(" руб./60 мин")
+            }
+            
+            HStack{
+                TextField("Сумма", value: $totalPayment, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                Text(" руб")
+                Button("Расчёт окончания") {
+                    if let calcFinishData = Schedule.calculateFinishMeeting(
+                        startDate: startDate,
+                        totalPayment: totalPayment,
+                        hourlyRate: cost){
+                        finishDate = calcFinishData
+                    }else{
+                        errorMessage = "Не хватает для расчёта данных"
+                        showValidateErrorMsg = true
+                    }
+                }
+            }
             
             // Поле для ввода деталей
             TextField("Details", text: $details)
@@ -138,7 +172,8 @@ struct MeetingForm: View {
                 excluding: scheduleID, // Исключаем текущее событие, если есть
                 in: modelContext
             ) {
-                if let order = meetingConflict.order{
+                if meetingConflict.order != nil{ // meetingConflict.order проверяем на тот случай, если в бд
+                    // болтаются события у которых уже нет заказов. Каскадное удаление возможно будет добавлено.
                     errorMessage = "Найдено конфликтующее событие:"
                     self.meetingConflict = meetingConflict
                     return false

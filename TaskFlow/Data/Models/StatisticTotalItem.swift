@@ -8,6 +8,8 @@
 /// Статистика по проведенным занятиям
 struct StatisticTotalItem{
     let totalCost: Double
+    let totalPaymentsMeetings: Double
+    let totalOtherExpenses: Double
     let totalPayments: Double
     let totalTimeDiscrepancy: String
     let sessionsCount: Int

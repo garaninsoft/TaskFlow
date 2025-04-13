@@ -17,8 +17,8 @@ extension TimeDiscrepancyFormattable {
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
         let sign = totalTimeDiscrepancyInMinutes > 0 ? "+" : "-"
-        
-        return hours == 0 && minutes == 0 ? "--:--" : "\(sign)\(hours)ч \(minutes)мин"
+        let strHours = hours > 0 ? "\(hours) ч ":""
+        return hours == 0 && minutes == 0 ? "--:--" : "\(sign)\(strHours)\(minutes) мин"
     }
 }
 

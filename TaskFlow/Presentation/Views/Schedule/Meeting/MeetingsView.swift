@@ -67,7 +67,7 @@ struct MeetingsView: View {
                 let titleItems = [
                     TitleColumnItem(title: "Заня", alignment: .trailing, font: .title3, width: 105, borderHeight: 0),
                     TitleColumnItem(title: "тие", alignment: .leading, font: .title3, width: 105, borderHeight: TableConstants.titleBorderHeight),
-                    TitleColumnItem(title: "Расчётное", alignment: .center, font: .title3, width: 105, borderHeight: TableConstants.titleBorderHeight),
+                    TitleColumnItem(title: "По плану", alignment: .center, font: .title3, width: 105, borderHeight: TableConstants.titleBorderHeight),
                     TitleColumnItem(title: "По факту", alignment: .center, font: .title3, width: 105, borderHeight: TableConstants.titleBorderHeight),
                     TitleColumnItem(title: "Стоимость 1ч", alignment: .center, font: .title3, width: 105, borderHeight: TableConstants.titleBorderHeight),
                     TitleColumnItem(title: "К оплате", alignment: .center, font: .title3, width: 105, borderHeight: TableConstants.titleBorderHeight),

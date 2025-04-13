@@ -10,6 +10,7 @@ protocol StatisticsProtocol{
     var totalCompletedWorksCost: Double { get }
     var totalTimeDiscrepancyInMinutes: Int { get }
     var netIncome: Double { get }
+    var totalPaymentsAmountbyCategory: [PaymentCategory?: Double] { get }
     var totalPaymentsAmount: Double { get }
     var totalTax: Double { get }
     var completedMeetingsCount: Int { get }

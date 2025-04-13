@@ -19,7 +19,6 @@ private enum CalcConstants {
     }
 }
 
-
 extension Order: StatisticsProtocol {
     /// Общая сумма за все проведенные занятия
     var totalSessionsCost: Double {
@@ -59,9 +58,18 @@ extension Order: StatisticsProtocol {
         return totalPaymentsAmount * (1 - CalcConstants.Tax.selfEmployedRate)
     }
     
+
+    /// Общая сумма всех платежей по категориям по заказу
+    /// Общая сумма приходов по урокам вычисляется по отсутствию категории (PaymentCategory==nil)
+    var totalPaymentsAmountbyCategory: [PaymentCategory?: Double] {
+        payments?.reduce(into: [PaymentCategory?: Double]()) { result, payment in
+                    result[payment.category] = (result[payment.category] ?? 0) + payment.amount
+        } ?? [:]
+    }
+    
     /// Общая сумма всех платежей по заказу
     var totalPaymentsAmount: Double {
-        payments?.reduce(0) { $0 + $1.amount } ?? 0
+        totalPaymentsAmountbyCategory.reduce(0){ $0 + $1.value }
     }
     
     /// Общая сумма налогов
@@ -94,9 +102,11 @@ extension Order: StatisticsProtocol {
     
     /// Полная статистика по занятиям
     var totalStatistics: StatisticTotalItem {
-        let totalCost = totalSessionsCost + totalCompletedWorksCost
+        let totalCost = totalSessionsCost + totalCompletedWorksCost // Это несколько криво. Надо может рефакторнуть в вычисления
         return StatisticTotalItem(
             totalCost: totalCost,
+            totalPaymentsMeetings: (totalPaymentsAmountbyCategory[nil] ?? 0) - totalCost,
+            totalOtherExpenses: totalPaymentsAmountbyCategory.reduce(0){$0 + ($1.key == nil ? 0 : $1.value)},
             totalPayments: totalPaymentsAmount - totalCost,
             totalTimeDiscrepancy: formattedTotalTimeDiscrepancy,
             sessionsCount: totalMeetingsCount,
