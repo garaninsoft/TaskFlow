@@ -11,8 +11,8 @@ import SwiftData
 @Model
 final class Work{
     var order: Order?
-    var created: Date? = nil
-    var completed: Date? = nil
+    var created: Date?
+    var completed: Date?
     var cost: Double
     var details: String
     

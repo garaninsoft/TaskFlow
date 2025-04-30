@@ -34,22 +34,29 @@ struct TaskFlowApp: App {
     
     @StateObject var viewModel = MainViewModel()
     
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            PaymentCategory.self,
-            Order.self,
-            Payment.self,
-            Schedule.self,
-            Student.self
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-        
+    let schema = Schema([
+        PaymentCategory.self,
+        Order.self,
+        Payment.self,
+        Schedule.self,
+        Student.self,
+        Work.self
+    ])
+    
+    var sharedModelContainer: ModelContainer
+    
+    init() {
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            sharedModelContainer = try ModelContainer(
+                for: schema,
+                migrationPlan: PaymentMigrationPlan.self,
+                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+            )
+        }catch {
+            fatalError("Failed to configure container: \(error)")
         }
-    }()
+    }
+    
     
     var body: some Scene {
         @Environment(\.openWindow) var openWindow

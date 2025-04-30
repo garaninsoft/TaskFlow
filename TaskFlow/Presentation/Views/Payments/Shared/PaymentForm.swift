@@ -26,7 +26,7 @@ struct PaymentForm: View {
         self.category = payment?.category
         self.amount = payment?.amount ?? 0
         self.details = payment?.details ?? ""
-        self.declared = payment?.declared ?? false
+        self.taxdate = payment?.taxdate
         
         self.titleForm = titleForm
         self.captionButtonSuccess = captionButtonSuccess
@@ -39,7 +39,7 @@ struct PaymentForm: View {
     @State private var category: PaymentCategory?
     @State private var amount: Double
     @State private var details: String
-    @State private var declared: Bool
+    @State private var taxdate: Date?
     
     @Binding var isPresented: Bool
     
@@ -73,8 +73,7 @@ struct PaymentForm: View {
             TextField("Details", text: $details)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
         
-            Toggle("Declared", isOn: $declared)
-                .toggleStyle(.checkbox)
+            DatePickerButton(caption:"Declared", selectedDate: $taxdate)
             
             HStack {
                 Button("Cancel", role: .cancel) {
@@ -86,7 +85,7 @@ struct PaymentForm: View {
                     let payment = Payment(
                         category: category,
                         amount: amount,
-                        declared: declared,
+                        taxdate: taxdate,
                         details: details,
                         created: created
                     )

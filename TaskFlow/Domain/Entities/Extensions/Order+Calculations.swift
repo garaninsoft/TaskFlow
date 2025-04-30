@@ -90,9 +90,9 @@ extension Order: StatisticsProtocol {
     var statisticTaxItems: [StatisticTaxItem]{
         return payments?.reduce(into: [String: (declared: Double, undeclared: Double)]()) { result, payment in
                 let key = payment.category?.name ?? "Платежи"
-                if payment.declared == true {
+                if payment.taxdate != nil {
                     result[key, default: (0, 0)].declared += payment.amount
-                } else if payment.declared == false {
+                } else {
                     result[key, default: (0, 0)].undeclared += payment.amount
                 }
             }.map { category, sums in

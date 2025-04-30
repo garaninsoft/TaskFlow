@@ -49,13 +49,13 @@ struct OrderStatisticsView: View {
         details: "",
         created: Date(),
         payments: [
-            Payment(category: pc1, amount: -1000, declared: true, details: "", created: Date()),
-            Payment(category: pc1, amount: -1000, declared: true, details: "", created: Date()),
-            Payment(category: pc2, amount: 1000, declared: false, details: "", created: Date()),
-            Payment(category: pc2, amount: 1000, declared: true, details: "", created: Date()),
-            Payment(category: pc1, amount: -1000, declared: false, details: "", created: Date()),
-            Payment(category: pc1, amount: -1000, declared: true, details: "", created: Date()),
-            Payment(category: nil, amount: 1000, declared: true, details: "", created: Date()),
+            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
+            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
+            Payment(category: pc2, amount: 1000, taxdate: nil, details: "", created: Date()),
+            Payment(category: pc2, amount: 1000, taxdate: Date(), details: "", created: Date()),
+            Payment(category: pc1, amount: -1000, taxdate: nil, details: "", created: Date()),
+            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
+            Payment(category: nil, amount: 1000, taxdate: Date(), details: "", created: Date()),
         ]
     )
     

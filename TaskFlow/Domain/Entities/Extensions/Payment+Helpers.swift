@@ -6,11 +6,11 @@
 //
 
 extension Payment {
-   func update(with other: Payment) {
+    func update(with other: Payment) {
        self.created = other.created
        self.amount = other.amount
        self.category = other.category
        self.details = other.details
-       self.declared = other.declared
+       self.taxdate = other.taxdate
    }
 }

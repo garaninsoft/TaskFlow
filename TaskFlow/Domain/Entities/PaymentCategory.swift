@@ -13,7 +13,7 @@ final class PaymentCategory{
     var name: String
     var details: String
     var created: Date
-    var payments: [Payment]? = nil
+    var payments: [Payment]?
     
     init(name: String, details: String = "", created: Date = Date(), payments: [Payment]? = nil) {
         self.name = name

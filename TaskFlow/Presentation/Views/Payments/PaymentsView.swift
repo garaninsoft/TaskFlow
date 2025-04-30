@@ -71,7 +71,7 @@ struct PaymentsView: View {
                 TableHeader(titleItems: titleItems)
                 
                 // Список с данными
-                List(order.payments ?? []) { payment in
+                List(order.payments?.sorted { $0.created ?? Date.distantPast < $1.created ?? Date.distantPast }  ?? []) { payment in
                     ZeroSpacingHStack {
                         DateTimeFormatText(date: payment.created, style: .short)
                             .rightBorderStyle(width: titleItems[0].width, borderHeight: 40)
@@ -85,7 +85,7 @@ struct PaymentsView: View {
                         Text("\(payment.details)")
                             .rightBorderStyle(width: titleItems[3].width, alignment: .trailing, padding:4)
                         
-                        if payment.declared {
+                        if payment.taxdate != nil {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.green)
                                 .frame(width: 50)
