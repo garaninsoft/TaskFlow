@@ -49,8 +49,11 @@ struct TaskFlowApp: App {
         do {
             sharedModelContainer = try ModelContainer(
                 for: schema,
-                migrationPlan: PaymentMigrationPlan.self,
-                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+                // Пока отключу миграцию. Всё на одном компе. Поэтому не нужно.
+//                migrationPlan: PaymentMigrationPlan.self,
+                configurations: ModelConfiguration(
+                    isStoredInMemoryOnly: false,
+                    cloudKitDatabase: .none)
             )
         }catch {
             fatalError("Failed to configure container: \(error)")

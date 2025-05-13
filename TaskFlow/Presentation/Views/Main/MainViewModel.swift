@@ -41,7 +41,7 @@ class MainViewModel: ObservableObject {
     func selectStudent(student: Student?) {
         selectedStudent = student
         selectedOrder = nil
-        printState()
+        //printState()
     }
     
     func selectOrder(order: Order?) {
@@ -49,7 +49,7 @@ class MainViewModel: ObservableObject {
         selectedMeeting = nil
         selectedPayment = nil
         selectedWork = nil
-        printState()
+        //printState()
     }
     // Отладочный метод пусть пока будет
     private func printState(){
