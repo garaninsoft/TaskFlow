@@ -36,8 +36,6 @@ class MainViewModel: ObservableObject {
     @Published var showSheetStudentStatistics: Bool = false
     @Published var showSheetOrderStatistics: Bool = false
     
-    @Published var showSettings: Bool = false
-    
     func selectStudent(student: Student?) {
         selectedStudent = student
         selectedOrder = nil

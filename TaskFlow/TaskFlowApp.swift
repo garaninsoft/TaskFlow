@@ -34,6 +34,9 @@ struct TaskFlowApp: App {
     
     @StateObject var viewModel = MainViewModel()
     
+    @State private var showSettings: Bool = false
+    @State private var showPathDB: Bool = false
+    
     let schema = Schema([
         PaymentCategory.self,
         Order.self,
@@ -69,14 +72,17 @@ struct TaskFlowApp: App {
                 .tabItem {
                     Label("Главное", systemImage: "house")
                 }
-                .sheet(isPresented: $viewModel.showSettings){
-// MARK: - не удалять пока. здесь можно посмотреть путь к бд
-//                    if let storeURL = sharedModelContainer.configurations.first?.url {
-//                        Text( storeURL.path)
-//                            .textSelection(.enabled)
-//                    }
-                    PaymentCategoriesView(isPresented: $viewModel.showSettings)
+                .sheet(isPresented: $showSettings){
+                    PaymentCategoriesView(isPresented: $showSettings)
                         .environment(\.modelContext, sharedModelContainer.mainContext)
+                }
+                .alert("BD Path", isPresented: $showPathDB) {
+                    Button("OK", role: .cancel) {
+                        showPathDB = false
+                    }
+                } message: {
+                    let storeURL = sharedModelContainer.configurations.first?.url
+                    Text(storeURL?.path ?? "DB error path")
                 }
         }
         .modelContainer(sharedModelContainer)
@@ -84,7 +90,10 @@ struct TaskFlowApp: App {
             CommandGroup(after: .appInfo) {
                 Divider()
                 Button("Settings") {
-                    viewModel.showSettings = true
+                    showSettings = true
+                }
+                Button("Path DB") {
+                    showPathDB = true
                 }
             }
             

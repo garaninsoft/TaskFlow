@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OrdersToolbar: ToolbarContent {
     @ObservedObject var viewModel: MainViewModel
+    @StateObject private var folderViewModel = FolderViewModel()
     let dataService: StudentsProtocol
     
     var body: some ToolbarContent {
@@ -36,6 +37,13 @@ struct OrdersToolbar: ToolbarContent {
                     }
                     .sheet(isPresented: $viewModel.showSheetEditOrder) {
                         UpdateOrderView(order: order, isPresented: $viewModel.showSheetEditOrder, dataService: dataService){}
+                    }
+                }
+                ToolbarItem {
+                    Button(action: {
+                        folderViewModel.createAndOpenFolder(at: order.details)
+                    }) {
+                        Label("Order Folder", systemImage: "folder")
                     }
                 }
                 ToolbarItem {
