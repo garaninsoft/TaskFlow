@@ -9,13 +9,14 @@ import SwiftUI
 
 struct CreateMeetingView: View {
     var order: Order
-    
+    let meeting: Schedule?
     @Binding var isPresented: Bool
     let dataService: MeetingsProtocol
     let onSuccess: () -> Void
     
     var body: some View {
         MeetingForm(
+            meeting: meeting,
             titleForm: "Create Meeting",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,

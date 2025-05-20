@@ -89,7 +89,7 @@ struct MonthView: View {
     private func getOrderedWeekdaySymbols() -> [String] {
         let calendar = Calendar.current
         let firstWeekday = calendar.firstWeekday
-        var symbols = calendar.shortWeekdaySymbols
+        let symbols = calendar.shortWeekdaySymbols
         
         // Корректное формирование массива дней недели
         return Array(symbols[(firstWeekday-1)...]) + symbols[..<(firstWeekday-1)]

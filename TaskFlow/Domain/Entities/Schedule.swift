@@ -23,9 +23,7 @@ final class Schedule {
     //                                             перерасхода времени)
     //cost      - стоимость часа занятий руб/60мин
     // * если completed == nil -> занятий не было
-    // * стоимость заносим в первое занятие. Эта стоимость будет считаться договорной. Далее будем её копировать и
-    // * переподставлять
-    init(order: Order? = nil, start: Date? = nil, finish: Date? = nil, completed: Date? = nil, cost: Double, details: String = "") {
+    init(order: Order? = nil, start: Date? = nil, finish: Date? = nil, completed: Date? = nil, cost: Double = 0.0, details: String = "") {
         self.order = order
         self.start = start
         self.finish = finish

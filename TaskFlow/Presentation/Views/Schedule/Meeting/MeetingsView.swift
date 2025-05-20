@@ -17,6 +17,7 @@ struct MeetingsView: View {
     @ObservedObject var viewModel: MainViewModel
     
     let dataService: MeetingsProtocol
+    @State private var meeting: Schedule?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -25,12 +26,18 @@ struct MeetingsView: View {
                 HStack {
                     // Кнопка "Добавить"
                     Button(action: {
+                        meeting = nil
                         viewModel.showSheetNewMeeting = true
                     }) {
                         Label("Meeting", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewMeeting) {
-                        CreateMeetingView(order: order, isPresented: $viewModel.showSheetNewMeeting, dataService: dataService){}
+                        CreateMeetingView(
+                            order: order,
+                            meeting: meeting,
+                            isPresented: $viewModel.showSheetNewMeeting,
+                            dataService: dataService
+                        ){}
                     }
                     
                     // Кнопка "Редактировать"
@@ -123,7 +130,17 @@ struct MeetingsView: View {
         }
         .padding()
         .contextMenu {
-            Button("Увеличить значение") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
+            Button("Повтор...") {
+                if let selectedMeeting = viewModel.selectedMeeting{
+                    meeting = Schedule()
+                    meeting?.update(with: selectedMeeting)
+                    meeting?.completed = nil
+                }else{
+                    meeting = nil
+                }
+                
+                viewModel.showSheetNewMeeting = true
+            }
             Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
             Divider()
             Button("Удалить") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }

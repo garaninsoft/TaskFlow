@@ -15,7 +15,17 @@ struct CreateOrderView: View {
     let onSuccess: () -> Void
     
     var body: some View {
+        let template = Order(
+            student: nil,
+            title: "Тема по занятиям",
+            details: "<Имя в пру> pru[<заказчик пру>@<номер зак пру>]",
+            created: Date(),
+            schedules: nil,
+            payments: nil,
+            works: nil
+        )
         OrderForm(
+            order: template,
             titleForm: "Create Order",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,

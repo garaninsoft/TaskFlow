@@ -13,7 +13,16 @@ struct CreateStudentView: View {
     let onSuccess: () -> Void
     
     var body: some View {
+        let template = Student(
+            name: "<Факт Имя> t[<Имя в телеге>@<уник имя>]",
+            contacts: "телефон",
+            details: "",
+            created: Date(),
+            closed: nil,
+            orders: nil
+        ) // Это шаблон-подсказка
         StudentForm(
+            student: template,
             titleForm: "Create a New Student",
             captionButtonSuccess: "Register",
             isPresented: $isPresented,

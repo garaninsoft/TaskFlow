@@ -31,17 +31,5 @@ final class FolderViewModel: ObservableObject {
             errorMessage = error.localizedDescription
             isSuccess = false
         }
-        
-//        let homeDir = NSHomeDirectory()
-//        let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-//        let desktopDir = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!
-//
-//        print("""
-//          Sandbox Report:
-//          - Home: \(homeDir)
-//          - Documents: \(documentsDir.path)
-//          - Desktop: \(desktopDir.path)
-//          - Downloads: \(FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first!.path)
-//        """)
     }
 }

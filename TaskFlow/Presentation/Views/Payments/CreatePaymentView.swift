@@ -15,7 +15,13 @@ struct CreatePaymentView: View {
     let onSuccess: () -> Void
     
     var body: some View {
+
+        let template = Payment(
+            amount: 0,
+            details: "<От кого>@<Банк Из>#<В Банк>"
+        )
         PaymentForm(
+            payment: template,
             titleForm: "Create Payment",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,
