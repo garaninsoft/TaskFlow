@@ -56,3 +56,12 @@ extension TimeInterval {
         }
     }
 }
+
+extension Date {
+    var localFormatted: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy_HH-mm-ss"
+        formatter.locale = Locale.current
+        return formatter.string(from: self)
+    }
+}

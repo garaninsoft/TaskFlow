@@ -8,8 +8,6 @@
 import Foundation
 
 final class FolderViewModel: ObservableObject {
-//    private let rootPath = "~/Documents/"
-    private let rootPath = "/Users/alexandergaranin/dst/Desktop2/repetitor2/"
     private let fileSystemService: FileSystemServiceProtocol
 
     // Публикуем состояние для UI
@@ -20,8 +18,8 @@ final class FolderViewModel: ObservableObject {
         self.fileSystemService = fileSystemService
     }
     
-    func createAndOpenFolder(at orderName: String){
-        let path = rootPath + orderName
+    func createAndOpenOrderFolder(at orderName: String){
+        let path = Constants.rootOrdersPath + orderName
         do {
             try fileSystemService.createFolderIfNeeded(at: path)
             try fileSystemService.openFolderInFinder(at: path)

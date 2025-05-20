@@ -36,6 +36,11 @@ struct TaskFlowApp: App {
     
     @State private var showSettings: Bool = false
     @State private var showPathDB: Bool = false
+    @State private var showBackupPathDB: Bool = false
+    
+    private let backupRepository = BackupRepository()
+    @State private var backupURL: URL?
+    @State private var error: Error?
     
     let schema = Schema([
         PaymentCategory.self,
@@ -50,20 +55,27 @@ struct TaskFlowApp: App {
     
     init() {
         do {
+            let dbURL = URL(filePath:Constants.bdPath.appending(Constants.bdName))
+            
+            let config = ModelConfiguration(
+                schema: schema,  // Ваша схема моделей
+                url: dbURL,
+                allowsSave: true,
+                cloudKitDatabase: .none
+            )
+            
             sharedModelContainer = try ModelContainer(
                 for: schema,
                 // Пока отключу миграцию. Всё на одном компе. Поэтому не нужно.
 //                migrationPlan: PaymentMigrationPlan.self,
-                configurations: ModelConfiguration(
-                    isStoredInMemoryOnly: false,
-                    cloudKitDatabase: .none)
+                configurations: [config]
             )
         }catch {
             fatalError("Failed to configure container: \(error)")
         }
     }
     
-    
+
     var body: some Scene {
         @Environment(\.openWindow) var openWindow
         
@@ -84,6 +96,17 @@ struct TaskFlowApp: App {
                     let storeURL = sharedModelContainer.configurations.first?.url
                     Text(storeURL?.path ?? "DB error path")
                 }
+                .alert("BD Repository", isPresented: $showBackupPathDB) {
+                    Button("OK", role: .cancel) {
+                        showBackupPathDB = false
+                    }
+                } message: {
+                    if let error = self.error{
+                        Text(error.localizedDescription)
+                    }else{
+                        Text(backupURL?.absoluteString ?? "DB error no path")
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
         .commands {
@@ -94,6 +117,14 @@ struct TaskFlowApp: App {
                 }
                 Button("Path DB") {
                     showPathDB = true
+                }
+                Button("Создать бэкап") {
+                    do {
+                        backupURL = try backupRepository.createBackup()
+                        showBackupPathDB = true
+                    } catch {
+                        self.error = error
+                    }
                 }
             }
             
