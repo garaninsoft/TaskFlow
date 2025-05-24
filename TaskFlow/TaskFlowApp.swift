@@ -41,6 +41,9 @@ struct TaskFlowApp: App {
     private let backupRepository = BackupRepository()
     @State private var backupURL: URL?
     @State private var error: Error?
+    @State private var storeURL: URL?
+    
+    @StateObject private var folderViewModel = FolderViewModel()
     
     let schema = Schema([
         PaymentCategory.self,
@@ -89,11 +92,15 @@ struct TaskFlowApp: App {
                         .environment(\.modelContext, sharedModelContainer.mainContext)
                 }
                 .alert("BD Path", isPresented: $showPathDB) {
-                    Button("OK", role: .cancel) {
+                    Button("Close", role: .cancel) {
                         showPathDB = false
                     }
+                    Button("Show in Finder"){
+                        if let storeURL = storeURL{
+                            folderViewModel.openFolder(at: storeURL.deletingLastPathComponent().path)
+                        }
+                    }
                 } message: {
-                    let storeURL = sharedModelContainer.configurations.first?.url
                     Text(storeURL?.path ?? "DB error path")
                 }
                 .alert("BD Repository", isPresented: $showBackupPathDB) {
@@ -116,6 +123,7 @@ struct TaskFlowApp: App {
                     showSettings = true
                 }
                 Button("Path DB") {
+                    storeURL = sharedModelContainer.configurations.first?.url
                     showPathDB = true
                 }
                 Button("Создать бэкап") {

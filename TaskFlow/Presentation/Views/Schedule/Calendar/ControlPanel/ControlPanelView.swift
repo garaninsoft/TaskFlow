@@ -16,7 +16,9 @@ struct ControlPanelView: View {
             PeriodNavigationButtons(selectedDate: $selectedDate, calendarMode: $calendarMode)
             
             Spacer()
-            
+            Button("Сегодня"){
+                selectedDate = Date()
+            }
             // Сегментированный контрол для выбора режима
             Picker("", selection: $calendarMode) {
                 ForEach(CalendarMode.allCases, id: \.self) { mode in
