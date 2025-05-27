@@ -16,12 +16,23 @@ struct CreatePaymentView: View {
     
     var body: some View {
 
-        let template = Payment(
-            amount: 0,
-            details: "<От кого>@<Банк Из>#<В Банк>"
-        )
+        // Подставляем данные из последнего платежа
+        let temp: Payment = {
+            if let lastPayment = order.payments?.last {
+                return Payment(
+                    amount: lastPayment.amount,
+                    details: lastPayment.details
+                )
+            } else {
+                return Payment(
+                    amount: 0,
+                    details: "<От кого>@<Банк Из>#<В Банк>"
+                )
+            }
+        }()
+        
         PaymentForm(
-            payment: template,
+            payment: temp,
             titleForm: "Create Payment",
             captionButtonSuccess: "Create",
             isPresented: $isPresented,

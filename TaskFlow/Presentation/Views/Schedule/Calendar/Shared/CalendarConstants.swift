@@ -13,4 +13,6 @@ enum CalendarConstants {
     static let widthColumnWithHour: CGFloat = 50
     
     static let heightHourRow: CGFloat = 150
+    
+    static let totalMinutesInHour = 60
 }

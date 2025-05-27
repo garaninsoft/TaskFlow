@@ -13,10 +13,10 @@ struct CalendarView: View {
     
     @Query private var meetings: [Schedule]
     
-    // Вычисляемое свойство для фильтрации по selectedDate
-    private var filteredMeetings: [Schedule] {
+    // Функция для фильтрации встреч по конкретной дате
+    private func filteredDayMeetings(for date: Date) -> [Schedule] {
         let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: selectedDate)
+        let startOfDay = calendar.startOfDay(for: date)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
         return meetings.filter { meeting in
@@ -27,22 +27,23 @@ struct CalendarView: View {
             // 2. Заканчивается в этот день ИЛИ
             // 3. Пересекает этот день (началась раньше и закончилась позже)
             return (start >= startOfDay && start < endOfDay) ||    // Начало в этот день
-                   (finish >= startOfDay && finish < endOfDay) ||  // Конец в этот день
-                   (start < startOfDay && finish >= endOfDay)      // Пересекает весь день
+            (finish >= startOfDay && finish < endOfDay) ||  // Конец в этот день
+            (start < startOfDay && finish >= endOfDay)      // Пересекает весь день
         }
     }
     
-    private var weeklyMeetings: [Schedule] {
+    // Вычисляемое свойство для текущей выбранной даты (для удобства)
+    private var currentDayMeetings: [Schedule] {
+        filteredDayMeetings(for: selectedDate)
+    }
+    
+    private var weeklyMeetingsArray: [[Schedule]] {
         let calendar = Calendar.current
         let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate))!
-        let endOfWeek = calendar.date(byAdding: .day, value: 7, to: startOfWeek)!
         
-        return meetings.filter { meeting in
-            guard let start = meeting.start, let finish = meeting.finish else { return false }
-            let startsInWeek = start >= startOfWeek && start < endOfWeek
-            let endsInWeek = finish >= startOfWeek && finish < endOfWeek
-            let spansWeek = start < startOfWeek && finish >= endOfWeek
-            return startsInWeek || endsInWeek || spansWeek
+        return (0..<7).map { dayOffset in
+            let currentDate = calendar.date(byAdding: .day, value: dayOffset, to: startOfWeek)!
+            return filteredDayMeetings(for: currentDate)
         }
     }
     
@@ -62,9 +63,9 @@ struct CalendarView: View {
         Group {
             switch calendarMode {
             case .day:
-                DayView(selectedDate: $selectedDate, meetings: filteredMeetings)
+                DayView(selectedDate: $selectedDate, meetings: currentDayMeetings)
             case .week:
-                WeekView(selectedDate: $selectedDate)
+                WeekView(selectedDate: $selectedDate, meetings: weeklyMeetingsArray)
             case .month:
                 MonthView(selectedDate: $selectedDate)
             }
