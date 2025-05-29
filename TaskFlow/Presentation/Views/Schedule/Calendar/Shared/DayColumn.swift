@@ -30,8 +30,8 @@ struct DayColumn: View {
             }
             
             // Занятые промежутки поверх фона
-            ForEach(busyMinutes, id: \.student.id) { busyMinute in
-                busyTimeView(for: busyMinute)
+            ForEach(busyMinutes.indices, id: \.self) { index in
+                busyTimeView(for: busyMinutes[index])
             }
         }
         .frame(maxWidth: .infinity)

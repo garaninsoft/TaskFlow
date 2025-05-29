@@ -63,7 +63,6 @@ struct WeekView: View {
                     
                     // Колонки дней
                     ForEach(Array(zip(weekDates.indices, weekDates)), id: \.1) { index, date in
-                        
                         DayColumn(date: date, isSelected: isSameDay(date, selectedDate), busyMinutes: convertSchedulesToBusyMinutes(meetings[index]))
                     }
                 }
@@ -79,6 +78,7 @@ struct WeekView: View {
     }
     
     private func convertSchedulesToBusyMinutes(_ schedules: [Schedule]) -> [BusyMinute] {
+        
         return schedules.compactMap { schedule in
             guard let start = schedule.start,
                   let finish = schedule.finish,
