@@ -21,8 +21,8 @@ struct StudentsListView: View {
                 viewModel.selectStudent(student: selectedStudent)
             }
             .onAppear {
-                selectedStudent = nil
-                viewModel.selectStudent(student: nil)
+//                selectedStudent = nil
+//                viewModel.selectStudent(student: nil)
             }
         }
     }

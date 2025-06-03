@@ -46,15 +46,6 @@ struct MeetingsView: View {
                     }) {
                         Label("Edit", systemImage: "pencil")
                     }
-                    .sheet(isPresented: $viewModel.showSheetEditMeeting) {
-                        if let meeting = viewModel.selectedMeeting{
-                            UpdateMeetingView(
-                                meeting: meeting,
-                                isPresented: $viewModel.showSheetEditMeeting,
-                                dataService: dataService
-                            ){}
-                        }
-                    }
                     .disabled(viewModel.selectedMeeting == nil)
                     
                     // Кнопка "Удалить"

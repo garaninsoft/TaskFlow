@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DayColumn: View {
+    @ObservedObject var viewModel: MainViewModel
+    
     let date: Date
     let isSelected: Bool
     let busyMinutes: [BusyMinute]
@@ -42,8 +44,6 @@ struct DayColumn: View {
        private func busyTimeView(for busyMinute: BusyMinute) -> some View {
            let startHour = busyMinute.startMinute / CalendarConstants.totalMinutesInHour
            let startMinuteInHour = busyMinute.startMinute % CalendarConstants.totalMinutesInHour
-//           let endHour = busyMinute.endMinute / CalendarConstants.totalMinutesInHour
-//           let endMinuteInHour = busyMinute.endMinute % CalendarConstants.totalMinutesInHour
            
            let topOffset = CGFloat(startHour) * CalendarConstants.heighRowWeekView + (CGFloat(startMinuteInHour) / CGFloat(CalendarConstants.totalMinutesInHour)) * CalendarConstants.heighRowWeekView
            let height = CGFloat(busyMinute.endMinute - busyMinute.startMinute) / CGFloat(CalendarConstants.totalMinutesInHour) * CalendarConstants.heighRowWeekView
@@ -52,7 +52,7 @@ struct DayColumn: View {
                .fill(Color.blue.opacity(0.3)) // Цвет занятого времени
                .frame(height: height)
                .overlay(
-                   Text(busyMinute.student.name)
+                Text(busyMinute.meeting.order?.student?.name ?? "")
                        .font(.caption)
                        .padding(2)
                        .background(Color.white.opacity(0.7))
@@ -64,6 +64,23 @@ struct DayColumn: View {
                        .stroke(Color.blue, lineWidth: 1)
                )
                .offset(y: topOffset)
+               .contextMenu {
+                   Button(action: {
+                       viewModel.selectedMeeting = busyMinute.meeting
+                       viewModel.showSheetEditMeeting = true
+                   }) {
+                       Label("Редактировать", systemImage: "pencil")
+                   }
+                   
+                   Button(action: {
+                       // Действие для второго пункта меню
+                       print("Действие 2 для \(busyMinute.meeting.order?.student?.name ?? "")")
+                   }) {
+                       Label("Удалить", systemImage: "trash")
+                   }
+                   
+                   // Можно добавить больше пунктов по необходимости
+               }
        }
 }
 

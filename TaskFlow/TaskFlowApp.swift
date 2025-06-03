@@ -70,7 +70,7 @@ struct TaskFlowApp: App {
             sharedModelContainer = try ModelContainer(
                 for: schema,
                 // Пока отключу миграцию. Всё на одном компе. Поэтому не нужно.
-//                migrationPlan: PaymentMigrationPlan.self,
+                //                migrationPlan: PaymentMigrationPlan.self,
                 configurations: [config]
             )
         }catch {
@@ -78,42 +78,57 @@ struct TaskFlowApp: App {
         }
     }
     
-
+    
     var body: some Scene {
         @Environment(\.openWindow) var openWindow
         
         WindowGroup {
-            MainView(viewModel: viewModel, modelContext: sharedModelContainer.mainContext)
-                .tabItem {
-                    Label("Главное", systemImage: "house")
-                }
-                .sheet(isPresented: $showSettings){
-                    PaymentCategoriesView(isPresented: $showSettings)
-                        .environment(\.modelContext, sharedModelContainer.mainContext)
-                }
-                .alert("BD Path", isPresented: $showPathDB) {
-                    Button("Close", role: .cancel) {
-                        showPathDB = false
+            TabView {
+                CalendarView(viewModel:viewModel)
+                    .tabItem {
+                        Label("Календарь", systemImage: "calendar")
                     }
-                    Button("Show in Finder"){
-                        if let storeURL = storeURL{
-                            folderViewModel.openFolder(at: storeURL.deletingLastPathComponent().path)
+                MainView(viewModel: viewModel, modelContext: sharedModelContainer.mainContext)
+                    .tabItem {
+                        Label("Главное", systemImage: "house")
+                    }
+                    .sheet(isPresented: $showSettings){
+                        PaymentCategoriesView(isPresented: $showSettings)
+                            .environment(\.modelContext, sharedModelContainer.mainContext)
+                    }
+                    .alert("BD Path", isPresented: $showPathDB) {
+                        Button("Close", role: .cancel) {
+                            showPathDB = false
+                        }
+                        Button("Show in Finder"){
+                            if let storeURL = storeURL{
+                                folderViewModel.openFolder(at: storeURL.deletingLastPathComponent().path)
+                            }
+                        }
+                    } message: {
+                        Text(storeURL?.path ?? "DB error path")
+                    }
+                    .alert("BD Repository", isPresented: $showBackupPathDB) {
+                        Button("OK", role: .cancel) {
+                            showBackupPathDB = false
+                        }
+                    } message: {
+                        if let error = self.error{
+                            Text(error.localizedDescription)
+                        }else{
+                            Text(backupURL?.absoluteString ?? "DB error no path")
                         }
                     }
-                } message: {
-                    Text(storeURL?.path ?? "DB error path")
+            }
+            .sheet(isPresented: $viewModel.showSheetEditMeeting) {
+                if let meeting = viewModel.selectedMeeting{
+                    UpdateMeetingView(
+                        meeting: meeting,
+                        isPresented: $viewModel.showSheetEditMeeting,
+                        dataService: StudentsDataService(modelContext: sharedModelContainer.mainContext, viewModel: viewModel)
+                    ){}
                 }
-                .alert("BD Repository", isPresented: $showBackupPathDB) {
-                    Button("OK", role: .cancel) {
-                        showBackupPathDB = false
-                    }
-                } message: {
-                    if let error = self.error{
-                        Text(error.localizedDescription)
-                    }else{
-                        Text(backupURL?.absoluteString ?? "DB error no path")
-                    }
-                }
+            }
         }
         .modelContainer(sharedModelContainer)
         .commands {

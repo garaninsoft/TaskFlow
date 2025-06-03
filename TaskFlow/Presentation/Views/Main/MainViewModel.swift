@@ -38,7 +38,7 @@ class MainViewModel: ObservableObject {
     
     func selectStudent(student: Student?) {
         selectedStudent = student
-        selectedOrder = nil
+        selectOrder(order: nil)
         //printState()
     }
     

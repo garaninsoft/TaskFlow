@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WeekView: View {
+    @ObservedObject var viewModel: MainViewModel
     @Binding var selectedDate: Date
     let meetings: [[Schedule]]
     
@@ -63,7 +64,12 @@ struct WeekView: View {
                     
                     // Колонки дней
                     ForEach(Array(zip(weekDates.indices, weekDates)), id: \.1) { index, date in
-                        DayColumn(date: date, isSelected: isSameDay(date, selectedDate), busyMinutes: convertSchedulesToBusyMinutes(meetings[index]))
+                        DayColumn(
+                            viewModel: viewModel,
+                            date: date,
+                            isSelected: isSameDay(date, selectedDate),
+                            busyMinutes: convertSchedulesToBusyMinutes(meetings[index])
+                        )
                     }
                 }
             }
@@ -77,12 +83,11 @@ struct WeekView: View {
         Calendar.current.isDate(date1, inSameDayAs: date2)
     }
     
-    private func convertSchedulesToBusyMinutes(_ schedules: [Schedule]) -> [BusyMinute] {
+    private func convertSchedulesToBusyMinutes(_ meetings: [Schedule]) -> [BusyMinute] {
         
-        return schedules.compactMap { schedule in
-            guard let start = schedule.start,
-                  let finish = schedule.finish,
-                  let student = schedule.order?.student else {
+        return meetings.compactMap { meeting in
+            guard let start = meeting.start,
+                  let finish = meeting.finish else {
                 return nil
             }
             
@@ -91,7 +96,7 @@ struct WeekView: View {
             let endMinute = calendar.component(.hour, from: finish) * 60 + calendar.component(.minute, from: finish)
             
             return BusyMinute(
-                student: student,
+                meeting: meeting,
                 startMinute: startMinute,
                 endMinute: endMinute
             )

@@ -28,7 +28,7 @@ struct OrdersListView: View {
                     viewModel.selectOrder(order: selectedOrder)
                 }
                 .onAppear{
-                    selectedOrder = nil
+                    //selectedOrder = nil
                 }
             }
         }else{

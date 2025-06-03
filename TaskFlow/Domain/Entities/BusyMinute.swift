@@ -6,7 +6,7 @@
 //
 
 struct BusyMinute {
-    let student: Student
+    let meeting: Schedule
     let startMinute: Int
     let endMinute: Int
 }

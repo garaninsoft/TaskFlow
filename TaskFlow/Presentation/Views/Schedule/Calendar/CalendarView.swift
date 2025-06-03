@@ -8,6 +8,7 @@ enum CalendarMode: String, CaseIterable {
 }
 
 struct CalendarView: View {
+    @ObservedObject var viewModel: MainViewModel
     @State private var selectedDate = Date()
     @State private var calendarMode: CalendarMode = .week
     
@@ -65,7 +66,7 @@ struct CalendarView: View {
             case .day:
                 DayView(selectedDate: $selectedDate, meetings: currentDayMeetings)
             case .week:
-                WeekView(selectedDate: $selectedDate, meetings: weeklyMeetingsArray)
+                WeekView(viewModel:viewModel, selectedDate: $selectedDate, meetings: weeklyMeetingsArray)
             case .month:
                 MonthView(selectedDate: $selectedDate)
             }
@@ -74,9 +75,9 @@ struct CalendarView: View {
 }
 
 // Предварительный просмотр
-struct CalendarView_Previews: PreviewProvider {
-    static var previews: some View {
-        CalendarView()
-            .frame(width: 800, height: 600)
-    }
-}
+//struct CalendarView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        CalendarView()
+//            .frame(width: 800, height: 600)
+//    }
+//}

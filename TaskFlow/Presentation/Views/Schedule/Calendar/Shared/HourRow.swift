@@ -121,7 +121,7 @@ struct HourRow: View {
                .fill(Color.red.opacity(0.5))
                .frame(height: CGFloat(interval.endMinute - interval.startMinute) * (CalendarConstants.heightHourRow / CGFloat(totalMinutesInHour)))
                .overlay(
-                Text("\(interval.student.name)")
+                Text("\(interval.meeting.order?.student?.name ?? "")")
                        .font(.system(size: 10))
                        .foregroundColor(.white)
                )

@@ -42,7 +42,6 @@ struct DayView: View {
         
         for meeting in meetings {
             guard
-                let student = meeting.order?.student,
                 let start = meeting.start,
                 let finish = meeting.finish
             else { continue }
@@ -59,7 +58,7 @@ struct DayView: View {
                 let endMinute = endComponents.minute ?? 60
                 
                 result.append(BusyMinute(
-                    student: student,
+                    meeting: meeting,
                     startMinute: startMinute,
                     endMinute: endMinute
                 ))

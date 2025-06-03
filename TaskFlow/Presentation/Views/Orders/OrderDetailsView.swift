@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum EOrderDetails: Int {
-    case meetings, works, payments, calendar
+    case meetings, works, payments
 }
 
 struct OrderDetailsView: View {
@@ -27,7 +27,7 @@ struct OrderDetailsView: View {
                 Text("Meetings")
             }
             .tag(EOrderDetails.meetings)
-            
+
             WorksView(
                 viewModel: viewModel,
                 dataService: dataService
@@ -45,13 +45,8 @@ struct OrderDetailsView: View {
                 Text("Payments")
             }
             .tag(EOrderDetails.payments)
-            
-            CalendarView()
-                .tabItem {
-                    Text("Calendar")
-                }
-                .tag(EOrderDetails.calendar)
         }
+        
     }
 }
 
