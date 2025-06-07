@@ -37,27 +37,27 @@ struct OrderStatisticsView: View {
     }
 }
 
-#Preview {
-    @Previewable @State var isPresent: Bool = false
-    
-    let pc1 = PaymentCategory(name: "Cat 1")
-    let pc2 = PaymentCategory(name: "Cat 2")
-    let pc3 = PaymentCategory(name: "Cat 3")
-    
-    let order = Order(
-        title: "",
-        details: "",
-        created: Date(),
-        payments: [
-            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
-            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
-            Payment(category: pc2, amount: 1000, taxdate: nil, details: "", created: Date()),
-            Payment(category: pc2, amount: 1000, taxdate: Date(), details: "", created: Date()),
-            Payment(category: pc1, amount: -1000, taxdate: nil, details: "", created: Date()),
-            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
-            Payment(category: nil, amount: 1000, taxdate: Date(), details: "", created: Date()),
-        ]
-    )
-    
-    OrderStatisticsView(order: order, isPresented: $isPresent)
-}
+//#Preview {
+//    @Previewable @State var isPresent: Bool = false
+//    
+//    let pc1 = PaymentCategory(name: "Cat 1")
+//    let pc2 = PaymentCategory(name: "Cat 2")
+//    let pc3 = PaymentCategory(name: "Cat 3")
+//    
+//    let order = Order(
+//        title: "",
+//        details: "",
+//        created: Date(),
+//        payments: [
+//            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
+//            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
+//            Payment(category: pc2, amount: 1000, taxdate: nil, details: "", created: Date()),
+//            Payment(category: pc2, amount: 1000, taxdate: Date(), details: "", created: Date()),
+//            Payment(category: pc1, amount: -1000, taxdate: nil, details: "", created: Date()),
+//            Payment(category: pc1, amount: -1000, taxdate: Date(), details: "", created: Date()),
+//            Payment(category: nil, amount: 1000, taxdate: Date(), details: "", created: Date()),
+//        ]
+//    )
+//    
+//    OrderStatisticsView(order: order, isPresented: $isPresent)
+//}

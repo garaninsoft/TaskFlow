@@ -28,7 +28,7 @@ struct DayHeader: View {
     }
 }
 
-#Preview {
-    DayHeader(date: Date(), isSelected: true)
-    DayHeader(date: Date(), isSelected: false)
-}
+//#Preview {
+//    DayHeader(date: Date(), isSelected: true)
+//    DayHeader(date: Date(), isSelected: false)
+//}

@@ -53,21 +53,21 @@ struct DraftTableView: View {
 }
 
 
-#Preview {
-    let titleItems = [
-        TitleColumnItem(title: "Start", alignment: .center, font: .title3, width: 100, borderHeight: 20),
-        TitleColumnItem(title: "Finish", alignment: .center, font: .title3, width: 100, borderHeight: 20),
-        TitleColumnItem(title: "Completed", alignment: .center, font: .title3, width: 100, borderHeight: 20),
-        TitleColumnItem(title: "Cost 60 min", alignment: .center, font: .title3, width: 90, borderHeight: 20),
-        TitleColumnItem(title: "Details", alignment: .center, font: .title3, width: 150, borderHeight: 0)
-    ]
-    let schedules = [
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 135.23, details: "details"),
-        Schedule(start: Date(), completed: Date(), cost: 1235.23, details: "details"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 1235.23, details: "details"),
-        Schedule(start: Date(), finish: Date(), cost: 1235.23, details: "details"),
-        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 1235.23, details: "details")
-    ]
-    
-    DraftTableView(schedules: schedules, titleItems: titleItems)
-}
+//#Preview {
+//    let titleItems = [
+//        TitleColumnItem(title: "Start", alignment: .center, font: .title3, width: 100, borderHeight: 20),
+//        TitleColumnItem(title: "Finish", alignment: .center, font: .title3, width: 100, borderHeight: 20),
+//        TitleColumnItem(title: "Completed", alignment: .center, font: .title3, width: 100, borderHeight: 20),
+//        TitleColumnItem(title: "Cost 60 min", alignment: .center, font: .title3, width: 90, borderHeight: 20),
+//        TitleColumnItem(title: "Details", alignment: .center, font: .title3, width: 150, borderHeight: 0)
+//    ]
+//    let schedules = [
+//        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 135.23, details: "details"),
+//        Schedule(start: Date(), completed: Date(), cost: 1235.23, details: "details"),
+//        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 1235.23, details: "details"),
+//        Schedule(start: Date(), finish: Date(), cost: 1235.23, details: "details"),
+//        Schedule(start: Date(), finish: Date(), completed: Date(), cost: 1235.23, details: "details")
+//    ]
+//    
+//    DraftTableView(schedules: schedules, titleItems: titleItems)
+//}

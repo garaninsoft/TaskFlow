@@ -21,6 +21,6 @@ struct CurrencyView: View {
     }
 }
 
-#Preview {
-    CurrencyView(amount: 123.45)
-}
+//#Preview {
+//    CurrencyView(amount: 123.45)
+//}

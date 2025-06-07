@@ -100,7 +100,7 @@ struct StatsRow<Value: CustomStringConvertible>: View {
     }
 }
 
-#Preview {
-    let order = Order(title: "Order", details: "Details", created: Date())
-    StatisticTotalCard(statisticTotal: order, orderCaption: "Баланс по занятиям")
-}
+//#Preview {
+//    let order = Order(title: "Order", details: "Details", created: Date())
+//    StatisticTotalCard(statisticTotal: order, orderCaption: "Баланс по занятиям")
+//}

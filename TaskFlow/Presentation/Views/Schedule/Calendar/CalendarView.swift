@@ -74,6 +74,8 @@ struct CalendarView: View {
     }
 }
 
+
+
 // Предварительный просмотр
 //struct CalendarView_Previews: PreviewProvider {
 //    static var previews: some View {

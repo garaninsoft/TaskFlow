@@ -31,6 +31,8 @@ struct MeetingForm: View {
     @State private var showValidateErrorMsg = false
     @State private var meetingConflict: Schedule? = nil
     
+    @State private var minCount = 90
+    
     init(
         meeting: Schedule? = nil,
         titleForm: String,
@@ -61,64 +63,144 @@ struct MeetingForm: View {
     
     var body: some View {
         Form {
-            Text(titleForm)
-                .font(.title2)
-            
-            // Поле для выбора даты начала
-            DatePickerButton(caption:"Начало", selectedDate: $startDate)
-            
-
-            // Поле для выбора даты окончания
-            DatePickerButton(caption:"Окончание", selectedDate: $finishDate)
-                .onChange(of: finishDate){ oldValue, newValue in
-                    if let newValue {
-                        if let calcTotal = CostCalculator.calculate(
-                            start: startDate, calcValue: newValue, cost: cost
-                        ){
-                            totalPayment = calcTotal
+            Section {
+                Text(titleForm)
+                    .font(.title2)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 8)
+                
+                // Поля для выбора даты
+                DatePickerButton(caption: "Начало", selectedDate: $startDate)
+                
+                HStack {
+                    Text("Занятие")
+                        .frame(width: 120, alignment: .leading)
+                    Spacer()
+                    
+                    HStack(spacing: 0) {
+                        // Блок с числом и Stepper (имеет фон)
+                        HStack(spacing: 4) {
+                            Text("\(minCount)")
+                                .frame(width: 30, alignment: .trailing)
+                            
+                            Stepper("", value: $minCount, in: 0...240, step: 15)
+                                .labelsHidden()
+                                .onChange(of: minCount){
+                                    if let startDate = startDate{
+                                        if let newDate = Calendar.current.date(
+                                            byAdding: .minute,
+                                            value: minCount,
+                                            to: startDate
+                                        ) {
+                                            finishDate = newDate
+                                        }
+                                    }
+                                }
                         }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color(nsColor: .controlBackgroundColor))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                )
+                        )
+                        
+                        // Текст "мин" за пределами фона
+                        Text("мин")
+                            .foregroundColor(.secondary)
+                            .frame(width: 100, alignment: .leading)
+                            .padding(.leading, 8)
+                    }
+                    .frame(width: 180, alignment: .trailing)
+                }
+                
+                DatePickerButton(caption: "Окончание", selectedDate: $finishDate)
+                DatePickerButton(caption: "Завершено", selectedDate: $completedDate)
+        
+                
+                // Группа полей стоимости
+                VStack(alignment: .leading, spacing: 8) {  // Изменили на .leading
+                    // Поле стоимости
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Стоимость")
+                            .frame(width: 80, alignment: .leading)  // Фиксированная ширина метки
+                        Spacer()
+                        TextField("", value: $cost, format: .number)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 250)
+                            .multilineTextAlignment(.trailing)
+                            .onChange(of: cost) { updateTotalPayment()}
+                            .onChange(of: startDate) { updateTotalPayment()}
+                            .onChange(of: finishDate) {
+                                updateTotalPayment()
+                                updateMinCount(start: startDate, finish: finishDate)
+                            }
+                            .onChange(of: completedDate) { updateTotalPayment()}
+                        
+                        Text("руб./60 мин")
+                            .foregroundColor(.secondary)
+                            .frame(width: 90, alignment: .leading)
+                    }
+                    
+                    // Поле суммы (вычисляемое)
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("К оплате")
+                            .frame(width: 80, alignment: .leading)  // Такая же ширина как у "Стоимость"
+                        Spacer()
+                        Text(
+                            completedDate != nil ?
+                            totalPayment.formattedAsCurrency(currencySymbol: "")
+                            : "занятие не проведено"
+                        )
+                        .foregroundColor(.primary)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(Color(nsColor: .controlBackgroundColor))
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        )
+                        .frame(width: 250, alignment: .trailing)
+                        Text( completedDate != nil ? "руб" : "")
+                            .foregroundColor(.secondary)
+                            .frame(width: 90, alignment: .leading)
                     }
                 }
-            
-            // Поле для выбора даты завершения (если занятие состоялось)
-            DatePickerButton(caption:"Завершено", selectedDate: $completedDate)
-
-            // Поле для ввода стоимости
-            HStack{
-                TextField("Стоимость", value: $cost, format: .number)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                Text(" руб./60 мин")
-            }
-            
-            HStack{
-                TextField("Сумма", value: $totalPayment, format: .number)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                Text(" руб")
-                Button("Расчёт окончания") {
-                    if let calcFinishData = Schedule.calculateFinishMeeting(
-                        startDate: startDate,
-                        totalPayment: totalPayment,
-                        hourlyRate: cost){
-                        finishDate = calcFinishData
-                    }else{
-                        errorMessage = "Не хватает для расчёта данных"
-                        showValidateErrorMsg = true
-                    }
+                
+                // Многострочное поле для деталей
+                HStack(alignment: .top) {
+                    Text("Детали")
+                    Spacer()
+                    TextEditor(text: $details)
+                        .font(.body)
+                        .frame(minHeight: 50, maxHeight: 150)
+                        .padding(4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(nsColor: .textBackgroundColor))
+                        )// Фон как у TextField
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        )
+                        .scrollContentBackground(.hidden) // Скрываем стандартный фон
+                        .padding(1)
                 }
+                
             }
             
-            // Поле для ввода деталей
-            TextField("Details", text: $details)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-
-            
+            // Кнопки действий
             HStack {
-                Button("Cancel", role: .cancel) {
+                Spacer()
+                
+                Button("Отмена", role: .cancel) {
                     isPresented = false
                 }
                 
                 Button(captionButtonSuccess) {
-                    
                     let meeting = Schedule(
                         start: startDate,
                         finish: finishDate,
@@ -126,18 +208,23 @@ struct MeetingForm: View {
                         cost: cost,
                         details: details
                     )
-                    if isValid(meeting: meeting){
+                    
+                    if isValid(meeting: meeting) {
                         withAnimation {
                             action(meeting)
                         }
                         isPresented = false
-                    }else{
+                    } else {
                         showValidateErrorMsg = true
                     }
                 }
                 .buttonStyle(.borderedProminent)
             }
+            .padding(.top)
         }
+        .formStyle(.grouped)
+        .frame(minWidth: 400, idealWidth: 450, maxWidth: 500)
+        .padding()
         .alert(errorMessage, isPresented: $showValidateErrorMsg) {
             Button("OK", role: .cancel) {
                 showValidateErrorMsg = false
@@ -154,8 +241,25 @@ struct MeetingForm: View {
                 Text("\(studentText)\n\(orderText)\n\(startText)\n\(endText)")
             }
         }
-        .formStyle(.grouped)
+        .onAppear{
+            updateMinCount(start: startDate, finish: finishDate)
+        }
     }
+    
+    private func updateTotalPayment(){
+        self.totalPayment = CostCalculator.calculate(
+            start: startDate,
+            finish: finishDate,
+            cost: cost
+        ) ?? 0
+    }
+    
+    private func updateMinCount(start: Date? , finish: Date?){
+        if let minCount = CostCalculator.minutesBetweenDates(start: start, end: finish){
+            self.minCount = minCount
+        }
+    }
+    
     private func isValid(meeting: Schedule)->Bool{
         // Стоимость возможна == 0 (бесплатное занятие), но не отрицательная
         
@@ -194,8 +298,15 @@ struct MeetingForm: View {
     }
 }
 
+#Preview { Text("Test") }
+
 //#Preview {
+//    MeetingForm_Preview()
+//    @Previewable @State var completedDate: Date? = Date()
+//    DatePickerButton(caption:"Завершено", selectedDate: $completedDate)
 //    @Previewable @Environment(\.modelContext) var modelContext
 //    @Previewable @State var isPresent: Bool = false
-//    MeetingForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent, modelContext: modelContext){_ in }
+//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//    let container = try! ModelContainer(for: Schedule.self, configurations: config)
+//    MeetingForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent, modelContext: container.mainContext){_ in }
 //}

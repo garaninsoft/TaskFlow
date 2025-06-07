@@ -83,7 +83,7 @@ struct PaymentCategoryForm: View {
     }
 }
 
-#Preview {
-    @Previewable @State var isPresent: Bool = false
-    PaymentCategoryForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent){_ in}
-}
+//#Preview {
+//    @Previewable @State var isPresent: Bool = false
+//    PaymentCategoryForm(titleForm: "Title Form", captionButtonSuccess: "Success", isPresented: $isPresent){_ in}
+//}

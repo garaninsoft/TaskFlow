@@ -135,22 +135,22 @@ struct PaymentCategoriesView: View {
     }
 }
 
-#Preview {
-    @Previewable @State var isPresented: Bool = false
-    let config = ModelConfiguration(isStoredInMemoryOnly: true) // 1. Конфигурация в памяти
-    let container = try! ModelContainer(for: PaymentCategory.self, configurations: config) // 2. Контейнер
-    
-    // 3. Добавляем тестовые данные
-    let context = container.mainContext
-    
-    let categories = [
-        PaymentCategory(name: "Еда", details: "green", created: Date()),
-        PaymentCategory(name: "Транспорт", details: "blue", created: Date())
-    ]
-    
-    
-    categories.forEach { context.insert($0) }
-    
-    return PaymentCategoriesView(isPresented: $isPresented)
-        .modelContainer(container) // 5. Привязываем контейнер
-}
+//#Preview {
+//    @Previewable @State var isPresented: Bool = false
+//    let config = ModelConfiguration(isStoredInMemoryOnly: true) // 1. Конфигурация в памяти
+//    let container = try! ModelContainer(for: PaymentCategory.self, configurations: config) // 2. Контейнер
+//    
+//    // 3. Добавляем тестовые данные
+//    let context = container.mainContext
+//    
+//    let categories = [
+//        PaymentCategory(name: "Еда", details: "green", created: Date()),
+//        PaymentCategory(name: "Транспорт", details: "blue", created: Date())
+//    ]
+//    
+//    
+//    categories.forEach { context.insert($0) }
+//    
+//    return PaymentCategoriesView(isPresented: $isPresented)
+//        .modelContainer(container) // 5. Привязываем контейнер
+//}

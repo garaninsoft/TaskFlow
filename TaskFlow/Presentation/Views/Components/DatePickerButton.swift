@@ -12,7 +12,7 @@ struct DatePickerButton: View {
     
     @Binding var selectedDate: Date?
     @State private var showDatePicker = false
-    
+    var action: (()->Void)? = nil
     var body: some View {
         // Поле для отображения выбранной даты
         HStack {
@@ -40,7 +40,7 @@ struct DatePickerButton: View {
                 
                 // DatePicker в sheet
                 .sheet(isPresented: $showDatePicker) {
-                    DatePickerView(selectedDate: $selectedDate)
+                    DatePickerView(selectedDate: $selectedDate, action: action)
                 }
             }
             .padding(8)
@@ -56,8 +56,9 @@ struct DatePickerButton: View {
 struct DatePickerView: View {
     @Binding var selectedDate: Date?
     @Environment(\.dismiss) private var dismiss
+    @State private var tempDate = Date()
     
-    @State private var tempDate = Date() // Временная переменная для DatePicker
+    var action: (()->Void)? = nil
     
     var body: some View {
         VStack(spacing: 1) {
@@ -78,11 +79,13 @@ struct DatePickerView: View {
                 Button("Сохранить") {
                     selectedDate = tempDate.roundedToMinutes()
                     dismiss()
+                    if let action = action{
+                        action()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.blue)  // Синий цвет
                 .keyboardShortcut(.defaultAction)  // Нажатие Enter
-               
             }
 
         }
@@ -102,12 +105,12 @@ extension Date {
     }
 }
 
-#Preview {
-    @Previewable @State var selectedDate: Date? = Date()
-    DatePickerView(selectedDate: $selectedDate)
-}
-
-#Preview {
-    @Previewable @State var selectedDate: Date? = Date()
-    DatePickerButton(caption: "Caption", selectedDate: $selectedDate)
-}
+//#Preview {
+//    @Previewable @State var selectedDate: Date? = Date()
+//    DatePickerView(selectedDate: $selectedDate)
+//}
+//
+//#Preview {
+//    @Previewable @State var selectedDate: Date? = Date()
+//    DatePickerButton(caption: "Caption", selectedDate: $selectedDate)
+//}

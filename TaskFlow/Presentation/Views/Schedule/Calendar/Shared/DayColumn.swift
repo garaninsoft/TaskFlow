@@ -73,13 +73,11 @@ struct DayColumn: View {
                    }
                    
                    Button(action: {
-                       // Действие для второго пункта меню
-                       print("Действие 2 для \(busyMinute.meeting.order?.student?.name ?? "")")
+                       viewModel.selectedMeeting = busyMinute.meeting
+                       viewModel.showSheetEditMeeting = true
                    }) {
-                       Label("Удалить", systemImage: "trash")
+                       Label("Закрыть", systemImage: "trash")
                    }
-                   
-                   // Можно добавить больше пунктов по необходимости
                }
        }
 }

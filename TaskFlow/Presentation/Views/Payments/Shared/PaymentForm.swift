@@ -115,7 +115,7 @@ struct PaymentForm: View {
     }
 }
 
-#Preview {
-    @Previewable @State var isPresent: Bool = false
-    PaymentForm(payment: nil, titleForm: "Title Form", captionButtonSuccess: "Caption", isPresented: $isPresent) {_ in }
-}
+//#Preview {
+//    @Previewable @State var isPresent: Bool = false
+//    PaymentForm(payment: nil, titleForm: "Title Form", captionButtonSuccess: "Caption", isPresented: $isPresent) {_ in }
+//}

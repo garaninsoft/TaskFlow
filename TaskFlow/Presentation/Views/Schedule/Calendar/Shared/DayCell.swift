@@ -34,9 +34,9 @@ struct DayCell: View {
     }
 }
 
-#Preview {
-    DayCell(date: Date(), isSelected: false, isCurrentMonth: false)
-    DayCell(date: Date(), isSelected: true, isCurrentMonth: false)
-    DayCell(date: Date(), isSelected: false, isCurrentMonth: true)
-    DayCell(date: Date(), isSelected: true, isCurrentMonth: true)
-}
+//#Preview {
+//    DayCell(date: Date(), isSelected: false, isCurrentMonth: false)
+//    DayCell(date: Date(), isSelected: true, isCurrentMonth: false)
+//    DayCell(date: Date(), isSelected: false, isCurrentMonth: true)
+//    DayCell(date: Date(), isSelected: true, isCurrentMonth: true)
+//}

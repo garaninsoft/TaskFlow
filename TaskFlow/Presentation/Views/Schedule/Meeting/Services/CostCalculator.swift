@@ -19,7 +19,7 @@ struct CostCalculator {
     
     static func calculate(
         start: Date?,
-        calcValue finish: Date?,
+        finish: Date?,
         cost: Double,
         minBillingDuration: TimeInterval? = nil) -> Double? {
             if let start, let finish{
@@ -42,4 +42,14 @@ struct CostCalculator {
         let hours = duration / 3600
         return cost * hours
     }
+    
+    static func minutesBetweenDates(start: Date?, end: Date?) -> Int? {
+        if let start = start, let end = end{
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.minute], from: start, to: end)
+            return components.minute ?? 0
+        }
+        return nil
+    }
+
 }

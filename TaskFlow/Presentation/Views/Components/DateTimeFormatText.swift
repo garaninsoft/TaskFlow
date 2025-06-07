@@ -82,38 +82,38 @@ struct DateTimeFormatText: View {
     }
 }
 
-#Preview{
-    VStack(spacing: 0){
-        Group{
-            DateTimeFormatText(date: Date())
-                .border(Color.gray)
-        }
-        .padding()
-        
-        Group{
-            DateTimeFormatText(date: nil)
-                .border(Color.gray)
-        }
-        .padding()
-        
-        Group{
-            DateTimeFormatText(date: Date(), style: .short)
-                .border(Color.gray)
-        }
-        .padding()
-        
-        Group{
-            DateTimeFormatText(date: Date(), style: .timeOnly)
-                .border(Color.gray)
-        }
-        .padding()
-        
-        Group{
-            DateTimeFormatText(date: Date(), style: .verbose)
-                .border(Color.gray)
-        }
-        .padding()
-    }
-    .padding()
-    
-}
+//#Preview{
+//    VStack(spacing: 0){
+//        Group{
+//            DateTimeFormatText(date: Date())
+//                .border(Color.gray)
+//        }
+//        .padding()
+//        
+//        Group{
+//            DateTimeFormatText(date: nil)
+//                .border(Color.gray)
+//        }
+//        .padding()
+//        
+//        Group{
+//            DateTimeFormatText(date: Date(), style: .short)
+//                .border(Color.gray)
+//        }
+//        .padding()
+//        
+//        Group{
+//            DateTimeFormatText(date: Date(), style: .timeOnly)
+//                .border(Color.gray)
+//        }
+//        .padding()
+//        
+//        Group{
+//            DateTimeFormatText(date: Date(), style: .verbose)
+//                .border(Color.gray)
+//        }
+//        .padding()
+//    }
+//    .padding()
+//    
+//}

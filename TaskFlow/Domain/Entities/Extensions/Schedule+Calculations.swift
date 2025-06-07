@@ -43,23 +43,4 @@ extension Schedule {
                return nil
            }
     }
-    
-    static func calculateFinishMeeting(startDate: Date?, totalPayment: Double, hourlyRate: Double) -> Date? {
-        // Рассчитываем количество оплаченных минут
-        if totalPayment == 0 || hourlyRate == 0{
-            return nil
-        }
-        if let start = startDate{
-            let paidHours = totalPayment / hourlyRate
-            let paidMinutes = paidHours * 60
-            
-            // Округляем до целых минут (если нужно)
-            let roundedMinutes = Int(paidMinutes.rounded())
-            
-            // Добавляем минуты к дате начала
-            return Calendar.current.date(byAdding: .minute, value: roundedMinutes, to: start)
-        }
-        
-        return nil
-    }
 }
