@@ -49,7 +49,7 @@ struct DayColumn: View {
            let height = CGFloat(busyMinute.endMinute - busyMinute.startMinute) / CGFloat(CalendarConstants.totalMinutesInHour) * CalendarConstants.heighRowWeekView
            
            Rectangle()
-               .fill(Color.blue.opacity(0.3)) // Цвет занятого времени
+               .fill(busyMinute.meeting.status.color) // Цвет занятого времени
                .frame(height: height)
                .overlay(
                 Text(busyMinute.meeting.order?.student?.name ?? "")
@@ -72,12 +72,12 @@ struct DayColumn: View {
                        Label("Редактировать", systemImage: "pencil")
                    }
                    
-                   Button(action: {
-                       viewModel.selectedMeeting = busyMinute.meeting
-                       viewModel.showSheetEditMeeting = true
-                   }) {
-                       Label("Закрыть", systemImage: "trash")
-                   }
+//                   Button(action: {
+//                       viewModel.selectedMeeting = busyMinute.meeting
+//                       viewModel.showSheetEditMeeting = true
+//                   }) {
+//                       Label("Закрыть", systemImage: "trash")
+//                   }
                }
        }
 }

@@ -96,6 +96,7 @@ struct MeetingForm: View {
                                         }
                                     }
                                 }
+                                
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
@@ -118,9 +119,10 @@ struct MeetingForm: View {
                 }
                 
                 DatePickerButton(caption: "Окончание", selectedDate: $finishDate)
-                DatePickerButton(caption: "Завершено", selectedDate: $completedDate)
+                DatePickerButton(caption: "Завершено", selectedDate: $completedDate){
+                    completedDate = finishDate
+                }
         
-                
                 // Группа полей стоимости
                 VStack(alignment: .leading, spacing: 8) {  // Изменили на .leading
                     // Поле стоимости
@@ -153,7 +155,7 @@ struct MeetingForm: View {
                         Text(
                             completedDate != nil ?
                             totalPayment.formattedAsCurrency(currencySymbol: "")
-                            : "занятие не проведено"
+                            : "не закрыто"
                         )
                         .foregroundColor(.primary)
                         .padding(.vertical, 8)
@@ -259,6 +261,8 @@ struct MeetingForm: View {
             self.minCount = minCount
         }
     }
+    
+    
     
     private func isValid(meeting: Schedule)->Bool{
         // Стоимость возможна == 0 (бесплатное занятие), но не отрицательная

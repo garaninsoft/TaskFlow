@@ -31,4 +31,19 @@ final class Schedule {
         self.cost = cost
         self.details = details
     }
+    
+    var status: ScheduleStatus {
+        guard let start = start, let finish = finish else { return .invalid }
+        let now = Date()
+        
+        if now < start {
+            return .planned
+        } else if now >= start && now <= finish {
+            return .progress
+        } else if completed != nil {
+            return .completed
+        } else {
+            return .finished
+        }
+    }
 }

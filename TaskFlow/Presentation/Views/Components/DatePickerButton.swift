@@ -35,6 +35,7 @@ struct DatePickerButton: View {
                 
                 // Кнопка для открытия DatePicker
                 Button("Выбрать дату"){
+                    action?()
                     showDatePicker.toggle()
                 }
                 
@@ -79,9 +80,6 @@ struct DatePickerView: View {
                 Button("Сохранить") {
                     selectedDate = tempDate.roundedToMinutes()
                     dismiss()
-                    if let action = action{
-                        action()
-                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.blue)  // Синий цвет
