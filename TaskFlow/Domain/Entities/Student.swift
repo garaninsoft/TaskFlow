@@ -25,4 +25,6 @@ final class Student {
         self.closed = closed
         self.orders = orders
     }
+    
+    var isClosed: Bool { closed != nil }
 }

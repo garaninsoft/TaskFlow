@@ -134,14 +134,6 @@ struct MeetingForm: View {
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 250)
                             .multilineTextAlignment(.trailing)
-                            .onChange(of: cost) { updateTotalPayment()}
-                            .onChange(of: startDate) { updateTotalPayment()}
-                            .onChange(of: finishDate) {
-                                updateTotalPayment()
-                                updateMinCount(start: startDate, finish: finishDate)
-                            }
-                            .onChange(of: completedDate) { updateTotalPayment()}
-                        
                         Text("руб./60 мин")
                             .foregroundColor(.secondary)
                             .frame(width: 90, alignment: .leading)
@@ -193,6 +185,16 @@ struct MeetingForm: View {
                 }
                 
             }
+            .onChange(of: cost) { updateTotalPayment()}
+            .onChange(of: startDate) {
+                updateTotalPayment()
+                finishDate = startDate?.adding(minutes: minCount)
+            }
+            .onChange(of: finishDate) {
+                updateTotalPayment()
+                updateMinCount(start: startDate, finish: finishDate)
+            }
+            .onChange(of: completedDate) { updateTotalPayment()}
             
             // Кнопки действий
             HStack {

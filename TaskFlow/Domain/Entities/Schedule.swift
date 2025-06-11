@@ -33,17 +33,13 @@ final class Schedule {
     }
     
     var status: ScheduleStatus {
+        if order?.student?.isClosed == true { return .closed }
         guard let start = start, let finish = finish else { return .invalid }
-        let now = Date()
         
-        if now < start {
-            return .planned
-        } else if now >= start && now <= finish {
-            return .progress
-        } else if completed != nil {
-            return .completed
-        } else {
-            return .finished
-        }
+        let now = Date()
+        return now < start ? .planned :
+        now <= finish ? .progress :
+        completed != nil ? .completed : .finished
     }
+    
 }

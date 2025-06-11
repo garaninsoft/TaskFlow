@@ -92,33 +92,6 @@ struct TaskFlowApp: App {
                     .tabItem {
                         Label("Главное", systemImage: "house")
                     }
-                    .sheet(isPresented: $showSettings){
-                        PaymentCategoriesView(isPresented: $showSettings)
-                            .environment(\.modelContext, sharedModelContainer.mainContext)
-                    }
-                    .alert("BD Path", isPresented: $showPathDB) {
-                        Button("Close", role: .cancel) {
-                            showPathDB = false
-                        }
-                        Button("Show in Finder"){
-                            if let storeURL = storeURL{
-                                folderViewModel.openFolder(at: storeURL.deletingLastPathComponent().path)
-                            }
-                        }
-                    } message: {
-                        Text(storeURL?.path ?? "DB error path")
-                    }
-                    .alert("BD Repository", isPresented: $showBackupPathDB) {
-                        Button("OK", role: .cancel) {
-                            showBackupPathDB = false
-                        }
-                    } message: {
-                        if let error = self.error{
-                            Text(error.localizedDescription)
-                        }else{
-                            Text(backupURL?.absoluteString ?? "DB error no path")
-                        }
-                    }
             }
             .sheet(isPresented: $viewModel.showSheetEditMeeting) {
                 if let meeting = viewModel.selectedMeeting{
@@ -127,6 +100,33 @@ struct TaskFlowApp: App {
                         isPresented: $viewModel.showSheetEditMeeting,
                         dataService: StudentsDataService(modelContext: sharedModelContainer.mainContext, viewModel: viewModel)
                     ){}
+                }
+            }
+            .sheet(isPresented: $showSettings){
+                PaymentCategoriesView(isPresented: $showSettings)
+                    .environment(\.modelContext, sharedModelContainer.mainContext)
+            }
+            .alert("BD Path", isPresented: $showPathDB) {
+                Button("Close", role: .cancel) {
+                    showPathDB = false
+                }
+                Button("Show in Finder"){
+                    if let storeURL = storeURL{
+                        folderViewModel.openFolder(at: storeURL.deletingLastPathComponent().path)
+                    }
+                }
+            } message: {
+                Text(storeURL?.path ?? "DB error path")
+            }
+            .alert("BD Repository", isPresented: $showBackupPathDB) {
+                Button("OK", role: .cancel) {
+                    showBackupPathDB = false
+                }
+            } message: {
+                if let error = self.error{
+                    Text(error.localizedDescription)
+                }else{
+                    Text(backupURL?.absoluteString ?? "DB error no path")
                 }
             }
         }

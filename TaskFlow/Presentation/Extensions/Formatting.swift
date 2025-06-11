@@ -65,3 +65,9 @@ extension Date {
         return formatter.string(from: self)
     }
 }
+
+extension Date {
+    func adding(minutes: Int) -> Date {
+        Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
+    }
+}
