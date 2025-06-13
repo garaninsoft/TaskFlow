@@ -9,27 +9,14 @@ import SwiftUI
 
 struct CreatePaymentView: View {
     var order: Order
-    
+    let payment: Payment?
     @Binding var isPresented: Bool
     let dataService: PaymentsProtocol
     let onSuccess: () -> Void
     
     var body: some View {
-
-        // Подставляем данные из последнего платежа
-        let temp: Payment = {
-            if let lastPayment = order.payments?.last {
-                return Payment(
-                    amount: lastPayment.amount,
-                    details: lastPayment.details
-                )
-            } else {
-                return Payment(
-                    amount: 0,
-                    details: "<От кого>@<Банк Из>#<В Банк>"
-                )
-            }
-        }()
+        
+        let temp = payment ?? Payment(details: "<От кого>@<Банк Из>#<В Банк>")
         
         PaymentForm(
             payment: temp,

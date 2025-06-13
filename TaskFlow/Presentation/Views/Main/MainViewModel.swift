@@ -49,10 +49,29 @@ class MainViewModel: ObservableObject {
         selectedWork = nil
         //printState()
     }
+    
+    func prepareNewMeeting(from existingMeeting: Schedule?) -> Schedule? {
+        guard let existingMeeting = existingMeeting else { return nil }
+        let meeting = Schedule()
+        meeting.update(with: existingMeeting) // копируем данные
+        meeting.completed = nil
+        return meeting
+    }
+    
+    func prepareNewPayment(from existingPayment: Payment?) -> Payment? {
+        guard let existingPayment = existingPayment else { return nil }
+        let payment = Payment()
+        payment.update(with: existingPayment) // копируем данные
+        payment.created = nil
+        payment.taxdate = nil
+        return payment
+    }
+    
     // Отладочный метод пусть пока будет
     private func printState(){
         print("Student: \(selectedStudent?.name ?? "nil")")
         print("Order: \(selectedOrder?.title ?? "nil")")
         print("-----------------------------------------")
     }
+    
 }

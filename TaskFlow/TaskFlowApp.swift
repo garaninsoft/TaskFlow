@@ -102,6 +102,22 @@ struct TaskFlowApp: App {
                     ){}
                 }
             }
+            .sheet(isPresented: $viewModel.showSheetNewMeeting) {
+                if let selectedOrder = viewModel.selectedOrder{
+                    let meeting = viewModel.prepareNewMeeting(from: viewModel.selectedMeeting)
+                    CreateMeetingView(
+                        order: selectedOrder,
+                        meeting: meeting,
+                        isPresented: $viewModel.showSheetNewMeeting,
+                        dataService: StudentsDataService(
+                            modelContext: sharedModelContainer.mainContext,
+                            viewModel: viewModel
+                        )
+                    ) {}
+                } else {
+                    EmptyView() // Обязательно добавь fallback
+                }
+            }
             .sheet(isPresented: $showSettings){
                 PaymentCategoriesView(isPresented: $showSettings)
                     .environment(\.modelContext, sharedModelContainer.mainContext)

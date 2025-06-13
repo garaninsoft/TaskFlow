@@ -25,7 +25,8 @@ struct PaymentsView: View {
                         Label("Payment", systemImage: "plus")
                     }
                     .sheet(isPresented: $viewModel.showSheetNewPayment) {
-                        CreatePaymentView(order: order, isPresented: $viewModel.showSheetNewPayment, dataService: dataService){}
+                        let payment = viewModel.prepareNewPayment(from: viewModel.selectedPayment)
+                        CreatePaymentView(order: order, payment: payment, isPresented: $viewModel.showSheetNewPayment, dataService: dataService){}
                     }
                     
                     // Кнопка "Редактировать"
@@ -107,11 +108,14 @@ struct PaymentsView: View {
         }
         .padding()
         .contextMenu {
-            Button("Увеличить значение") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
-            Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
-            Divider()
-            Button("Удалить") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
-                .disabled(viewModel.selectedMeeting == nil)
+            Button("Повторить") {
+                viewModel.showSheetNewPayment = true
+            }
+//            Button("Увеличить значение") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
+//            Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
+//            Divider()
+//            Button("Удалить") { print("Клик по элементу: \(viewModel.selectedPayment?.details ?? "")") }
+//                .disabled(viewModel.selectedMeeting == nil)
         }
     }
 }

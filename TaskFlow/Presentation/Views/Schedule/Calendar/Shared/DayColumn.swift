@@ -72,12 +72,18 @@ struct DayColumn: View {
                        Label("Редактировать", systemImage: "pencil")
                    }
                    
-//                   Button(action: {
-//                       viewModel.selectedMeeting = busyMinute.meeting
-//                       viewModel.showSheetEditMeeting = true
-//                   }) {
-//                       Label("Закрыть", systemImage: "trash")
-//                   }
+                   Button(action: {
+                       viewModel.selectedOrder = busyMinute.meeting.order
+                       viewModel.selectedMeeting = busyMinute.meeting
+                       viewModel.showSheetNewMeeting = true
+                   }) {
+                       Label("Повторить", systemImage: "trash")
+                   }
+                   Button(action: {
+                       
+                   }) {
+                       Label("Удалить", systemImage: "trash")
+                   }
                }
        }
 }

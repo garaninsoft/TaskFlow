@@ -31,14 +31,7 @@ struct MeetingsView: View {
                     }) {
                         Label("Meeting", systemImage: "plus")
                     }
-                    .sheet(isPresented: $viewModel.showSheetNewMeeting) {
-                        CreateMeetingView(
-                            order: order,
-                            meeting: meeting,
-                            isPresented: $viewModel.showSheetNewMeeting,
-                            dataService: dataService
-                        ){}
-                    }
+                    
                     
                     // Кнопка "Редактировать"
                     Button(action: {
@@ -122,20 +115,12 @@ struct MeetingsView: View {
         .padding()
         .contextMenu {
             Button("Повтор...") {
-                if let selectedMeeting = viewModel.selectedMeeting{
-                    meeting = Schedule()
-                    meeting?.update(with: selectedMeeting)
-                    meeting?.completed = nil
-                }else{
-                    meeting = nil
-                }
-                
                 viewModel.showSheetNewMeeting = true
             }
-            Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
-            Divider()
-            Button("Удалить") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
-                .disabled(viewModel.selectedMeeting == nil)
+//            Button("Уменьшить значение") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
+//            Divider()
+//            Button("Удалить") { print("Клик по элементу: \(viewModel.selectedMeeting?.details ?? "")") }
+//                .disabled(viewModel.selectedMeeting == nil)
         }
     }
 }
