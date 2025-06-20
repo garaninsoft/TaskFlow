@@ -8,6 +8,10 @@
 import SwiftUI
 import SwiftData
 
+enum EWindowGroup: Int {
+    case calendar, main
+}
+
 @main
 struct TaskFlowApp: App {
     // *** Эти примеры возможно пригодятся. Потом удалю.
@@ -83,15 +87,17 @@ struct TaskFlowApp: App {
         @Environment(\.openWindow) var openWindow
         
         WindowGroup {
-            TabView {
+            TabView(selection: $viewModel.selectedWindowGroupTab) {
                 CalendarView(viewModel:viewModel)
                     .tabItem {
                         Label("Календарь", systemImage: "calendar")
                     }
+                    .tag(EWindowGroup.calendar)
                 MainView(viewModel: viewModel, modelContext: sharedModelContainer.mainContext)
                     .tabItem {
-                        Label("Главное", systemImage: "house")
+                        Label("Студенты", systemImage: "house")
                     }
+                    .tag(EWindowGroup.main)
             }
             .sheet(isPresented: $viewModel.showSheetEditMeeting) {
                 if let meeting = viewModel.selectedMeeting{
@@ -122,27 +128,27 @@ struct TaskFlowApp: App {
                 PaymentCategoriesView(isPresented: $showSettings)
                     .environment(\.modelContext, sharedModelContainer.mainContext)
             }
-            .alert("BD Path", isPresented: $showPathDB) {
-                Button("Close", role: .cancel) {
+            .alert("Путь к БД", isPresented: $showPathDB) {
+                Button("Закрыть", role: .cancel) {
                     showPathDB = false
                 }
-                Button("Show in Finder"){
+                Button("Перейти"){
                     if let storeURL = storeURL{
                         folderViewModel.openFolder(at: storeURL.deletingLastPathComponent().path)
                     }
                 }
             } message: {
-                Text(storeURL?.path ?? "DB error path")
+                Text(storeURL?.deletingLastPathComponent().path ?? "DB error path")
             }
-            .alert("BD Repository", isPresented: $showBackupPathDB) {
+            .alert(self.error != nil ? "Ошибка":"Бэкап создан", isPresented: $showBackupPathDB) {
                 Button("OK", role: .cancel) {
                     showBackupPathDB = false
                 }
             } message: {
-                if let error = self.error{
+                if let error = self.error {
                     Text(error.localizedDescription)
-                }else{
-                    Text(backupURL?.absoluteString ?? "DB error no path")
+                } else {
+                    Text(backupURL?.path ?? "DB error no path")
                 }
             }
         }
@@ -150,116 +156,117 @@ struct TaskFlowApp: App {
         .commands {
             CommandGroup(after: .appInfo) {
                 Divider()
-                Button("Settings") {
+                Button("Данные") {
                     showSettings = true
                 }
-                Button("Path DB") {
+                Button("База данных") {
                     storeURL = sharedModelContainer.configurations.first?.url
                     showPathDB = true
                 }
                 Button("Создать бэкап") {
                     do {
                         backupURL = try backupRepository.createBackup()
-                        showBackupPathDB = true
+                        self.error = nil
                     } catch {
                         self.error = error
                     }
+                    showBackupPathDB = true
                 }
             }
             
-            CommandMenu("Students") {
-                Button("New..."){
-                    viewModel.showSheetNewStudent = true
-                }
-                if let selectedStudent = viewModel.selectedStudent {
-                    Menu(selectedStudent.name){
-                        Button("Edit...") {
-                            viewModel.showSheetEditStudent = true
-                        }
-                        Button("Delete") {
-                            viewModel.showConfirmDeleteStudent = true
-                        }
-                        Divider()
-                        Button("Statistics") {
-                            viewModel.showSheetStudentStatistics = true
-                        }
-                    }
-                }
-            }
-            if viewModel.selectedStudent != nil {
-                CommandMenu("Orders") {
-                    Button("New..."){
-                        viewModel.showSheetNewOrder = true
-                    }
-                    if let selectedOrder = viewModel.selectedOrder{
-                        Menu(selectedOrder.title){
-                            Button("Edit...") {
-                                viewModel.showSheetEditOrder = true
-                            }
-                            Button("Delete") {
-                                viewModel.showConfirmDeleteOrder = true
-                            }
-                            Divider()
-                            Button("Statistics") {
-                                viewModel.showSheetOrderStatistics = true
-                            }
-                        }
-                    }
-                }
-            }
-            if viewModel.selectedOrder != nil {
-                if viewModel.selectedOrderDetailsTab == .meetings {
-                    CommandMenu("Schedule") {
-                        Button("New meeting..."){
-                            viewModel.showSheetNewMeeting = true
-                        }
-                        if let selectedMeeting = viewModel.selectedMeeting{
-                            Menu(selectedMeeting.details){
-                                Button("Edit...") {
-                                    viewModel.showSheetEditMeeting = true
-                                }
-                                Button("Delete") {
-                                    viewModel.showConfirmDeleteMeeting = true
-                                }
-                            }
-                        }
-                    }
-                }
-                if viewModel.selectedOrderDetailsTab == .works {
-                    CommandMenu("Works") {
-                        Button("New work..."){
-                            viewModel.showSheetNewWork = true
-                        }
-                        if let selectedWork = viewModel.selectedWork{
-                            Menu(selectedWork.details){
-                                Button("Edit...") {
-                                    viewModel.showSheetEditWork = true
-                                }
-                                Button("Delete") {
-                                    viewModel.showConfirmDeleteWork = true
-                                }
-                            }
-                        }
-                    }
-                }
-                if viewModel.selectedOrderDetailsTab == .payments {
-                    CommandMenu("Payments") {
-                        Button("New payment..."){
-                            viewModel.showSheetNewPayment = true
-                        }
-                        if let selectedPayment = viewModel.selectedPayment{
-                            Menu(selectedPayment.details){
-                                Button("Edit...") {
-                                    viewModel.showSheetEditPayment = true
-                                }
-                                Button("Delete") {
-                                    viewModel.showConfirmDeletePayment = true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            //            CommandMenu("Students") {
+            //                Button("New..."){
+            //                    viewModel.showSheetNewStudent = true
+            //                }
+            //                if let selectedStudent = viewModel.selectedStudent {
+            //                    Menu(selectedStudent.name){
+            //                        Button("Edit...") {
+            //                            viewModel.showSheetEditStudent = true
+            //                        }
+            //                        Button("Delete") {
+            //                            viewModel.showConfirmDeleteStudent = true
+            //                        }
+            //                        Divider()
+            //                        Button("Statistics") {
+            //                            viewModel.showSheetStudentStatistics = true
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //            if viewModel.selectedStudent != nil {
+            //                CommandMenu("Orders") {
+            //                    Button("New..."){
+            //                        viewModel.showSheetNewOrder = true
+            //                    }
+            //                    if let selectedOrder = viewModel.selectedOrder{
+            //                        Menu(selectedOrder.title){
+            //                            Button("Edit...") {
+            //                                viewModel.showSheetEditOrder = true
+            //                            }
+            //                            Button("Delete") {
+            //                                viewModel.showConfirmDeleteOrder = true
+            //                            }
+            //                            Divider()
+            //                            Button("Statistics") {
+            //                                viewModel.showSheetOrderStatistics = true
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //            if viewModel.selectedOrder != nil {
+            //                if viewModel.selectedOrderDetailsTab == .meetings {
+            //                    CommandMenu("Schedule") {
+            //                        Button("New meeting..."){
+            //                            viewModel.showSheetNewMeeting = true
+            //                        }
+            //                        if let selectedMeeting = viewModel.selectedMeeting{
+            //                            Menu(selectedMeeting.details){
+            //                                Button("Edit...") {
+            //                                    viewModel.showSheetEditMeeting = true
+            //                                }
+            //                                Button("Delete") {
+            //                                    viewModel.showConfirmDeleteMeeting = true
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //                if viewModel.selectedOrderDetailsTab == .works {
+            //                    CommandMenu("Works") {
+            //                        Button("New work..."){
+            //                            viewModel.showSheetNewWork = true
+            //                        }
+            //                        if let selectedWork = viewModel.selectedWork{
+            //                            Menu(selectedWork.details){
+            //                                Button("Edit...") {
+            //                                    viewModel.showSheetEditWork = true
+            //                                }
+            //                                Button("Delete") {
+            //                                    viewModel.showConfirmDeleteWork = true
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //                if viewModel.selectedOrderDetailsTab == .payments {
+            //                    CommandMenu("Payments") {
+            //                        Button("New payment..."){
+            //                            viewModel.showSheetNewPayment = true
+            //                        }
+            //                        if let selectedPayment = viewModel.selectedPayment{
+            //                            Menu(selectedPayment.details){
+            //                                Button("Edit...") {
+            //                                    viewModel.showSheetEditPayment = true
+            //                                }
+            //                                Button("Delete") {
+            //                                    viewModel.showConfirmDeletePayment = true
+            //                                }
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //            }
         }
     }
 }

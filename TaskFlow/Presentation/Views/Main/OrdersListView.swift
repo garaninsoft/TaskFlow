@@ -28,7 +28,9 @@ struct OrdersListView: View {
                     viewModel.selectOrder(order: selectedOrder)
                 }
                 .onAppear{
-                    //selectedOrder = nil
+                    if let order = viewModel.selectedOrder{
+                        selectedOrder = order
+                    }
                 }
             }
         }else{

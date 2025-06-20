@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DayColumn: View {
     @ObservedObject var viewModel: MainViewModel
+    @StateObject private var folderViewModel = FolderViewModel()
     
     let date: Date
     let isSelected: Bool
@@ -65,33 +66,29 @@ struct DayColumn: View {
                )
                .offset(y: topOffset)
                .contextMenu {
-                   Button(action: {
+                   Button("Редактировать"){
                        viewModel.selectedMeeting = busyMinute.meeting
                        viewModel.showSheetEditMeeting = true
-                   }) {
-                       Label("Редактировать", systemImage: "pencil")
                    }
                    
-                   Button(action: {
+                   Button("Повторить") {
                        viewModel.selectedOrder = busyMinute.meeting.order
                        viewModel.selectedMeeting = busyMinute.meeting
                        viewModel.showSheetNewMeeting = true
-                   }) {
-                       Label("Повторить", systemImage: "trash")
                    }
-                   Button(action: {
+                   
+                   Button("Папка заказа") {
+                       folderViewModel.createAndOpenOrderFolder(for: busyMinute.meeting.order)
+                   }
+                   
+                   Button("Заказ") {
                        
-                   }) {
-                       Label("Удалить", systemImage: "trash")
+                       if let student = busyMinute.meeting.order?.student{
+                           viewModel.selectedStudent = student
+                           viewModel.selectedOrder = busyMinute.meeting.order
+                           viewModel.selectedWindowGroupTab = .main
+                       }
                    }
                }
        }
 }
-
-//#Preview {
-//    DayColumn(date: Date(), isSelected: true)
-//}
-//
-//#Preview {
-//    DayColumn(date: Date(), isSelected: false)
-//}

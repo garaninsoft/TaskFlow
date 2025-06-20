@@ -41,7 +41,7 @@ struct OrdersToolbar: ToolbarContent {
                 }
                 ToolbarItem {
                     Button(action: {
-                        folderViewModel.createAndOpenOrderFolder(at: order.details)
+                        folderViewModel.createAndOpenOrderFolder(for: order)
                     }) {
                         Label("Order Folder", systemImage: "folder")
                     }

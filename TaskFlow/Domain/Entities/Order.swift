@@ -27,4 +27,8 @@ final class Order{
         self.payments = payments
         self.works = works
     }
+    
+    var folderName: String {
+        String(format: "order_%x", id.hashValue)
+    }
 }

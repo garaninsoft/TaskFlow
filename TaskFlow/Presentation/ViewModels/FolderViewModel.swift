@@ -14,8 +14,15 @@ final class FolderViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isSuccess: Bool = false
 
-    func createAndOpenOrderFolder(at orderName: String){
-        let path = Constants.rootOrdersPath + orderName
+    func createAndOpenOrderFolder(for order: Order?){
+        
+        guard
+            let student = order?.student,
+            let order = order
+        else { return }
+        
+        let path = "\(Constants.rootOrdersPath)/\(student.folderName)/\(order.folderName)"
+
         do {
             try fileSystemService.createFolderIfNeeded(at: path)
             try fileSystemService.openFolderInFinder(at: path)

@@ -27,4 +27,8 @@ final class Student {
     }
     
     var isClosed: Bool { closed != nil }
+    
+    var folderName: String {
+        String(format: "student_%x", id.hashValue)
+    }
 }

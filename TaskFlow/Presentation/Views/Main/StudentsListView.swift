@@ -21,9 +21,13 @@ struct StudentsListView: View {
                 viewModel.selectStudent(student: selectedStudent)
             }
             .onAppear {
+                if let student = viewModel.selectedStudent{
+                    selectedStudent = student
+                }
 //                selectedStudent = nil
 //                viewModel.selectStudent(student: nil)
             }
         }
     }
+
 }

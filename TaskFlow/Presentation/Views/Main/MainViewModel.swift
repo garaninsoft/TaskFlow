@@ -32,9 +32,12 @@ class MainViewModel: ObservableObject {
     @Published var showConfirmDeleteWork: Bool = false
     
     @Published var selectedOrderDetailsTab: EOrderDetails = .meetings
+    @Published var selectedWindowGroupTab: EWindowGroup = .calendar
     
     @Published var showSheetStudentStatistics: Bool = false
     @Published var showSheetOrderStatistics: Bool = false
+    
+    
     
     func selectStudent(student: Student?) {
         selectedStudent = student
