@@ -16,6 +16,7 @@ final class Student {
     var created: Date?
     var closed: Date?
     var orders: [Order]?
+    var persistentId: UUID = UUID()
     
     init(name: String, contacts: String, details: String, created: Date? = nil, closed: Date? = nil, orders: [Order]? = nil) {
         self.name = name
@@ -24,11 +25,16 @@ final class Student {
         self.created = created
         self.closed = closed
         self.orders = orders
+        self.persistentId = UUID()
     }
     
     var isClosed: Bool { closed != nil }
     
     var folderName: String {
-        String(format: "student_%x", id.hashValue)
+        "student_\(self.persistentId.uuidString.prefix(8))"
+    }
+    
+    var inListName: String {
+        "\(name) # \(folderName)"
     }
 }

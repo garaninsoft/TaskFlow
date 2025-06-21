@@ -74,7 +74,7 @@ struct TaskFlowApp: App {
             sharedModelContainer = try ModelContainer(
                 for: schema,
                 // Пока отключу миграцию. Всё на одном компе. Поэтому не нужно.
-                //                migrationPlan: PaymentMigrationPlan.self,
+//                                migrationPlan: PaymentMigrationPlan.self,
                 configurations: [config]
             )
         }catch {
@@ -173,6 +173,8 @@ struct TaskFlowApp: App {
                     showBackupPathDB = true
                 }
             }
+            
+            
             
             //            CommandMenu("Students") {
             //                Button("New..."){

@@ -18,9 +18,11 @@ struct OrdersListView: View {
                 ForEach(orders) { order in
                     NavigationLink(value: order){
                         HStack {
-                            Text(order.title)
-                            Text(order.details)
-                                .font(.system(size: 10))
+                            VStack{
+                                Text(order.title)
+                                Text(order.folderName).font(.system(size: 10))
+                            }
+                            Text(order.details).font(.system(size: 10))
                         }
                     }
                 }

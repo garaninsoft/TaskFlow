@@ -15,7 +15,7 @@ struct StudentsListView: View {
     var body: some View {
         List(selection: $selectedStudent) {
             ForEach(students) { student in
-                NavigationLink(student.name, value: student)
+                NavigationLink(student.inListName, value: student)
             }
             .onChange(of: selectedStudent) {
                 viewModel.selectStudent(student: selectedStudent)

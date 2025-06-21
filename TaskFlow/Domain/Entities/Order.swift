@@ -17,6 +17,7 @@ final class Order{
     var schedules: [Schedule]?
     var payments: [Payment]?
     var works: [Work]?
+    var persistentId: UUID = UUID()
     
     init(student: Student? = nil, title: String, details: String, created: Date, schedules: [Schedule]? = nil, payments: [Payment]? = nil, works: [Work]? = nil) {
         self.student = student
@@ -26,9 +27,10 @@ final class Order{
         self.schedules = schedules
         self.payments = payments
         self.works = works
+        self.persistentId = UUID()
     }
     
     var folderName: String {
-        String(format: "order_%x", id.hashValue)
+        "order_\(self.persistentId.uuidString.prefix(8))"
     }
 }

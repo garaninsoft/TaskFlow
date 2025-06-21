@@ -35,9 +35,10 @@ struct PaymentMigrationPlan: SchemaMigrationPlan {
             ),
             MigrationStage.lightweight(
                 fromVersion: Schema101.self,
-                toVersion: Schema101.self
+                toVersion: Schema120.self
             )
         ]
     }
-
 }
+
+
