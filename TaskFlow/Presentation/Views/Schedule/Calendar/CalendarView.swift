@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 enum CalendarMode: String, CaseIterable {
-    case day = "День"
+//    case day = "День"
     case week = "Неделя"
     case month = "Месяц"
 }
@@ -63,8 +63,8 @@ struct CalendarView: View {
     private var calendarContent: some View {
         Group {
             switch calendarMode {
-            case .day:
-                DayView(selectedDate: $selectedDate, meetings: currentDayMeetings)
+//            case .day:
+//                DayView(selectedDate: $selectedDate, meetings: currentDayMeetings)
             case .week:
                 WeekView(viewModel:viewModel, selectedDate: $selectedDate, meetings: weeklyMeetingsArray)
             case .month:

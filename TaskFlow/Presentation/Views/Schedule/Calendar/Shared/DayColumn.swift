@@ -42,53 +42,63 @@ struct DayColumn: View {
     }
     
     @ViewBuilder
-       private func busyTimeView(for busyMinute: BusyMinute) -> some View {
-           let startHour = busyMinute.startMinute / CalendarConstants.totalMinutesInHour
-           let startMinuteInHour = busyMinute.startMinute % CalendarConstants.totalMinutesInHour
-           
-           let topOffset = CGFloat(startHour) * CalendarConstants.heighRowWeekView + (CGFloat(startMinuteInHour) / CGFloat(CalendarConstants.totalMinutesInHour)) * CalendarConstants.heighRowWeekView
-           let height = CGFloat(busyMinute.endMinute - busyMinute.startMinute) / CGFloat(CalendarConstants.totalMinutesInHour) * CalendarConstants.heighRowWeekView
-           
-           Rectangle()
-               .fill(busyMinute.meeting.status.color) // Цвет занятого времени
-               .frame(height: height)
-               .overlay(
-                Text(busyMinute.meeting.order?.student?.name ?? "")
-                       .font(.caption)
-                       .padding(2)
-                       .background(Color.white.opacity(0.7))
-                       .cornerRadius(2),
-                   alignment: .topLeading
-               )
-               .overlay(
-                   RoundedRectangle(cornerRadius: 2)
-                       .stroke(Color.blue, lineWidth: 1)
-               )
-               .offset(y: topOffset)
-               .contextMenu {
-                   Button("Редактировать"){
-                       viewModel.selectedMeeting = busyMinute.meeting
-                       viewModel.showSheetEditMeeting = true
-                   }
-                   
-                   Button("Повторить") {
-                       viewModel.selectedOrder = busyMinute.meeting.order
-                       viewModel.selectedMeeting = busyMinute.meeting
-                       viewModel.showSheetNewMeeting = true
-                   }
-                   
-                   Button("Папка заказа") {
-                       folderViewModel.createAndOpenOrderFolder(for: busyMinute.meeting.order)
-                   }
-                   
-                   Button("Заказ") {
-                       
-                       if let student = busyMinute.meeting.order?.student{
-                           viewModel.selectedStudent = student
-                           viewModel.selectedOrder = busyMinute.meeting.order
-                           viewModel.selectedWindowGroupTab = .main
-                       }
-                   }
-               }
-       }
+    private func busyTimeView(for busyMinute: BusyMinute) -> some View {
+        
+        if let student = busyMinute.meeting.order?.student {
+            let startHour = busyMinute.startMinute / CalendarConstants.totalMinutesInHour
+            let startMinuteInHour = busyMinute.startMinute % CalendarConstants.totalMinutesInHour
+            
+            let topOffset = CGFloat(startHour) * CalendarConstants.heighRowWeekView + (CGFloat(startMinuteInHour) / CGFloat(CalendarConstants.totalMinutesInHour)) * CalendarConstants.heighRowWeekView
+            let height = CGFloat(busyMinute.endMinute - busyMinute.startMinute) / CGFloat(CalendarConstants.totalMinutesInHour) * CalendarConstants.heighRowWeekView
+            
+            Rectangle()
+                .fill(busyMinute.meeting.status.color) // Цвет занятого времени
+                .frame(height: height)
+                .overlay(
+                 Text(student.name)
+                        .font(.caption)
+                        .padding(2)
+                        .background(Color.white.opacity(0.7))
+                        .cornerRadius(2),
+                    alignment: .topLeading
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 2)
+                        .stroke(Color.blue, lineWidth: 1)
+                )
+                .offset(y: topOffset)
+                .contextMenu {
+                    if !student.isClosed {
+                        Button("Перенести..."){
+                            viewModel.selectedMeeting = busyMinute.meeting
+                            viewModel.showSheetEditMeeting = true
+                        }
+                        
+                        Button("Повторить...") {
+                            viewModel.selectedOrder = busyMinute.meeting.order
+                            viewModel.selectedMeeting = busyMinute.meeting
+                            viewModel.showSheetNewMeeting = true
+                        }
+                        Divider()
+                    }else{
+                        Text("Студент закрыт")
+                    }
+                    Button("В Папку заказа...") {
+                        folderViewModel.createAndOpenOrderFolder(for: busyMinute.meeting.order)
+                    }
+                    if !student.isClosed {
+                        Divider()
+                        Button("Список Заказов...") {
+                            if let student = busyMinute.meeting.order?.student{
+                                viewModel.selectedStudent = student
+                                viewModel.selectedOrder = busyMinute.meeting.order
+                                viewModel.selectedWindowGroupTab = .main
+                            }
+                        }
+                    }
+                }
+        }else {
+            EmptyView()
+        }
+    }
 }

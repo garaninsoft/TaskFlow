@@ -16,8 +16,8 @@ struct PeriodNavigationButtons: View {
             Button {
                 withAnimation {
                     switch calendarMode {
-                    case .day:
-                        selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
+//                    case .day:
+//                        selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
                     case .week:
                         selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: selectedDate)!
                     case .month:
@@ -36,8 +36,8 @@ struct PeriodNavigationButtons: View {
             Button {
                 withAnimation {
                     switch calendarMode {
-                    case .day:
-                        selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
+//                    case .day:
+//                        selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
                     case .week:
                         selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: selectedDate)!
                     case .month:
@@ -54,9 +54,9 @@ struct PeriodNavigationButtons: View {
     private var periodTitle: String {
         let formatter = DateFormatter()
         switch calendarMode {
-        case .day:
-            formatter.dateFormat = "d MMMM yyyy"
-            return formatter.string(from: selectedDate)
+//        case .day:
+//            formatter.dateFormat = "d MMMM yyyy"
+//            return formatter.string(from: selectedDate)
         case .week:
             let weekFormatter = DateIntervalFormatter()
             weekFormatter.dateTemplate = "d MMM"
