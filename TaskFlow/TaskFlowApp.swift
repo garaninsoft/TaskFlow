@@ -38,6 +38,7 @@ struct TaskFlowApp: App {
     
     @StateObject var viewModel = MainViewModel()
     
+    @State private var showPaymentCategory: Bool = false
     @State private var showSettings: Bool = false
     @State private var showPathDB: Bool = false
     @State private var showBackupPathDB: Bool = false
@@ -125,7 +126,10 @@ struct TaskFlowApp: App {
                 }
             }
             .sheet(isPresented: $showSettings){
-                PaymentCategoriesView(isPresented: $showSettings)
+                SettingsView(isPresented: $showSettings)
+            }
+            .sheet(isPresented: $showPaymentCategory){
+                PaymentCategoriesView(isPresented: $showPaymentCategory)
                     .environment(\.modelContext, sharedModelContainer.mainContext)
             }
             .alert("Путь к БД", isPresented: $showPathDB) {
@@ -156,9 +160,13 @@ struct TaskFlowApp: App {
         .commands {
             CommandGroup(after: .appInfo) {
                 Divider()
-                Button("Данные") {
+                Button("Статьи расхода") {
+                    showPaymentCategory = true
+                }
+                Button("Настройка") {
                     showSettings = true
                 }
+                Divider()
                 Button("База данных") {
                     storeURL = sharedModelContainer.configurations.first?.url
                     showPathDB = true

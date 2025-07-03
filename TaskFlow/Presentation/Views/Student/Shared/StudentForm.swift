@@ -92,3 +92,11 @@ struct StudentForm: View {
     }
 }
 
+//#Preview {
+//    @Previewable @State var isPresented = true
+//    StudentForm(
+//        titleForm: "",
+//        captionButtonSuccess: "",
+//        isPresented: $isPresented,
+//        action: {_ in })
+//}
