@@ -10,120 +10,121 @@ import SwiftUI
 struct SettingsView: View {
     @Binding var isPresented: Bool
     
-    @AppStorage("isNotificationsEnabled") private var isNotificationsEnabled = true
-    @AppStorage("darkModeEnabled") private var darkModeEnabled = false
-    @AppStorage("selectedTheme") private var selectedTheme = "Системная"
-    @AppStorage("volumeLevel") private var volumeLevel: Double = 50
-    @AppStorage("username") private var username = ""
-    @AppStorage("selectedLanguage") private var selectedLanguage = "Русский"
+    @ObservedObject private var settings = AppSettings.shared
     
-    private let themes = ["Системная", "Светлая", "Тёмная"]
-    private let languages = ["Русский", "Английский", "Испанский", "Французский"]
+    @State private var dbPathURL: URL?
+    @State private var dbBackupPathURL: URL?
+    @State private var rootOrdersPathURL: URL?
+    
+    @State private var showValidError: Bool = false
     
     var body: some View {
         Form {
-            // Секция персональных данных
             Section {
-                TextField("Имя пользователя", text: $username)
-                    .textFieldStyle(.roundedBorder)
-                
-                DatePicker(
-                    "Дата рождения",
-                    selection: .constant(Date()),
-                    displayedComponents: .date
-                )
-            } header: {
-                Text("Персональные данные")
-                    .font(.headline)
-            }
-            
-            // Секция внешнего вида
-            Section {
-                Toggle("Тёмный режим", isOn: $darkModeEnabled)
-                    .toggleStyle(.switch)
-                
-                Picker("Тема:", selection: $selectedTheme) {
-                    ForEach(themes, id: \.self) { theme in
-                        Text(theme)
-                    }
-                }
-                .pickerStyle(.radioGroup)
-                
-                Picker("Язык:", selection: $selectedLanguage) {
-                    ForEach(languages, id: \.self) { language in
-                        Text(language)
-                    }
-                }
-            } header: {
-                Text("Внешний вид")
-                    .font(.headline)
-            }
-            
-            // Секция уведомлений
-            Section {
-                Toggle("Уведомления", isOn: $isNotificationsEnabled)
-                    .toggleStyle(.switch)
-                
-                if isNotificationsEnabled {
-                    VStack(alignment: .leading) {
-                        Text("Громкость уведомлений: \(Int(volumeLevel))%")
-                        Slider(
-                            value: $volumeLevel,
-                            in: 0...100,
-                            step: 5
-                        ) {
-                            Text("Громкость")
-                        } minimumValueLabel: {
-                            Text("0%")
-                        } maximumValueLabel: {
-                            Text("100%")
+                TextField("Имя БД", text: $settings.dbName).textFieldStyle(.roundedBorder)
+                HStack{
+                    TextField("Путь к БД", text: $settings.dbPath)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Выбор папки"){
+                        FolderPicker(folderURL: $dbPathURL).pickFolder()
+                        if let dbPathURL {
+                            settings.dbPath = dbPathURL.relativePath + "/"
                         }
                     }
-                    .padding(.top, 4)
+                }
+                TextField("Имя бэкап", text: $settings.dbBackupName).textFieldStyle(.roundedBorder)
+                HStack{
+                    TextField("Путь к бэкап", text: $settings.dbBackupPath)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Выбор папки"){
+                        FolderPicker(folderURL: $dbBackupPathURL).pickFolder()
+                        if let dbBackupPathURL {
+                            settings.dbBackupPath = dbBackupPathURL.relativePath + "/"
+                        }
+                    }
                 }
             } header: {
-                Text("Уведомления")
+                Text("База данных")
                     .font(.headline)
             }
             
-            // Секция действий
+            Section {
+                HStack{
+                    TextField("Путь к Заказам", text: $settings.rootOrdersPath)
+                        .textFieldStyle(.roundedBorder)
+                    Button("Выбор папки"){
+                        FolderPicker(folderURL: $rootOrdersPathURL).pickFolder()
+                        if let rootOrdersPathURL {
+                            settings.rootOrdersPath = rootOrdersPathURL.relativePath
+                        }
+                    }
+                }
+            } header: {
+                Text("Заказы")
+                    .font(.headline)
+            }
+            
             Section {
                 HStack {
                     Button("Сбросить") {
                         resetSettings()
-                        isPresented = false
                     }
                     
                     Spacer()
                     
                     Button("Сохранить") {
-                        saveSettings()
-                        isPresented = false
+                        if(settings.isConfigured){
+                            saveSettings()
+                            isPresented = false
+                        }else{
+                            showValidError = true
+                        }
                     }
                     .buttonStyle(.borderedProminent)
                 }
                 .padding(.vertical, 8)
             }
         }
+        .alert("Ошибка", isPresented: $showValidError) {
+            Button("OK", role: .cancel) {
+                showValidError = false
+            }
+        } message: {
+            Text("Пропущены обязательные параметры")
+        }
         .formStyle(.grouped)
         .frame(minWidth: 500, idealWidth: 600, maxWidth: .infinity,
                minHeight: 400, idealHeight: 500, maxHeight: .infinity)
         .padding()
-        .navigationTitle("Настройки")
     }
     
     private func resetSettings() {
-        isNotificationsEnabled = true
-        darkModeEnabled = false
-        selectedTheme = "Системная"
-        volumeLevel = 50
-        username = ""
-        selectedLanguage = "Русский"
+        settings.reset()
     }
     
     private func saveSettings() {
-        // Реальная логика сохранения настроек
-        print("Настройки сохранены")
         NSApp.sendAction(#selector(NSWindow.close), to: nil, from: nil)
+    }
+    
+    struct FolderPicker: NSViewRepresentable {
+        @Binding var folderURL: URL?
+
+        func makeNSView(context: Context) -> some NSView {
+            let view = NSView()
+            return view
+        }
+
+        func updateNSView(_ nsView: NSViewType, context: Context) {}
+
+        func pickFolder() {
+            let panel = NSOpenPanel()
+            panel.canChooseFiles = false
+            panel.canChooseDirectories = true
+            panel.allowsMultipleSelection = false
+
+            if panel.runModal() == .OK {
+                folderURL = panel.urls.first
+            }
+        }
     }
 }
