@@ -13,16 +13,16 @@ struct SQLiteBackupManager {
        
        let fileManager = FileManager.default
        
-       let appSupportURL = URL(fileURLWithPath: Constants.bdPath)
+       let appSupportURL = URL(fileURLWithPath: AppSettings.shared.dbPath)
        
        // 1. Создаем папку для бэкапа с timestamp
-       let backupDir = URL(fileURLWithPath: Constants.bdBackupPath)
+       let backupDir = URL(fileURLWithPath: AppSettings.shared.dbBackupPath)
            .appendingPathComponent("backup_\(Date().localFormatted)")
        try fileManager.createDirectory(at: backupDir, withIntermediateDirectories: true)
        
        // 2. Основной файл БД
-       let sourceDBPath = appSupportURL.appendingPathComponent(Constants.bdName).path
-       let backupDBPath = backupDir.appendingPathComponent(Constants.bdBackupName).path
+       let sourceDBPath = appSupportURL.appendingPathComponent(AppSettings.shared.dbName).path
+       let backupDBPath = backupDir.appendingPathComponent(AppSettings.shared.dbBackupName).path
        
        // 3. Копируем через SQLite Backup API
        var sourceDB: OpaquePointer?
@@ -56,20 +56,20 @@ struct SQLiteBackupManager {
        sqlite3_close(backupDB)
        
        // 4. Дополнительно копируем WAL и SHM файлы
-       let sourceWAL = appSupportURL.appendingPathComponent("\(Constants.bdName)-wal")
-       let sourceSHM = appSupportURL.appendingPathComponent("\(Constants.bdName)-shm")
+       let sourceWAL = appSupportURL.appendingPathComponent("\(AppSettings.shared.dbName)-wal")
+       let sourceSHM = appSupportURL.appendingPathComponent("\(AppSettings.shared.dbName)-shm")
        
        if fileManager.fileExists(atPath: sourceWAL.path) {
            try fileManager.copyItem(
                at: sourceWAL,
-               to: backupDir.appendingPathComponent("\(Constants.bdBackupName)-wal")
+               to: backupDir.appendingPathComponent("\(AppSettings.shared.dbBackupName)-wal")
            )
        }
        
        if fileManager.fileExists(atPath: sourceSHM.path) {
            try fileManager.copyItem(
                at: sourceSHM,
-               to: backupDir.appendingPathComponent("\(Constants.bdBackupName)-shm")
+               to: backupDir.appendingPathComponent("\(AppSettings.shared.dbBackupName)-shm")
            )
        }
        

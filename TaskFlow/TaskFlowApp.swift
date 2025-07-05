@@ -44,7 +44,7 @@ struct TaskFlowApp: App {
     
     init() {
         do {
-            let dbURL = URL(filePath:Constants.bdPath.appending(Constants.bdName))
+            let dbURL = URL(filePath:AppSettings.shared.dbPath.appending(AppSettings.shared.dbName))
             
             let config = ModelConfiguration(
                 schema: schema,  // Ваша схема моделей

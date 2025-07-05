@@ -21,7 +21,7 @@ final class FolderViewModel: ObservableObject {
             let order = order
         else { return }
         
-        let path = "\(Constants.rootOrdersPath)/\(student.folderName)/\(order.folderName)"
+        let path = "\(AppSettings.shared.rootOrdersPath)/\(student.folderName)/\(order.folderName)"
 
         do {
             try fileSystemService.createFolderIfNeeded(at: path)
