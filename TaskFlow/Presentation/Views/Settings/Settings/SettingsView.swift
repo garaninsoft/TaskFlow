@@ -22,43 +22,30 @@ struct SettingsView: View {
         Form {
             Section {
                 TextField("Имя БД", text: $settings.dbName).textFieldStyle(.roundedBorder)
-                HStack{
-                    TextField("Путь к БД", text: $settings.dbPath)
-                        .textFieldStyle(.roundedBorder)
-                    Button("Выбор папки"){
-                        FolderPicker(folderURL: $dbPathURL).pickFolder()
-                        if let dbPathURL {
-                            settings.dbPath = dbPathURL.relativePath + "/"
-                        }
-                    }
-                }
+                PathPickerView(
+                    path: $settings.dbPath,
+                    folderURL: $dbPathURL,
+                    title: "Путь к БД"
+                )
+                
                 TextField("Имя бэкап", text: $settings.dbBackupName).textFieldStyle(.roundedBorder)
-                HStack{
-                    TextField("Путь к бэкап", text: $settings.dbBackupPath)
-                        .textFieldStyle(.roundedBorder)
-                    Button("Выбор папки"){
-                        FolderPicker(folderURL: $dbBackupPathURL).pickFolder()
-                        if let dbBackupPathURL {
-                            settings.dbBackupPath = dbBackupPathURL.relativePath + "/"
-                        }
-                    }
-                }
+                PathPickerView(
+                    path: $settings.dbBackupPath,
+                    folderURL: $dbBackupPathURL,
+                    title: "Путь к бэкап"
+                )
+                
             } header: {
                 Text("База данных")
                     .font(.headline)
             }
             
             Section {
-                HStack{
-                    TextField("Путь к Заказам", text: $settings.rootOrdersPath)
-                        .textFieldStyle(.roundedBorder)
-                    Button("Выбор папки"){
-                        FolderPicker(folderURL: $rootOrdersPathURL).pickFolder()
-                        if let rootOrdersPathURL {
-                            settings.rootOrdersPath = rootOrdersPathURL.relativePath
-                        }
-                    }
-                }
+                PathPickerView(
+                    path: $settings.rootOrdersPath,
+                    folderURL: $rootOrdersPathURL,
+                    title: "Путь к Заказам"
+                )
             } header: {
                 Text("Заказы")
                     .font(.headline)
@@ -104,27 +91,5 @@ struct SettingsView: View {
     
     private func saveSettings() {
         NSApp.sendAction(#selector(NSWindow.close), to: nil, from: nil)
-    }
-    
-    struct FolderPicker: NSViewRepresentable {
-        @Binding var folderURL: URL?
-
-        func makeNSView(context: Context) -> some NSView {
-            let view = NSView()
-            return view
-        }
-
-        func updateNSView(_ nsView: NSViewType, context: Context) {}
-
-        func pickFolder() {
-            let panel = NSOpenPanel()
-            panel.canChooseFiles = false
-            panel.canChooseDirectories = true
-            panel.allowsMultipleSelection = false
-
-            if panel.runModal() == .OK {
-                folderURL = panel.urls.first
-            }
-        }
     }
 }

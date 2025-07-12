@@ -55,11 +55,6 @@ struct OrderForm: View {
                 }
                 
                 Button(captionButtonSuccess) {
-                    let order = Order(
-                        title: title,
-                        details: details,
-                        created: created ?? Date()
-                    )
                     if let order = getValid(){
                         withAnimation {
                             action(order)
