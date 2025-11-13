@@ -31,6 +31,6 @@ final class Order{
     }
     
     var folderName: String {
-        "order_\(self.persistentId.uuidString.prefix(8))"
+        "order_\(self.title.prefix(7))"
     }
 }

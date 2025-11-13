@@ -71,3 +71,48 @@ extension Date {
         Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
 }
+
+extension String {
+    func generateShortNameWithTranslit() -> String {
+        // Быстрый транслит
+        let latin = self.lowercased()
+            .replacingOccurrences(of: "а", with: "a")
+            .replacingOccurrences(of: "б", with: "b")
+            .replacingOccurrences(of: "в", with: "v")
+            .replacingOccurrences(of: "г", with: "g")
+            .replacingOccurrences(of: "д", with: "d")
+            .replacingOccurrences(of: "е", with: "e")
+            .replacingOccurrences(of: "ё", with: "e")
+            .replacingOccurrences(of: "ж", with: "zh")
+            .replacingOccurrences(of: "з", with: "z")
+            .replacingOccurrences(of: "и", with: "i")
+            .replacingOccurrences(of: "й", with: "y")
+            .replacingOccurrences(of: "к", with: "k")
+            .replacingOccurrences(of: "л", with: "l")
+            .replacingOccurrences(of: "м", with: "m")
+            .replacingOccurrences(of: "н", with: "n")
+            .replacingOccurrences(of: "о", with: "o")
+            .replacingOccurrences(of: "п", with: "p")
+            .replacingOccurrences(of: "р", with: "r")
+            .replacingOccurrences(of: "с", with: "s")
+            .replacingOccurrences(of: "т", with: "t")
+            .replacingOccurrences(of: "у", with: "u")
+            .replacingOccurrences(of: "ф", with: "f")
+            .replacingOccurrences(of: "х", with: "h")
+            .replacingOccurrences(of: "ц", with: "c")
+            .replacingOccurrences(of: "ч", with: "ch")
+            .replacingOccurrences(of: "ш", with: "sh")
+            .replacingOccurrences(of: "щ", with: "sh")
+            .replacingOccurrences(of: "ы", with: "y")
+            .replacingOccurrences(of: "э", with: "e")
+            .replacingOccurrences(of: "ю", with: "yu")
+            .replacingOccurrences(of: "я", with: "ya")
+        
+        // Формируем короткое имя
+        var result = String(latin.prefix(2))
+        if latin.count >= 5 { result += String(Array(latin)[4]) }
+        if latin.count >= 7 { result += String(Array(latin)[6]) }
+        
+        return result
+    }
+}
