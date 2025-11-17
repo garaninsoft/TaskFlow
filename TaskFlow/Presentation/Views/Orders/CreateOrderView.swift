@@ -17,7 +17,7 @@ struct CreateOrderView: View {
     var body: some View {
         let template = Order(
             student: nil,
-            title: "Тема по занятиям",
+            title: "Тема занятий",
             details: "<Имя в пру> pru[<заказчик пру>@<номер зак пру>]",
             created: Date(),
             schedules: nil,

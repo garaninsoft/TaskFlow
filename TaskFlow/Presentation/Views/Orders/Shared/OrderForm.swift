@@ -9,9 +9,13 @@ import SwiftUI
 
 struct OrderForm: View {
     @State private var title: String
+    @State private var agent: String
+    @State private var commission: Double
+    @State private var feedealine: Date?
+
     @State private var details: String
     @State private var created: Date?
-    
+
     @State private var errorMessage: String = ""
     
     @Binding var isPresented: Bool
@@ -30,6 +34,10 @@ struct OrderForm: View {
         action: @escaping (Order) -> Void
     ) {
         self.title = order?.title ?? ""
+        self.agent = order?.agent ?? ""
+        self.commission = order?.commission ?? 0
+        self.feedealine = order?.feedealine
+        
         self.details = order?.details ?? ""
         self.created = order?.created
         
@@ -44,13 +52,21 @@ struct OrderForm: View {
             Text(titleForm)
                 .font(.title2)
             
-            TextField("Title", text: $title)
-            TextField("Details", text: $details)
-            DatePickerButton(caption:"Created", selectedDate: $created)
+            TextField("Тема", text: $title)
+            TextField("Детали", text: $details)
+            // Группа контактов
+            Section("Комиссия") {
+                TextField("Посредник", text: $agent)
+                TextField("Сумма руб.", value: $commission, format: .number)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                DatePickerButton(caption:"Срок оплаты", selectedDate: $feedealine)
+            }
+            
+
+            DatePickerButton(caption:"Создан", selectedDate: $created)
             
             HStack {
-                
-                Button("Cancel", role: .cancel) {
+                Button("Отмена", role: .cancel) {
                     isPresented = false
                 }
                 
@@ -84,6 +100,9 @@ struct OrderForm: View {
         if let created = created{
             return Order(
                 title: title,
+                agent: agent,
+                commission: commission,
+                feedealine: feedealine,
                 details: details,
                 created: created
             )

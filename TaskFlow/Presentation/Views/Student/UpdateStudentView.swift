@@ -17,8 +17,8 @@ struct UpdateStudentView: View {
     var body: some View {
         StudentForm(
             student: student,
-            titleForm: "Update Student",
-            captionButtonSuccess: "Update",
+            titleForm: "Изменить данные ученика",
+            captionButtonSuccess: "Изменить",
             isPresented: $isPresented,
             action: {student in
                 dataService.update(student: student, onSuccess: onSuccess)

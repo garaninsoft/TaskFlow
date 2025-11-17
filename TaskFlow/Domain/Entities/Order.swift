@@ -12,6 +12,9 @@ import SwiftData
 final class Order{
     var student: Student?
     var title: String
+    var agent: String?
+    var commission: Double?
+    var feedealine: Date?
     var details: String
     var created: Date
     var schedules: [Schedule]?
@@ -19,18 +22,20 @@ final class Order{
     var works: [Work]?
     var persistentId: UUID = UUID()
     
-    init(student: Student? = nil, title: String, details: String, created: Date, schedules: [Schedule]? = nil, payments: [Payment]? = nil, works: [Work]? = nil) {
+    init(student: Student? = nil, title: String, agent: String? = nil, commission: Double? = nil, feedealine: Date? = nil, details: String = "", created: Date, schedules: [Schedule]? = nil, payments: [Payment]? = nil, works: [Work]? = nil) {
         self.student = student
         self.title = title
+        self.agent = agent
+        self.commission = commission
+        self.feedealine = feedealine
         self.details = details
         self.created = created
         self.schedules = schedules
         self.payments = payments
         self.works = works
-        self.persistentId = UUID()
     }
     
     var folderName: String {
-        "order_\(self.title.prefix(7))"
+        "order_\(self.title.abbreviateText())_\(self.persistentId.uuidString.prefix(3))"
     }
 }

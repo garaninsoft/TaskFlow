@@ -57,16 +57,31 @@ extension TimeInterval {
     }
 }
 
-extension Date {
-    var localFormatted: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy_HH-mm-ss"
-        formatter.locale = Locale.current
-        return formatter.string(from: self)
-    }
+// Enum с вариантами форматов
+enum DateFormat: String {
+    case defaultFormat = "dd.MM.yyyy_HH-mm-ss"
+    case shortDate = "dd.MM.yy"
+//    case longDate = "EEEE, d MMM yyyy"
+//    case timeOnly = "HH:mm:ss"
+    // добавляй свои форматы по необходимости
 }
 
 extension Date {
+    
+    func formatted(_ format: DateFormat = .defaultFormat) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = format.rawValue
+            formatter.locale = Locale.current
+            return formatter.string(from: self)
+        }
+//    
+//    var localFormatted: String {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "dd.MM.yyyy_HH-mm-ss"
+//        formatter.locale = Locale.current
+//        return formatter.string(from: self)
+//    }
+    
     func adding(minutes: Int) -> Date {
         Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
@@ -114,5 +129,20 @@ extension String {
         if latin.count >= 7 { result += String(Array(latin)[6]) }
         
         return result
+    }
+    
+    func abbreviateText() -> String {
+        let cons = Set("бвгджзйклмнпрстфхцчшщ")
+        return self.split(separator: " ").map { word in
+            let w = String(word)
+            if w.count<=3 { return w }
+            if w.contains(where: { $0.isASCII && $0.isLetter }) { return w }
+            let chars = Array(w)
+            var r = [chars[0]]
+            for c in chars.dropFirst() where cons.contains(c.lowercased().first!) && r.count < 3 {
+                r.append(c)
+            }
+            return String(r)
+        }.joined(separator: "_")
     }
 }

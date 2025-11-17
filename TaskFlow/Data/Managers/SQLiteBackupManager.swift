@@ -17,7 +17,7 @@ struct SQLiteBackupManager {
        
        // 1. Создаем папку для бэкапа с timestamp
        let backupDir = URL(fileURLWithPath: AppSettings.shared.dbBackupPath)
-           .appendingPathComponent("backup_\(Date().localFormatted)")
+           .appendingPathComponent("backup_\(Date().formatted())")
        try fileManager.createDirectory(at: backupDir, withIntermediateDirectories: true)
        
        // 2. Основной файл БД

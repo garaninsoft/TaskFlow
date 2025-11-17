@@ -10,6 +10,9 @@ import SwiftUI
 struct StudentForm: View {
     @State private var name: String
     @State private var contacts: String
+    @State private var contacts2: String
+    @State private var messenger: String
+    @State private var messenger2: String
     @State private var details: String
     @State private var created: Date?
     @State private var closed: Date?
@@ -31,6 +34,9 @@ struct StudentForm: View {
     ) {
         self.name = student?.name ?? ""
         self.contacts = student?.contacts ?? ""
+        self.contacts2 = student?.contacts2 ?? ""
+        self.messenger = student?.messenger ?? ""
+        self.messenger2 = student?.messenger2 ?? ""
         self.details = student?.details ?? ""
         self.created = student?.created ?? Date()
         self.closed = student?.closed
@@ -47,14 +53,24 @@ struct StudentForm: View {
                 .font(.title2)
             
             TextField("Имя", text: $name)
-            TextField("Контакты", text: $contacts)
+            // Группа контактов
+            Section("Контакты") {
+                TextField("Основной", text: $contacts)
+                TextField("Дополнительный", text: $contacts2)
+            }
+            
+            // Группа мессенджеров
+            Section("Мессенджеры") {
+                TextField("Основной", text: $messenger)
+                TextField("Дополнительный", text: $messenger2)
+            }
             TextField("Детали", text: $details)
             DatePickerButton(caption:"Создан", selectedDate: $created)
             DatePickerButton(caption:"Закрыт", selectedDate: $closed)
             
             HStack {
                 
-                Button("Cancel", role: .cancel) {
+                Button("Отмена", role: .cancel) {
                     isPresented = false
                 }
                 
@@ -62,6 +78,9 @@ struct StudentForm: View {
                     let student = Student(
                         name: name,
                         contacts: contacts,
+                        contacts2: contacts2,
+                        messenger: messenger,
+                        messenger2: messenger2,
                         details: details,
                         created: created,
                         closed: closed
@@ -92,11 +111,11 @@ struct StudentForm: View {
     }
 }
 
-#Preview {
-    @Previewable @State var isPresented = true
-    StudentForm(
-        titleForm: "Заголовок",
-        captionButtonSuccess: "Ok",
-        isPresented: $isPresented,
-        action: {_ in })
-}
+//#Preview {
+//    @Previewable @State var isPresented = true
+//    StudentForm(
+//        titleForm: "Заголовок",
+//        captionButtonSuccess: "Ok",
+//        isPresented: $isPresented,
+//        action: {_ in })
+//}

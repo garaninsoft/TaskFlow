@@ -14,17 +14,14 @@ struct CreateStudentView: View {
     
     var body: some View {
         let template = Student(
-            name: "<Факт Имя> t[<Имя в телеге>@<уник имя>]",
-            contacts: "телефон",
+            name: "",
             details: "",
-            created: Date(),
-            closed: nil,
-            orders: nil
-        ) // Это шаблон-подсказка
+            created: Date()
+        )
         StudentForm(
             student: template,
-            titleForm: "Create a New Student",
-            captionButtonSuccess: "Register",
+            titleForm: "Новый ученик",
+            captionButtonSuccess: "Создать",
             isPresented: $isPresented,
             action: {student in
                 dataService.create(student: student, onSuccess: onSuccess)
