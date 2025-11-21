@@ -21,6 +21,7 @@ struct StudentsListView: View {
                             Text(student.name)
                             Text(student.details).font(.system(size: 10))
                         }
+                        .frame(width: 200, alignment: .leading)
                         Spacer()
                         VStack(alignment: .leading){
                             Text(student.contacts).fontWeight(.bold)
@@ -33,6 +34,7 @@ struct StudentsListView: View {
                         }
                         .font(.system(size: 10))
                         .padding(4)
+                        .frame(width: 200, alignment: .leading)
                         .background(Color.gray.opacity(0.15))
                         .cornerRadius(6)
                     }

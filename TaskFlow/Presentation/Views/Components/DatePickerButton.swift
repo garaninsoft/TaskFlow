@@ -103,11 +103,14 @@ extension Date {
     }
 }
 
+//struct SimplePreview: PreviewProvider { static var previews: some View { Text("Preview") } }
+
+//
 //#Preview {
 //    @Previewable @State var selectedDate: Date? = Date()
 //    DatePickerView(selectedDate: $selectedDate)
 //}
-//
+
 //#Preview {
 //    @Previewable @State var selectedDate: Date? = Date()
 //    DatePickerButton(caption: "Caption", selectedDate: $selectedDate)

@@ -37,20 +37,22 @@ class MainViewModel: ObservableObject {
     @Published var showSheetStudentStatistics: Bool = false
     @Published var showSheetOrderStatistics: Bool = false
     
-    
-    
     func selectStudent(student: Student?) {
-        selectedStudent = student
-        selectOrder(order: nil)
-        //printState()
+        if selectedStudent?.persistentId == student?.persistentId { return }
+        Task { @MainActor in
+            selectedStudent = student
+            selectOrder(order: nil)
+        }
     }
     
     func selectOrder(order: Order?) {
-        selectedOrder = order
-        selectedMeeting = nil
-        selectedPayment = nil
-        selectedWork = nil
-        //printState()
+        if selectedOrder?.persistentId == order?.persistentId { return }
+        Task { @MainActor in
+            selectedOrder = order
+            selectedMeeting = nil
+            selectedPayment = nil
+            selectedWork = nil
+        }
     }
     
     func prepareNewMeeting(from existingMeeting: Schedule?) -> Schedule? {
